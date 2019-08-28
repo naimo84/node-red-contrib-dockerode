@@ -1,0 +1,29 @@
+<!-- Docker Engine configuration/connection -->
+<script type="text/javascript">
+    RED.nodes.registerType('docker-config', {
+        category: 'config',
+        defaults: {
+            name: {value: ""},
+            host: {value: "localhost", required: true},
+            port: {value: 2375, required: true, validate: RED.validators.number()},
+        },
+        label: function() {
+            return this.name || this.host+":"+this.port
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="docker-config">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+</script>

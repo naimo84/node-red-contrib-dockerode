@@ -1,0 +1,49 @@
+{
+  "name": "node-red-contrib-docker",
+  "version": "0.0.1",
+  "description": "node-red nodes to communicate with docker",
+  "author": {
+    "name": "naimo84",
+    "email": "git@neumann-benjamin.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naimo84/node-red-contrib-docker"
+  },
+  "keywords": [
+    "node-red",
+    "docker",
+    "Smart Home",
+    "home automation"
+  ],
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/naimo84/node-red-contrib-docker/blob/master/LICENSE"
+    }
+  ],
+  "scripts": {
+    "start": "gulp && node-red"
+  },
+  "node-red": {
+    "nodes": {
+      "docker-config": "dist/docker-config.js",
+      "docker-container-actions": "dist/docker-container-actions.js",
+      "docker-events": "dist/docker-events.js",
+      "docker-images": "dist/docker-images.js",
+      "docker-containers": "dist/docker-containers.js"
+    }
+  },
+  "dependencies": {
+    "dockerode": "^2.5.8"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "typescript": "^3.5.3",
+    "@types/node": "^12.7.2",
+    "@types/node-red": "^0.20.0",
+    "@types/dockerode": "^2.5.20"
+  }
+}
