@@ -1,4 +1,4 @@
-# node-red-contrib-docker
+# node-red-contrib-dockerode
 
 This Node RED module connects Docker with Node-RED.
 
@@ -16,14 +16,14 @@ First of all install [Node-RED](http://nodered.org/docs/getting-started/installa
 
 ## Develop
 
-* git clone https://github.com/naimo84/node-red-contrib-docker.git
-* cd node-red-contrib-docker
+* git clone https://github.com/naimo84/node-red-contrib-dockerode.git
+* cd node-red-contrib-dockerode
 * npm install
 * gulp
 * cd ~/.node-red 
-* npm install /path/to/node-red-contrib-docker
+* npm install /path/to/node-red-contrib-dockerode
 
-<img src="https://img.shields.io/npm/dy/node-red-contrib-docker?style=for-the-badge"/>
+<img src="https://img.shields.io/npm/dy/node-red-contrib-dockerode?style=for-the-badge"/>
 
 ## Usage
 
@@ -36,7 +36,7 @@ In order to expose the docker-engine TCP daemon, you have to do the following:
 - ***Docker for Windows / Docker Desktop:*** 
 <br>Under Settings / General check "Expose daemon on tcp://localhost:2375 without TLS"
 
-![DockerWindowsSettings.png](https://github.com/naimo84/node-red-contrib-docker/raw/master/examples/DockerWindowsSettings.png)
+![DockerWindowsSettings.png](https://github.com/naimo84/node-red-contrib-dockerode/raw/master/examples/DockerWindowsSettings.png)
 
 - ***Docker-CE***
 
