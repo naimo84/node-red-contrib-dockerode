@@ -39,11 +39,11 @@ In order to expose the docker-engine TCP daemon, you have to do the following:
 ![DockerWindowsSettings.png](https://github.com/naimo84/node-red-contrib-docker/raw/master/examples/DockerWindowsSettings.png)
 
 - ***Docker-CE***
-<br>
+
 See https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
-<br>
+
 or: 
-<br>
+
 ```
 # File: /etc/default/docker
 # Use DOCKER_OPTS to modify the daemon startup options.
@@ -53,12 +53,10 @@ DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock"
 
 or: 
 
-
 ```
 # File: /lib/systemd/system/docker.service
 ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:2375
 ```
-<br>
 
 ## The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy
