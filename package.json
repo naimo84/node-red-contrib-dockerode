@@ -6,6 +6,10 @@
     "name": "naimo84",
     "email": "git@neumann-benjamin.de"
   },
+   "contributors": [{
+    "name": "naimo84",
+    "email": "git@neumann-benjamin.de"
+  }],
   "repository": {
     "type": "git",
     "url": "https://github.com/naimo84/node-red-contrib-dockerode"
