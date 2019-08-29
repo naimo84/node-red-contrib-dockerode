@@ -1,15 +1,17 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
     "email": "git@neumann-benjamin.de"
   },
-   "contributors": [{
-    "name": "naimo84",
-    "email": "git@neumann-benjamin.de"
-  }],
+  "contributors": [
+    {
+      "name": "naimo84",
+      "email": "git@neumann-benjamin.de"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/naimo84/node-red-contrib-dockerode"
@@ -40,7 +42,8 @@
     }
   },
   "dependencies": {
-    "dockerode": "^2.5.8"
+    "dockerode": "^2.5.8",
+    "stream": "0.0.2"
   },
   "devDependencies": {
     "gulp": "^4.0.2",

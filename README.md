@@ -6,9 +6,10 @@ This Node RED module connects Docker with Node-RED.
 
 If you like it, please consider:
 
-<a target="blank" href="https://brave.com/nai412"><img src="./examples/support_banner.png"/></a>
-<a target="blank" href="https://paypal.me/NeumannBenjamin"><img src="https://img.shields.io/badge/Donate-PayPal-blue.svg"/></a>
-<a target="blank" href="https://blockchain.info/payment_request?address=3KDjCmXsGFYawmycXRsVwfFbphog117N8P"><img src="https://img.shields.io/badge/Donate-Bitcoin-green.svg"/></a> 
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T412CXA)
+<br><a target="blank" href="https://brave.com/nai412"><img src="./examples/support_banner.png"/></a>
+<br><a target="blank" href="https://paypal.me/NeumannBenjamin"><img src="https://img.shields.io/badge/Donate-PayPal-blue.svg"/></a>
+<br><a target="blank" href="https://blockchain.info/payment_request?address=3KDjCmXsGFYawmycXRsVwfFbphog117N8P"><img src="https://img.shields.io/badge/Donate-Bitcoin-green.svg"/></a> 
 
 ## Getting started
 

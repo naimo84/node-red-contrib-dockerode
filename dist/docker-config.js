@@ -8,6 +8,7 @@ module.exports = function (RED) {
         var node = this;
         node.host = n.host;
         node.port = n.port;
+        node.options = n.options;
         node.getClient = function () {
             return new Dockerode({
                 host: node.host,

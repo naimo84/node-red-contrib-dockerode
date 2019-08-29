@@ -1,25 +1,54 @@
-
-
 <!-- Actions for running containers -->
 <script type="text/javascript">
     RED.nodes.registerType('docker-container-actions', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
-            name: {value: ""},           
-            config: {value: "", type: "docker-config", required: true},
-            container: {value: ""},
-            action: {value: ""}
+            name: { value: "" },
+            config: { value: "", type: "docker-config", required: true },
+            container: { value: "" },
+            action: { value: "" },
+            cmd: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
-        label: function() {
+        label: function () {
             return this.name || "Container Action"
         },
-        paletteLabel: function() {
+        paletteLabel: function () {
             return this.name || "Container Action"
-        }
+        },
+        oneditprepare: function () {
+            let id = this.config;
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+                if (value !== 'exec') {
+                    $('#cmd').hide()
+                } else {
+                    $('#cmd').show()
+                }
+            })
+
+
+            $("#node-input-container").click(function () {
+                $.post('containerSearch', { id: id }, function (data) {
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        let name = element.Names[0].replace('/','');
+                        dataArray.push(name);
+                    });
+                    $("#node-input-container").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-container").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
     })
 </script>
 
@@ -39,13 +68,29 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.payload'</option>
+            <option value="">Use 'msg.action'</option>
             <option value="start">Start</option>
             <option value="stop">Stop</option>
+            <option value="restart">Restart</option>
+            <option value="kill">Kill</option>
+            <option value="exec">exec</option>            
         </select>
+    </div>
+    <div class="form-row" id="cmd">
+        <label for="node-input-cmd"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-cmd">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-container-actions">
     <p>Manage a docker container</p>
+
+    <p>Possible actions:
+    <ul>
+        <li>start</li>
+        <li>stop</li>
+        <li>restart</li>
+        <li>kill</li>
+        <li>exec</li>
+    </ul>
 </script>
