@@ -10,10 +10,16 @@ module.exports = function (RED: Red) {
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
         let client = config.getClient();
 
-        this.on('input', () => {
+        this.on('input', () => { 
             client.listContainers({ all: false })
-                .then(containers => this.send({ payload: containers }))
-                .catch(err => this.error(err));
+                .then(containers => {
+                    this.send({ payload: containers });                  
+                })
+                .catch(err =>{
+                    this.send({ payload:{} })
+                    this.error(err)
+                });
+                
         });
     }
 

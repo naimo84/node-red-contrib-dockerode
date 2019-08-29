@@ -97,7 +97,7 @@ module.exports = function (RED) {
                         if (res) {
                             res.start(function (err, input_stream) {
                                 if (err) {
-                                    console.log("error : " + err);
+                                    //console.log("error : " + err);
                                     return;
                                 }
                                 var stdout = new stream.PassThrough();

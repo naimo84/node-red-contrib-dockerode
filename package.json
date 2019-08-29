@@ -30,7 +30,8 @@
     }
   ],
   "scripts": {
-    "start": "gulp && node-red"
+    "start": "gulp && node-red",
+    "test": "mocha \"test/**/*_spec.js\""
   },
   "node-red": {
     "nodes": {
@@ -46,11 +47,16 @@
     "stream": "0.0.2"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-typescript": "^5.0.1",
-    "typescript": "^3.5.3",
+    "@types/dockerode": "^2.5.20",
     "@types/node": "^12.7.2",
     "@types/node-red": "^0.20.0",
-    "@types/dockerode": "^2.5.20"
+    "dockerode-mock": "^0.3.2",
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "mocha": "6.2.0",
+    "node-red": "0.20.7",
+    "node-red-node-test-helper": "^0.2.3",
+    "should": "13.2.3",
+    "typescript": "^3.5.3"
   }
 }

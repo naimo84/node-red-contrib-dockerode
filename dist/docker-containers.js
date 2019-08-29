@@ -9,8 +9,13 @@ module.exports = function (RED) {
         var client = config.getClient();
         this.on('input', function () {
             client.listContainers({ all: false })
-                .then(function (containers) { return _this.send({ payload: containers }); })
-                .catch(function (err) { return _this.error(err); });
+                .then(function (containers) {
+                _this.send({ payload: containers });
+            })
+                .catch(function (err) {
+                _this.send({ payload: {} });
+                _this.error(err);
+            });
         });
     }
     RED.httpAdmin.post("/containerSearch", function (req, res) {

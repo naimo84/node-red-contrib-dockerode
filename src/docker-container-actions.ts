@@ -100,7 +100,7 @@ module.exports = function (RED: Red) {
                             if (res) {
                                 res.start((err, input_stream) => {
                                     if (err) {
-                                        console.log("error : " + err);
+                                        //console.log("error : " + err);
                                         return;
                                     }
 
