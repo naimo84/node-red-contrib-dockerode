@@ -4,7 +4,7 @@ import * as Dockerode from 'dockerode';
 let stream = require('stream');
 
 module.exports = function (RED: Red) {
-    'use strict';
+ 
 
     function DockerContainerAction(n: any) {
         RED.nodes.createNode(this, n);

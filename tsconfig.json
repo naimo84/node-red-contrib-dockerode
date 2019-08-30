@@ -1,12 +1,23 @@
 {
-    "compilerOptions": {    
+    "compilerOptions": {
         "baseUrl": ".",
-        "paths": { "*": ["types/*"] },
+        "paths": {
+            "*": [
+                "types/*",
+                "src/*"
+            ]
+        },
         "outDir": "./dist",
         "target": "es5",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "strict": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
     },
     "include": [
         "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }

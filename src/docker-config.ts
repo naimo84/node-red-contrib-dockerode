@@ -1,4 +1,4 @@
-import { Red, Node } from 'node-red';
+import { Red } from 'node-red';
 import * as Dockerode from 'dockerode';
 
 
@@ -11,7 +11,7 @@ export interface DockerConfig {
 }
 
 module.exports = function (RED: Red) {
-    'use strict';
+    
 
     function DockerConfig(n) {
         RED.nodes.createNode(this, n);

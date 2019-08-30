@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = function (RED) {
-    'use strict';
     function DockerImages(n) {
         var _this = this;
         RED.nodes.createNode(this, n);

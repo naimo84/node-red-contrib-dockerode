@@ -1,8 +1,8 @@
-import { Red, Node } from 'node-red';
+import { Red } from 'node-red';
 import { DockerConfig } from './docker-config';
 
 module.exports = function (RED: Red) {
-    'use strict';
+   
 
 
     function DckerContainers(n) {

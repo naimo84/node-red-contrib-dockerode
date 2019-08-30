@@ -1,4 +1,4 @@
-import { Red, Node } from 'node-red';
+import { Red } from 'node-red';
 import { DockerConfig } from './docker-config';
 
 export interface DockerEvent {
@@ -8,33 +8,29 @@ export interface DockerEvent {
     timeNano?: string
 }
 
-module.exports = function (RED: Red) {
-    'use strict';
+module.exports = function (RED: Red) {  
 
-    function DockerEvents(n) {
-        RED.nodes.createNode(this, n);
+    function DockerEvents(n:any) {
+        let node:any = this as any;
+        RED.nodes.createNode(node, n);
 
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
         let client = config.getClient();
 
-        client.getEvents({}, (err, events) => {
-            if (err) {
-                this.error('Error during client.getEvents()', err);
-                this.status({ fill: 'red', shape: 'ring', text: 'error' });
-                return;
-            }
-            this.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
+        client.getEvents().then((events:any) => {          
+          
+            node.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
 
             events.on('data', (data) => {
                 let event: DockerEvent = {};
                 try {
                     event = JSON.parse(data.toString());
                 } catch (e) {
-                    this.error('Error parsing JSON', e);
+                    node.error('Error parsing JSON', e);
                     return
                 }
 
-                this.send({
+                node.send({
                     _msgid: RED.util.generateId(),
                     type: event.Type,
                     action: event.Action,
@@ -45,18 +41,18 @@ module.exports = function (RED: Red) {
             });
 
             events.on('close', () => {
-                this.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                this.warn('Docker event stream closed.');
+                node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                node.warn('Docker event stream closed.');
             });
             events.on('error', (err) => {
-                this.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                this.error('Error:', err);
+                node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                node.error('Error:', err);
             });
             events.on('end', () => {
-                this.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
-                this.warn('Docker event stream ended.');
+                node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
+                node.warn('Docker event stream ended.');
             });
-        })
+        });
     }
 
     RED.nodes.registerType('docker-events', DockerEvents);

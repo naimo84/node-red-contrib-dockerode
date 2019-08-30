@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var stream = require('stream');
 module.exports = function (RED) {
-    'use strict';
     function DockerContainerAction(n) {
         var _this = this;
         RED.nodes.createNode(this, n);

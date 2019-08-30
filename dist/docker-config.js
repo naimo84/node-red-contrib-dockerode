@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Dockerode = require("dockerode");
 module.exports = function (RED) {
-    'use strict';
     function DockerConfig(n) {
         RED.nodes.createNode(this, n);
         var node = this;
