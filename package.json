@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
@@ -31,7 +31,8 @@
   ],
   "scripts": {
     "start": "gulp && node-red",
-    "test": "mocha \"test/**/*_spec.js\""
+    "test": "mocha \"test/**/*_spec.js\"",
+    "release": "standard-version"
   },
   "node-red": {
     "nodes": {
@@ -58,6 +59,7 @@
     "node-red": "0.20.7",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",
+    "standard-version": "^7.0.0",
     "typescript": "^3.5.3"
   }
 }
