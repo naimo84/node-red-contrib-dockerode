@@ -44,6 +44,11 @@
       "docker-inspect": "dist/docker-inspect.js"
     }
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint --edit"
+    }
+  },
   "dependencies": {
     "dockerode": "^2.5.8",
     "stream": "0.0.2"
@@ -52,14 +57,47 @@
     "@types/dockerode": "^2.5.20",
     "@types/node": "^12.7.2",
     "@types/node-red": "^0.20.0",
+    "commitlint": "^8.1.0",
     "dockerode-mock": "^0.3.2",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
+    "husky": "^3.0.5",
     "mocha": "6.2.0",
     "node-red": "0.20.7",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",
     "standard-version": "^7.0.0",
     "typescript": "^3.5.3"
+  },
+  "commitlint": {
+    "format": {
+      "helpUrl": "test"
+    },
+    "rules": {
+      "body-leading-blank": [1, "always"],
+      "footer-leading-blank": [1, "always"],
+      "header-max-length": [2, "always", 72],
+      "scope-case": [2, "always", "lower-case"],
+      "subject-case": [2, "never", ["sentence-case", "start-case", "pascal-case", "upper-case"]],
+      "subject-empty": [2, "never"],
+      "subject-full-stop": [2, "never", "."],
+      "type-case": [2, "always", "lower-case"],
+      "type-empty": [2, "never"],
+      "type-enum": [2, "always",
+        [
+          "build",
+          "chore",
+          "ci",
+          "docs",
+          "feat",
+          "fix",
+          "perf",
+          "refactor",
+          "revert",
+          "style",
+          "test"
+        ]
+      ]
+    }
   }
 }
