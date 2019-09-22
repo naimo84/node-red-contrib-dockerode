@@ -8,6 +8,10 @@ module.exports = function (RED: Red) {
     function DckerContainers(n) {
         RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
+        if(!config){
+            this.status({fill:"red",shape:"ring",text:"no configuration"});
+            return;
+        }
         let client = config.getClient();
 
         this.on('input', () => { 

@@ -5,6 +5,10 @@ module.exports = function (RED) {
         var _this = this;
         RED.nodes.createNode(this, n);
         var config = RED.nodes.getNode(n.config);
+        if (!config) {
+            this.status({ fill: "red", shape: "ring", text: "no configuration" });
+            return;
+        }
         var client = config.getClient();
         this.on('input', function () {
             client.listContainers({ all: false })
