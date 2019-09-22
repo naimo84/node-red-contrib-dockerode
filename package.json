@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "start": "gulp && node-red",
-    "test": "mocha \"test/**/*_spec.js\"",
+    
     "release": "gulp && standard-version"
   },
   "node-red": {
