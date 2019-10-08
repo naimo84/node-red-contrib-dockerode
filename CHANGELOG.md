@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.2...v0.3.3) (2019-10-08)
+
+
+### Bug Fixes
+
+* disabled unittests ([7cd2414](https://github.com/naimo84/node-red-contrib-dockerode/commit/7cd2414))
+* issue [#2](https://github.com/naimo84/node-red-contrib-dockerode/issues/2) ([6ab9f1c](https://github.com/naimo84/node-red-contrib-dockerode/commit/6ab9f1c))
+
 ### [0.3.2](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.1...v0.3.2) (2019-09-22)
 
 
