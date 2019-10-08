@@ -10,10 +10,10 @@ module.exports = function (RED) {
             return;
         }
         var client = config.getClient();
-        this.on('input', function () {
+        this.on('input', function (msg) {
             client.listContainers({ all: false })
                 .then(function (containers) {
-                _this.send({ payload: containers });
+                _this.send(Object.assign(msg, { payload: containers }));
             })
                 .catch(function (err) {
                 _this.send({ payload: {} });

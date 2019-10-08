@@ -16,16 +16,16 @@ module.exports = function (RED) {
                 return;
             }
             _this.status({});
-            executeAction(cid, client, action, cmd, _this);
+            executeAction(cid, client, action, cmd, _this, msg);
         });
-        function executeAction(cid, client, action, cmd, node) {
+        function executeAction(cid, client, action, cmd, node, msg) {
             var container = client.getContainer(cid);
             switch (action) {
                 case 'start':
                     container.start()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
-                        node.send({ payload: res });
+                        node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 304) {
                             node.warn("Unable to start container \"" + cid + "\", container is already started.");
@@ -41,7 +41,7 @@ module.exports = function (RED) {
                     container.stop()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
-                        node.send({ payload: res });
+                        node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 304) {
                             node.warn("Unable to stop container \"" + cid + "\", container is already stopped.");
@@ -57,7 +57,7 @@ module.exports = function (RED) {
                     container.restart()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
-                        node.send({ payload: res });
+                        node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 304) {
                             node.warn("Unable to restart container \"" + cid + "\".");
@@ -73,7 +73,7 @@ module.exports = function (RED) {
                     container.kill()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
-                        node.send({ payload: res });
+                        node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 304) {
                             node.warn("Unable to kill container \"" + cid + "\".");
@@ -111,7 +111,7 @@ module.exports = function (RED) {
                                     buffer_stderr += chunk.toString();
                                 });
                                 input_stream.on('end', function () {
-                                    node.send({ payload: buffer_stdout });
+                                    node.send(Object.assign(msg, { payload: buffer_stdout }));
                                     if (buffer_stderr.trim().length > 0) {
                                         node.error("Error exec container: " + buffer_stderr);
                                     }

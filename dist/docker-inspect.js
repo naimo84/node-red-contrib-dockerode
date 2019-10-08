@@ -13,14 +13,14 @@ module.exports = function (RED) {
                 return;
             }
             _this.status({});
-            executeAction(cid, client, _this);
+            executeAction(cid, client, _this, msg);
         });
-        function executeAction(cid, client, node) {
+        function executeAction(cid, client, node, msg) {
             var container = client.getContainer(cid);
             container.inspect().then(function (data) {
-                var inspect = {};
+                var inspect = msg;
                 if (data) {
-                    inspect = { payload: data };
+                    inspect = Object.assign(inspect, { payload: data });
                 }
                 if (data.State.Health) {
                     Object.assign(inspect, {

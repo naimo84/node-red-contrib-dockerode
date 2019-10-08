@@ -31,7 +31,6 @@
   ],
   "scripts": {
     "start": "gulp && node-red",
-    
     "release": "gulp && standard-version"
   },
   "node-red": {
