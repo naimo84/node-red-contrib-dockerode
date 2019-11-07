@@ -6,9 +6,11 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, n);
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
-        this.on('input', function () {
+        this.on('input', function (msg) {
             client.listImages()
-                .then(function (images) { return _this.send({ payload: images }); })
+                .then(function (images) {
+                _this.send(Object.assign(msg, { payload: images }));
+            })
                 .catch(function (err) { return _this.error(err); });
         });
     }

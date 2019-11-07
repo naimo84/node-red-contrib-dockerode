@@ -1,15 +1,17 @@
 import { Red } from 'node-red';
 import { DockerConfig } from './docker-config';
 
-module.exports = function(RED:Red) {
-       function DockerImages(n) {
-        RED.nodes.createNode(this,n);
+module.exports = function (RED: Red) {
+    function DockerImages(n) {
+        RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
         let client = config.getClient();
 
-        this.on('input', () => {
+        this.on('input', (msg) => {
             client.listImages()
-                .then(images => this.send({payload:images}))
+                .then(images => {
+                    this.send(Object.assign(msg, { payload: images }))
+                })
                 .catch(err => this.error(err));
         });
     }

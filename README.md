@@ -29,6 +29,15 @@ First of all install [Node-RED](http://nodered.org/docs/getting-started/installa
 ## Usage
 
 ### Configuration:
+
+#### docker.sock
+
+- ***Using Node-RED in a Docker-Container***
+
+The Node-RED container must have access to the docker.sock, so you have to add the docker-group ID to the container with <pre>docker run ... --group-add 250</pre> the ID 250 may be different on your system.
+
+#### Exposing TCP-Daemon port
+
 - ***hostname*** hostname of docker (e.g. "localhost")
 - ***port*** port of docker (e.g. "2375")
 
@@ -58,6 +67,10 @@ or:
 # File: /lib/systemd/system/docker.service
 ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:2375
 ```
+
+
+
+
 
 ## The MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy

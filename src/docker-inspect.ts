@@ -20,17 +20,17 @@ module.exports = function (RED: Red) {
                 return;
             }
             this.status({});
-            executeAction(cid, client, this);
+            executeAction(cid, client, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, node: Node) {
+        function executeAction(cid: string, client: Dockerode, node: Node,msg) {
 
             let container = client.getContainer(cid);
 
             container.inspect().then((data:any) => {  
-                let inspect = {}; 
+                let inspect = msg; 
                 if(data){
-                    inspect = { payload: data };
+                    inspect = Object.assign(inspect,{ payload: data });
                 }            
                 if(data.State.Health){
                     Object.assign(inspect,{

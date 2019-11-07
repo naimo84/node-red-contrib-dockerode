@@ -5,11 +5,15 @@ module.exports = function (RED) {
         var _this = this;
         RED.nodes.createNode(this, n);
         var config = RED.nodes.getNode(n.config);
+        if (!config) {
+            this.status({ fill: "red", shape: "ring", text: "no configuration" });
+            return;
+        }
         var client = config.getClient();
-        this.on('input', function () {
+        this.on('input', function (msg) {
             client.listContainers({ all: false })
                 .then(function (containers) {
-                _this.send({ payload: containers });
+                _this.send(Object.assign(msg, { payload: containers }));
             })
                 .catch(function (err) {
                 _this.send({ payload: {} });

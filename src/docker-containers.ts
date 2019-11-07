@@ -2,24 +2,28 @@ import { Red } from 'node-red';
 import { DockerConfig } from './docker-config';
 
 module.exports = function (RED: Red) {
-   
+
 
 
     function DckerContainers(n) {
         RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
+        if (!config) {
+            this.status({ fill: "red", shape: "ring", text: "no configuration" });
+            return;
+        }
         let client = config.getClient();
 
-        this.on('input', () => { 
+        this.on('input', (msg) => {
             client.listContainers({ all: false })
                 .then(containers => {
-                    this.send({ payload: containers });                  
+                    this.send(Object.assign(msg, { payload: containers }));
                 })
-                .catch(err =>{
-                    this.send({ payload:{} })
+                .catch(err => {
+                    this.send({ payload: {} })
                     this.error(err)
                 });
-                
+
         });
     }
 

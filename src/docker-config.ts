@@ -11,7 +11,7 @@ export interface DockerConfig {
 }
 
 module.exports = function (RED: Red) {
-    
+
 
     function DockerConfig(n) {
         RED.nodes.createNode(this, n);
@@ -21,12 +21,20 @@ module.exports = function (RED: Red) {
         node.port = n.port;
         node.options = n.options;
 
+        let dockeropt = {};
 
-        node.getClient = (): Dockerode => {
-            return new Dockerode({
+        if (node.host.includes("docker.sock")) {
+            dockeropt = {
+                socketPath: node.host
+            }
+        } else {
+            dockeropt = {
                 host: node.host,
                 port: node.port
-            });
+            }
+        }
+        node.getClient = (): Dockerode => {
+            return new Dockerode(dockeropt);
         };
     }
     RED.nodes.registerType("docker-config", DockerConfig);
