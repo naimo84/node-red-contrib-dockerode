@@ -22,11 +22,13 @@ module.exports = function (RED) {
                 if (data) {
                     inspect = Object.assign(inspect, { payload: data });
                 }
-                if (data.State.Health) {
-                    Object.assign(inspect, {
-                        health: data.State.Health.Status
-                    });
-                }
+                /*
+                                if(data.State.Health){
+                                    Object.assign(inspect,{
+                                        health: data.State.Health.Status
+                                    })
+                                }
+                */
                 node.send(inspect);
             });
         }

@@ -32,12 +32,13 @@ module.exports = function (RED: Red) {
                 if(data){
                     inspect = Object.assign(inspect,{ payload: data });
                 }            
+/*
                 if(data.State.Health){
                     Object.assign(inspect,{
                         health: data.State.Health.Status
                     })
                 }
-
+*/
                 node.send(inspect);
                 
             });
