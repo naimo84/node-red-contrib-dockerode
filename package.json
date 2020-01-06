@@ -41,7 +41,8 @@
       "docker-images": "dist/docker-images.js",
       "docker-containers": "dist/docker-containers.js",
       "docker-inspect": "dist/docker-inspect.js",
-      "docker-service-inspect": "dist/docker-service-inspect.js"
+      "docker-service-inspect": "dist/docker-service-inspect.js",
+      "docker-service": "dist/docker-service.js"
     }
   }, 
   "dependencies": {

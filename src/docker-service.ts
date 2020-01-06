@@ -3,7 +3,7 @@ import { DockerConfig } from './docker-config';
 
 module.exports = function (RED: Red) {
 
-    function DockerContainers(n) {
+    function DockerServices(n) {
         RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
         if (!config) {
@@ -13,9 +13,9 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
 
         this.on('input', (msg) => {
-            client.listContainers({ all: false })
-                .then(containers => {
-                    this.send(Object.assign(msg, { payload: containers }));
+            client.listServices({ all: false })
+                .then(services => {
+                    this.send(Object.assign(msg, { payload: services }));
                 })
                 .catch(err => {
                     this.send({ payload: {} })
@@ -24,26 +24,30 @@ module.exports = function (RED: Red) {
 
         });
     }
-
-    RED.httpAdmin.post("/containerSearch", function (req, res) {
-        RED.log.debug("POST /containerSearch");
+    
+    RED.httpAdmin.post("/serviceSearch", function (req, res) {
+        RED.log.debug("POST /serviceSearch");
 
         const nodeId = req.body.id;
+console.log(nodeId);
         let config = RED.nodes.getNode(nodeId);
 
-        discoverSonos(config, (containers) => {
-            RED.log.debug("GET /containerSearch: " + containers.length + " found");
-            res.json(containers);
+        discoverSonos(config, (services) => {
+            RED.log.debug("GET /serviceSearch: " + services.length + " found");
+            res.json(services);
         });
     });
 
     function discoverSonos(config, discoveryCallback) {
         let client = config.getClient();
-        client.listContainers({ all: false })
-            .then(containers => discoveryCallback(containers))
+        client.listServices({ all: false })
+            .then(services => () => {
+                console.log(services);
+                discoveryCallback(services)
+            })
             .catch(err => this.error(err));
     }
 
-    RED.nodes.registerType('docker-containers', DockerContainers);
+    RED.nodes.registerType('docker-services', DockerServices);
 }
 
