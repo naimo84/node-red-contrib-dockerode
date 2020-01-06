@@ -1,4 +1,13 @@
+docker service update docker-Traefik_whoami --container-label-add "test=cool"
+
+
 # node-red-contrib-dockerode
+
+
+{"TaskTemplate": {
+"ContainerSpec": {
+    Labels
+
 
 This Node RED module connects Docker with Node-RED.
 

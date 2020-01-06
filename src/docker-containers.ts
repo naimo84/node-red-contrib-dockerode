@@ -5,7 +5,7 @@ module.exports = function (RED: Red) {
 
 
 
-    function DckerContainers(n) {
+    function DockerContainers(n) {
         RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
         if (!config) {
@@ -26,6 +26,18 @@ module.exports = function (RED: Red) {
 
         });
     }
+    RED.httpAdmin.post("/serviceSearch", function (req, res) {
+        RED.log.debug("POST /serviceSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (containers) => {
+            RED.log.debug("GET /serviceSearch: " + containers.length + " found");
+            res.json(containers);
+        });
+    });
+
 
     RED.httpAdmin.post("/containerSearch", function (req, res) {
         RED.log.debug("POST /containerSearch");
@@ -46,6 +58,6 @@ module.exports = function (RED: Red) {
             .catch(err => this.error(err));
     }
 
-    RED.nodes.registerType('docker-containers', DckerContainers);
+    RED.nodes.registerType('docker-containers', DockerContainers);
 }
 

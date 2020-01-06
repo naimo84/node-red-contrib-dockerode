@@ -40,7 +40,8 @@
       "docker-events": "dist/docker-events.js",
       "docker-images": "dist/docker-images.js",
       "docker-containers": "dist/docker-containers.js",
-      "docker-inspect": "dist/docker-inspect.js"
+      "docker-inspect": "dist/docker-inspect.js",
+      "docker-service-inspect": "dist/docker-service-inspect.js"
     }
   },
   "husky": {
@@ -49,8 +50,8 @@
     }
   },
   "funding": {
-    "type" : "paypal",
-    "url" : "https://paypal.me/NeumannBenjamin"
+    "type": "paypal",
+    "url": "https://paypal.me/NeumannBenjamin"
   },
   "dependencies": {
     "dockerode": "^2.5.8",
