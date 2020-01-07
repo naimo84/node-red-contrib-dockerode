@@ -1,30 +1,43 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-module.exports = function (RED) {
-    function DockerServiceInspect(n) {
-        var _this = this;
+import { Red, Node } from 'node-red';
+import { DockerConfig } from './docker-config';
+import * as Dockerode from 'dockerode';
+
+
+
+module.exports = function (RED: Red) {
+    function DockerServiceInspect(n: any) {
         RED.nodes.createNode(this, n);
-        var config = RED.nodes.getNode(n.config);
-        var client = config.getClient();
-        this.on('input', function (msg) {
-            var sid = n.service || msg.service || undefined;
+        let config = RED.nodes.getNode(n.config) as unknown as DockerConfig;
+        let client = config.getClient();
+
+        this.on('input', (msg) => {
+
+            let sid: string = n.service || msg.service || undefined;
+           
+
             if (sid === undefined) {
-                _this.error("Service id/name must be provided via configuration or via `msg.Service`");
+                this.error("Service id/name must be provided via configuration or via `msg.Service`");
                 return;
             }
-            _this.status({});
-            executeAction(sid, client, _this, msg);
+            this.status({});
+            executeAction(sid, client, this,msg);
         });
-        function executeAction(sid, client, node, msg) {
-            var service = client.getService(sid);
-            service.inspect().then(function (data) {
-                var inspect = msg;
-                if (data) {
-                    inspect = Object.assign(inspect, { payload: data });
-                }
+
+        function executeAction(sid: string, client: Dockerode, node: Node,msg) {
+
+            let service = client.getService(sid);
+
+            service.inspect().then((data:any) => {  
+                let inspect = msg; 
+                if(data){
+                    inspect = Object.assign(inspect,{ payload: data });
+                }            
                 node.send(inspect);
+                
             });
         }
     }
+
     RED.nodes.registerType('docker-service-inspect', DockerServiceInspect);
-};
+}
+

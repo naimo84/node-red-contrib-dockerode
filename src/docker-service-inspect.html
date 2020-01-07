@@ -21,10 +21,13 @@
             let id = this.config;
 
             $("#node-input-service").click(function () {
+                console.log('id',id);
                 $.post('serviceSearch', { id: id }, function (data) {
+                    console.log('data',data);
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        console.log(element);
+                        let name = element.Spec.Name;
                         dataArray.push(name);
                     });
                     $("#node-input-service").autocomplete({

@@ -29,7 +29,6 @@ module.exports = function (RED: Red) {
         RED.log.debug("POST /serviceSearch");
 
         const nodeId = req.body.id;
-console.log(nodeId);
         let config = RED.nodes.getNode(nodeId);
 
         discoverSonos(config, (services) => {
@@ -41,10 +40,8 @@ console.log(nodeId);
     function discoverSonos(config, discoveryCallback) {
         let client = config.getClient();
         client.listServices({ all: false })
-            .then(services => () => {
-                console.log(services);
-                discoveryCallback(services)
-            })
+//            .then(services => console.log(services))
+            .then(services => discoveryCallback(services))
             .catch(err => this.error(err));
     }
 
