@@ -28,8 +28,8 @@
             $("#node-input-volume").click(function () {
                 $.post('volumeSearch', { id: id }, function (data) {
                     var dataArray = [];
-                    $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                    $.each(data.Volumes, function (i, element) {
+                        let name = element.Name;
                         dataArray.push(name);
                     });
                     $("#node-input-volume").autocomplete({

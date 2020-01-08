@@ -25,7 +25,7 @@
                 $.post('taskSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Spec.Name;
+                        let name = element.ID;
                         dataArray.push(name);
                     });
                     $("#node-input-task").autocomplete({

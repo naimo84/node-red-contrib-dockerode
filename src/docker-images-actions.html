@@ -29,7 +29,7 @@
                 $.post('imageSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        let name = element.Id;
                         dataArray.push(name);
                     });
                     $("#node-input-image").autocomplete({

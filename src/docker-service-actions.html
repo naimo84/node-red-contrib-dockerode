@@ -29,7 +29,7 @@
                 $.post('serviceSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        let name = element.Spec.Name;
                         dataArray.push(name);
                     });
                     $("#node-input-service").autocomplete({

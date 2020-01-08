@@ -29,7 +29,7 @@
                 $.post('networkSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        let name = element.Name;
                         dataArray.push(name);
                     });
                     $("#node-input-network").autocomplete({
