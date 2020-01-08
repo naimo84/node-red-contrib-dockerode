@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
@@ -30,43 +30,33 @@
     }
   ],
   "scripts": {
-    "start": "gulp && node-red",
+    "start": "gulp",
     "release": "gulp && standard-version"
   },
   "node-red": {
     "nodes": {
       "docker-configuration": "dist/docker-configuration.js",
-      
       "docker-events": "dist/docker-events.js",
-
       "docker-images": "dist/docker-images.js",
       "docker-images-actions": "dist/docker-images-actions.js",
-
       "docker-containers": "dist/docker-containers.js",
       "docker-container-actions": "dist/docker-container-actions.js",
-      
       "docker-service": "dist/docker-services.js",
       "docker-service-action": "dist/docker-service-actions.js",
-      
       "docker-task": "dist/docker-tasks.js",
       "docker-task-action": "dist/docker-task-actions.js",
-      
       "docker-node": "dist/docker-nodes.js",
       "docker-node-action": "dist/docker-node-actions.js",
-      
       "docker-secret": "dist/docker-secrets.js",
       "docker-secret-actions": "dist/docker-secret-actions.js",
-      
       "docker-network": "dist/docker-networks.js",
       "docker-network-actions": "dist/docker-network-actions.js",
-      
       "docker-volume": "dist/docker-volumes.js",
       "docker-volume-actions": "dist/docker-volume-actions.js",
-      
       "docker-plugin": "dist/docker-plugins.js",
       "docker-plugin-actions": "dist/docker-plugin-actions.js"
     }
-  }, 
+  },
   "dependencies": {
     "dockerode": "^2.5.8",
     "stream": "0.0.2"
