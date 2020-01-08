@@ -1,40 +1,38 @@
-<!-- Actions for running nodes -->
+<!-- Actions for running tasks -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-node-inspect', {
+    RED.nodes.registerType('docker-task-actions', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            node: { value: "" }           
+            task: { value: "" },
+            action: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Node Inspect"
+            return this.name || "Task Action"
         },
         paletteLabel: function () {
-            return this.name || "Node Inspect"
+            return this.name || "Task Action"
         },
         oneditprepare: function () {
             let id = this.config;
 
-            $("#node-input-node").click(function () {
-                console.log('id',id);
-                $.post('nodeSearch', { id: id }, function (data) {
-                    console.log('data',data);
+            $("#node-input-task").click(function () {
+                $.post('taskSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        console.log(element);
                         let name = element.Spec.Name;
                         dataArray.push(name);
                     });
-                    $("#node-input-node").autocomplete({
+                    $("#node-input-task").autocomplete({
                         source: dataArray,
                         minLength: 0,
                         close: function (event, ui) {
-                            $("#node-input-node").autocomplete("destroy");
+                            $("#node-input-task").autocomplete("destroy");
                         }
                     }).autocomplete("search", "");
                 });
@@ -44,7 +42,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-node-inspect">
+<script type="text/x-red" data-template-name="docker-task-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -54,14 +52,30 @@
         <input type="text" id="node-input-name">
     </div>    
     <div class="form-row">
-        <label for="node-input-node"><i class="icon-tag"></i> Node</label>
-        <input type="text" id="node-input-node" style="width: 60%">
+        <label for="node-input-task"><i class="icon-tag"></i> Task</label>
+        <input type="text" id="node-input-task" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
-    </div>  
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
+        <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
+            <option value="">Use 'msg.action'</option>
+            <option value="inspect">Inspect</option>
+            <option value="remove">Remove</option>
+            <option value="update">Update</option>
+        </select>
+    </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-node-inspect">
-    <p>Manage a docker node</p>
+<script type="text/x-red" data-help-name="docker-task-actions">
+    <p>Manage a docker task</p>
+
+    <p>Possible actions:
+    <ul>
+        <li>Inspect</li>
+        <li>Remove</li>
+        <li>Update</li>
+    </ul>
 </script>

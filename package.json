@@ -36,26 +36,23 @@
   "node-red": {
     "nodes": {
       "docker-configuration": "dist/docker-configuration.js",
+      
       "docker-events": "dist/docker-events.js",
 
       "docker-images": "dist/docker-images.js",
       "docker-images-actions": "dist/docker-images-actions.js",
 
       "docker-containers": "dist/docker-containers.js",
-      "docker-container-inspect": "dist/docker-container-inspect.js",
       "docker-container-actions": "dist/docker-container-actions.js",
       
       "docker-service": "dist/docker-services.js",
-      "docker-service-inspect": "dist/docker-service-inspect.js",
-      "docker-service-action": "dist/docker-service-action.js",
+      "docker-service-action": "dist/docker-service-actions.js",
       
       "docker-task": "dist/docker-tasks.js",
-      "docker-task-inspect": "dist/docker-task-inspect.js",
-      "docker-task-action": "dist/docker-task-action.js",
+      "docker-task-action": "dist/docker-task-actions.js",
       
       "docker-node": "dist/docker-nodes.js",
-      "docker-node-inspect": "dist/docker-node-inspect.js",
-      "docker-node-action": "dist/docker-node-action.js",
+      "docker-node-action": "dist/docker-node-actions.js",
       
       "docker-secret": "dist/docker-secrets.js",
       "docker-secret-actions": "dist/docker-secret-actions.js",

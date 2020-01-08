@@ -54,6 +54,21 @@ module.exports = function (RED: Red) {
 */
 
             switch (action) {
+                case 'inspect':
+                    container.inspect()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
                 case 'start':
                     container.start()
                         .then(res => {
