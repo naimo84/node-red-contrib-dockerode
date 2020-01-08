@@ -74,7 +74,9 @@ console.log(cmd);
                         });
                     break;
                     case 'tag':
-                        image.tag()
+                        let repo = 'bla/bla';
+                        let tag = 'Hello';
+                        image.tag({"repo": repo, "tag": tag})
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));

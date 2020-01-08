@@ -150,8 +150,23 @@ module.exports = function (RED: Red) {
                                 }
                             });
                         break;
-*/
 
+                    case 'upgrade':
+                        plugin.upgrade()
+                            .then(res => {
+                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.send(Object.assign(msg,{ payload: res }));
+                            }).catch(err => {
+                                if (err.statusCode === 304) {
+                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                    node.send({ payload: err });
+                                } else {
+                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    return;
+                                }
+                            });
+                        break;
+*/
                 default:
                     node.error(`Called with an unknown action: ${action}`);
                     return;
