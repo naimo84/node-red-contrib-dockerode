@@ -160,7 +160,7 @@
     },
     {
         "id": "579edabe.09fe34",
-        "type": "docker-config",
+        "type": "docker-configuration",
         "z": "",
         "host": "localhost",
         "port": "2375"

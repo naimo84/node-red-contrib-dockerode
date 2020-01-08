@@ -3,29 +3,29 @@ import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
-    function DockerServiceInspect(n: any) {
+    function DockerNodeInspect(n: any) {
         RED.nodes.createNode(this, n);
         let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
 
         this.on('input', (msg) => {
 
-            let sid: string = n.service || msg.service || undefined;
+            let nid: string = n.node || msg.node || undefined;
            
 
-            if (sid === undefined) {
-                this.error("Service id/name must be provided via configuration or via `msg.Service`");
+            if (nid === undefined) {
+                this.error("Node id/name must be provided via configuration or via `msg.Node`");
                 return;
             }
             this.status({});
-            executeAction(sid, client, this,msg);
+            executeAction(nid, client, this,msg);
         });
 
-        function executeAction(sid: string, client: Dockerode, node: Node,msg) {
+        function executeAction(nid: string, client: Dockerode, node: Node,msg) {
 
-            let service = client.getService(sid);
+            let nodeClient = client.getNode(nid);
 
-            service.inspect().then((data:any) => {  
+            nodeClient.inspect().then((data:any) => {  
                 let inspect = msg; 
                 if(data){
                     inspect = Object.assign(inspect,{ payload: data });
@@ -35,6 +35,6 @@ module.exports = function (RED: Red) {
         }
     }
 
-    RED.nodes.registerType('docker-service-inspect', DockerServiceInspect);
+    RED.nodes.registerType('docker-node-inspect', DockerNodeInspect);
 }
 

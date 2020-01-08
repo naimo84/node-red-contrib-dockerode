@@ -1,11 +1,10 @@
 import { Red } from 'node-red';
-import { DockerConfig } from './docker-config';
+import { DockerConfiguration } from './docker-configuration';
 
 module.exports = function (RED: Red) {
-
     function DockerServices(n) {
         RED.nodes.createNode(this, n);
-        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
+        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
         if (!config) {
             this.status({ fill: "red", shape: "ring", text: "no configuration" });
             return;

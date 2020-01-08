@@ -21,7 +21,7 @@ describe('Containers Node', function () {
 
     it('should be loaded', function (done) {
         var flow = [
-            { id: "c1", type: "docker-config" },
+            { id: "c1", type: "docker-configuration" },
             { id: "n1", type: "docker-containers", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-containers.js");
@@ -59,7 +59,7 @@ describe('Containers Node', function () {
     //         },
     //         {
     //             "id": "c1",
-    //             "type": "docker-config",
+    //             "type": "docker-configuration",
     //             "host": "localhost",
     //             "port": "2375"
     //         }

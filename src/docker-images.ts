@@ -1,10 +1,10 @@
 import { Red } from 'node-red';
-import { DockerConfig } from './docker-config';
+import { DockerConfiguration } from './docker-configuration';
 
 module.exports = function (RED: Red) {
     function DockerImages(n) {
         RED.nodes.createNode(this, n);
-        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
+        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
         let client = config.getClient();
 
         this.on('input', (msg) => {

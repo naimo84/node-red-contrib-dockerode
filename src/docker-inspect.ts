@@ -1,13 +1,11 @@
 import { Red, Node } from 'node-red';
-import { DockerConfig } from './docker-config';
+import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
-
-
 
 module.exports = function (RED: Red) {
     function DockerInspect(n: any) {
         RED.nodes.createNode(this, n);
-        let config = RED.nodes.getNode(n.config) as unknown as DockerConfig;
+        let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
 
         this.on('input', (msg) => {
@@ -37,9 +35,7 @@ module.exports = function (RED: Red) {
                         health: data.State.Health.Status
                     })
                 }
-
                 node.send(inspect);
-                
             });
         }
     }

@@ -1,6 +1,6 @@
 <!-- List Images -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-images', {
+    RED.nodes.registerType('docker-nodes', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
@@ -11,15 +11,15 @@
         outputs: 1,
         icon: 'docker.png',
         label: function() {
-            return this.name || "Images"
+            return this.name || "Nodes"
         },
         paletteLabel: function() {
-            return this.name || "Images"
+            return this.name || "Nodes"
         }
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-images">
+<script type="text/x-red" data-template-name="docker-nodes">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -30,6 +30,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-images">
-    <p>Get docker images.</p>   
+<script type="text/x-red" data-help-name="docker-nodes">
+    <p>Get running docker node.</p>   
 </script>

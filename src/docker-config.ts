@@ -1,44 +1,49 @@
 import { Red } from 'node-red';
-import * as Dockerode from 'dockerode';
-
-
-export interface DockerConfig {
-    host: string,
-    port: number, action: string,
-    container: string
-    service: string
-    options: any,
-    getClient(): Dockerode
-}
+import { DockerConfiguration } from './docker-configuration';
 
 module.exports = function (RED: Red) {
-
-
-    function DockerConfig(n) {
+    function DockerConfigs(n) {
         RED.nodes.createNode(this, n);
-
-        let node: DockerConfig = this;
-        node.host = n.host;
-        node.port = n.port;
-        node.options = n.options;
-
-        let dockeropt = {};
-
-        if (node.host.includes("docker.sock")) {
-            dockeropt = {
-                socketPath: node.host
-            }
-        } else {
-            dockeropt = {
-                host: node.host,
-                port: node.port
-            }
+        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
+        if (!config) {
+            this.status({ fill: "red", shape: "ring", text: "no configuration" });
+            return;
         }
-        node.getClient = (): Dockerode => {
-            return new Dockerode(dockeropt);
-        };
-    }
-    RED.nodes.registerType("docker-config", DockerConfig);
+        let client = config.getClient();
 
+        this.on('input', (msg) => {
+            client.listConfigs({ all: false })
+                .then(configs => {
+                    this.send(Object.assign(msg, { payload: configs }));
+                })
+                .catch(err => {
+                    this.send({ payload: {} })
+                    this.error(err)
+                });
+
+        });
+    }
+    
+    RED.httpAdmin.post("/configSearch", function (req, res) {
+        RED.log.debug("POST /configSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (configs) => {
+            RED.log.debug("GET /configSearch: " + configs.length + " found");
+            res.json(configs);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listConfigs({ all: false })
+//            .then(configs => console.log(configs))
+            .then(configs => discoveryCallback(configs))
+            .catch(err => this.error(err));
+    }
+
+    RED.nodes.registerType('docker-configs', DockerConfigs);
 }
 

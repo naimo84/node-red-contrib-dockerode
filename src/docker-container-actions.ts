@@ -1,5 +1,5 @@
 import { Red, Node } from 'node-red';
-import { DockerConfig } from './docker-config';
+import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 let stream = require('stream');
 
@@ -8,7 +8,7 @@ module.exports = function (RED: Red) {
 
     function DockerContainerAction(n: any) {
         RED.nodes.createNode(this, n);
-        let config = RED.nodes.getNode(n.config) as unknown as DockerConfig;
+        let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
         this.on('input', (msg) => {
 

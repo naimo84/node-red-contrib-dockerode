@@ -1,5 +1,5 @@
 import { Red } from 'node-red';
-import { DockerConfig } from './docker-config';
+import { DockerConfiguration } from './docker-configuration';
 
 export interface DockerEvent {
     Type?: string,
@@ -14,7 +14,7 @@ module.exports = function (RED: Red) {
         let node:any = this as any;
         RED.nodes.createNode(node, n);
 
-        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfig);
+        let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
         let client = config.getClient();
 
         client.getEvents().then((events:any) => {          
