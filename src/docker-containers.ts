@@ -5,6 +5,7 @@ module.exports = function (RED: Red) {
 
     function DockerContainers(n) {
         RED.nodes.createNode(this, n);
+        console.log(n.config);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
         if (!config) {
             this.status({ fill: "red", shape: "ring", text: "no configuration" });

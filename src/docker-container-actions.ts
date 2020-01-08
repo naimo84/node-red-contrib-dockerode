@@ -27,6 +27,31 @@ module.exports = function (RED: Red) {
         function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
 
             let container = client.getContainer(cid);
+/*
+            container.inspect(options)
+            container.rename(options)
+            container.update(options)
+            container.top(options)
+            container.changes()
+            container.export()
+            container.start(options)
+            container.stop(options)
+            container.pause(options)
+            container.unpause(options)
+            container.exec(options)
+            container.commit(options)
+            container.restart(options)
+            container.kill(options)
+            container.resize(options)
+            container.attach(options)
+            container.wait(options)
+            container.remove(options)
+            container.getArchive(options)
+            container.infoArchive(options)
+            container.putArchive(file, options)
+            container.logs(options)
+            container.stats(options)
+*/
 
             switch (action) {
                 case 'start':

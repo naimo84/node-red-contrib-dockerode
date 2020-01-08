@@ -3,7 +3,7 @@ import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
-    function DockerInspect(n: any) {
+    function DockerContainterInspect(n: any) {
         RED.nodes.createNode(this, n);
         let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
@@ -29,17 +29,12 @@ module.exports = function (RED: Red) {
                 let inspect = msg; 
                 if(data){
                     inspect = Object.assign(inspect,{ payload: data });
-                }            
-                if(data.State.Health){
-                    Object.assign(inspect,{
-                        health: data.State.Health.Status
-                    })
-                }
+                }  
                 node.send(inspect);
             });
         }
     }
 
-    RED.nodes.registerType('docker-inspect', DockerInspect);
+    RED.nodes.registerType('docker-container-inspect', DockerContainterInspect);
 }
 

@@ -1,38 +1,42 @@
-<!-- Actions for running secrets -->
+<!-- Actions for running volumes -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-secret-actions', {
+    RED.nodes.registerType('docker-volume-actions', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            secret: { value: "" },
+            volume: { value: "" },
             action: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Secret Action"
+            return this.name || "Volume Action"
         },
         paletteLabel: function () {
-            return this.name || "Secret Action"
+            return this.name || "Volume Action"
         },
         oneditprepare: function () {
             let id = this.config;
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+            })
 
-            $("#node-input-secret").click(function () {
-                $.post('secretSearch', { id: id }, function (data) {
+
+            $("#node-input-volume").click(function () {
+                $.post('volumeSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Spec.Name;
+                        let name = element.Names[0].replace('/','');
                         dataArray.push(name);
                     });
-                    $("#node-input-secret").autocomplete({
+                    $("#node-input-volume").autocomplete({
                         source: dataArray,
                         minLength: 0,
                         close: function (event, ui) {
-                            $("#node-input-secret").autocomplete("destroy");
+                            $("#node-input-volume").autocomplete("destroy");
                         }
                     }).autocomplete("search", "");
                 });
@@ -42,7 +46,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-secret-actions">
+<script type="text/x-red" data-template-name="docker-volume-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -52,8 +56,8 @@
         <input type="text" id="node-input-name">
     </div>    
     <div class="form-row">
-        <label for="node-input-secret"><i class="icon-tag"></i> Secret</label>
-        <input type="text" id="node-input-secret" style="width: 60%">
+        <label for="node-input-volume"><i class="icon-tag"></i> Volume</label>
+        <input type="text" id="node-input-volume" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
@@ -63,19 +67,17 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
             <option value="inspect">Inspect</option>
-            <option value="remove">Remove</option>
-            <option value="update">Update</option>
+            <option value="remove">Remove</option>      
         </select>
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-secret-actions">
-    <p>Manage a docker secret</p>
+<script type="text/x-red" data-help-name="docker-volume-actions">
+    <p>Manage a docker volume</p>
 
     <p>Possible actions:
     <ul>
-        <li>Inspect</li>
-        <li>Remove</li>
-        <li>Update</li>
+        <li>inspect</li>
+        <li>remove</li>
     </ul>
 </script>

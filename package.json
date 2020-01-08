@@ -37,21 +37,37 @@
     "nodes": {
       "docker-configuration": "dist/docker-configuration.js",
       "docker-events": "dist/docker-events.js",
+
       "docker-images": "dist/docker-images.js",
+      "docker-images-actions": "dist/docker-images-actions.js",
+
       "docker-containers": "dist/docker-containers.js",
-      "docker-inspect": "dist/docker-inspect.js",
+      "docker-container-inspect": "dist/docker-container-inspect.js",
       "docker-container-actions": "dist/docker-container-actions.js",
-      "docker-service": "dist/docker-service.js",
+      
+      "docker-service": "dist/docker-services.js",
       "docker-service-inspect": "dist/docker-service-inspect.js",
-      "docker-task": "dist/docker-task.js",
+      "docker-service-action": "dist/docker-service-action.js",
+      
+      "docker-task": "dist/docker-tasks.js",
       "docker-task-inspect": "dist/docker-task-inspect.js",
-      "docker-node": "dist/docker-node.js",
+      "docker-task-action": "dist/docker-task-action.js",
+      
+      "docker-node": "dist/docker-nodes.js",
       "docker-node-inspect": "dist/docker-node-inspect.js",
-      "docker-secret": "dist/docker-secret.js",
+      "docker-node-action": "dist/docker-node-action.js",
+      
+      "docker-secret": "dist/docker-secrets.js",
       "docker-secret-actions": "dist/docker-secret-actions.js",
-      "docker-network": "dist/docker-network.js",
-      "docker-volume": "dist/docker-volume.js",
-      "docker-plugin": "dist/docker-plugin.js"
+      
+      "docker-network": "dist/docker-networks.js",
+      "docker-network-actions": "dist/docker-network-actions.js",
+      
+      "docker-volume": "dist/docker-volumes.js",
+      "docker-volume-actions": "dist/docker-volume-actions.js",
+      
+      "docker-plugin": "dist/docker-plugins.js",
+      "docker-plugin-actions": "dist/docker-plugin-actions.js"
     }
   }, 
   "dependencies": {

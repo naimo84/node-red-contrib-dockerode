@@ -6,7 +6,6 @@ export interface DockerConfiguration {
     host: string,
     port: number, action: string,
     container: string
-    service: string
     options: any,
     getClient(): Dockerode
 }
