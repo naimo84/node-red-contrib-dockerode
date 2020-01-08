@@ -49,7 +49,9 @@
       "docker-node-inspect": "dist/docker-node-inspect.js",
       "docker-secret": "dist/docker-secret.js",
       "docker-secret-actions": "dist/docker-secret-actions.js",
-      "docker-config": "dist/docker-config.js"
+      "docker-network": "dist/docker-network.js",
+      "docker-volume": "dist/docker-volume.js",
+      "docker-plugin": "dist/docker-plugin.js"
     }
   }, 
   "dependencies": {
