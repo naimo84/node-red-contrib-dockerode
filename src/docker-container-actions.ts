@@ -27,31 +27,6 @@ module.exports = function (RED: Red) {
         function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
 
             let container = client.getContainer(cid);
-/*
-            container.inspect(options)
-            container.rename(options)
-            container.update(options)
-            container.top(options)
-            container.changes()
-            container.export()
-            container.start(options)
-            container.stop(options)
-            container.pause(options)
-            container.unpause(options)
-            container.exec(options)
-            container.commit(options)
-            container.restart(options)
-            container.kill(options)
-            container.resize(options)
-            container.attach(options)
-            container.wait(options)
-            container.remove(options)
-            container.getArchive(options)
-            container.infoArchive(options)
-            container.putArchive(file, options)
-            container.logs(options)
-            container.stats(options)
-*/
 
             switch (action) {
                 case 'inspect':
@@ -69,6 +44,123 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+/*                case 'rename':
+                    container.rename()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+                case 'changes':
+                    container.changes()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+                case 'export':
+                    container.export()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+                case 'commit':
+                    container.commit()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+/*
+                case 'update':
+                    container.update()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+/*
+                case 'resize':
+                    container.resize()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+/*
+                case 'attach':
+                    container.attach()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to start container "${cid}", container is already started.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error starting container:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+
+
+
+
+
                 case 'start':
                     container.start()
                         .then(res => {
@@ -99,6 +191,38 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+
+                case 'pause':
+                    container.pause()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to stop container "${cid}", container is already stopped.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error stopping container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+                case 'unpause':
+                    container.unpause()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to stop container "${cid}", container is already stopped.`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error stopping container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break; 
+
                 case 'restart':
                     container.restart()
                         .then(res => {
@@ -114,6 +238,40 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+                case 'stats':
+                    container.stats()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to restart container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error restarting container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+                case 'logs':
+                    container.logs()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to restart container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error restarting container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
+
+
+
                 case 'kill':
                     container.kill()
                         .then(res => {
@@ -129,6 +287,104 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+                case 'top':
+                        container.top()
+                            .then(res => {
+                                node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                                node.send(Object.assign(msg,{ payload: res }));
+                            }).catch(err => {
+                                if (err.statusCode === 304) {
+                                    node.warn(`Unable to kill container "${cid}".`);
+                                    node.send({ payload: err });
+                                } else {
+                                    node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                    return;
+                                }
+                            });
+                        break;
+/*
+                case 'infoArchive':
+                    container.infoArchive()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to kill container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+/*
+                case 'getArchive':
+                    container.getArchive(opt)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to kill container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+                case 'remove':
+                    container.remove()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to kill container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+/*
+                case 'wait':
+                    container.wait()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to kill container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
+/*
+                case 'putArchive':
+                    container.putArchive(file, options)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 304) {
+                                node.warn(`Unable to kill container "${cid}".`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Error killing container: [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+*/
                 case 'exec':
                     let options = {
                         Cmd: ['sh', '-c', cmd],
