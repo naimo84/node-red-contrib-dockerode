@@ -1,1 +1,0 @@
-[{"id":"493fedf0.d14764","type":"docker-plugin-actions","z":"2c4e61f8.7fa14e","name":"","config":"789ca14c.874fe","plugin":"docker.io/vieux/sshfs:latest","action":"","x":530,"y":600,"wires":[["3d0404c.ff9f3fc"]]},{"id":"789ca14c.874fe","type":"docker-configuration","z":"","host":"/var/run/docker.sock","port":""}]

@@ -26,31 +26,7 @@ module.exports = function (RED: Red) {
         function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
 console.log(cmd);
             let nodeClient = client.getNode(cid);
-/*
-            node.inspect(options)
-            node.rename(options)
-            node.update(options)
-            node.top(options)
-            node.changes()
-            node.export()
-            node.start(options)
-            node.stop(options)
-            node.pause(options)
-            node.unpause(options)
-            node.exec(options)
-            node.commit(options)
-            node.restart(options)
-            node.kill(options)
-            node.resize(options)
-            node.attach(options)
-            node.wait(options)
-            node.remove(options)
-            node.getArchive(options)
-            node.infoArchive(options)
-            node.putArchive(file, options)
-            node.logs(options)
-            node.stats(options)
-*/
+
 
             switch (action) {
                 case 'inspect':
