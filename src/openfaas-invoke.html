@@ -1,0 +1,31 @@
+  <script type="text/javascript">
+    RED.nodes.registerType('openfaas-invoke', {
+      category: 'input',
+      color: '#6975a9',
+      icon: 'function.png',
+      defaults: {
+        name: { value: "", required: true },
+        server: { type: "openfaas-server", required: true },
+      },
+      inputs: 1,
+      outputs: 2,
+      label: function () {
+        return this.name || "openfaas-invoke";
+      }
+    });
+  </script>
+  
+  <script type="text/x-red" data-template-name="openfaas-invoke">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-server"><i class="fa fa-bookmark"></i> Endpoint</label>
+      <input type="text" id="node-input-server">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="openfaas-invoke">
+    <p>Invokes the named function at the given Endpoint.</p>
+  </script>

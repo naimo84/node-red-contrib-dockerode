@@ -24,12 +24,6 @@ module.exports = function (RED: Red) {
 
 /*
 
-            
-            
-            
-            
-            
-            
             getContainer
             getImage
             getVolume
@@ -42,8 +36,6 @@ module.exports = function (RED: Red) {
             getConfig
             getExec
 
-
-
             listContainers
             listImages
             listServices
@@ -54,31 +46,6 @@ module.exports = function (RED: Red) {
             listPlugins
             listVolumes
             listNetworks
-
-
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-
-
 */
 
 

@@ -1,0 +1,25 @@
+<script type="text/x-red" data-template-name="openfaas-server">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-endpoint"><i class="fa fa-bookmark"></i> Endpoint</label>
+        <input type="text" id="node-config-input-endpoint">
+    </div>
+  </script>
+  
+  <script type="text/javascript">
+    RED.nodes.registerType('openfaas-server', {
+      category: 'config',
+      color: "rgb(218, 196, 180)",
+      defaults: {
+        name: { value: "", required: true },
+        endpoint: { value: "", required: true },
+      },
+      align: 'left',
+      label: function () {
+        return this.name || this.endpoint;
+      }
+    });
+  </script>
