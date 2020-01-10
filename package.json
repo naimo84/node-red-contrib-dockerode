@@ -35,8 +35,6 @@
   },
   "node-red": {
     "nodes": {
-      "openfass-invoke": "dist/openfass-invoke.js",
-      "openfaas-server": "dist/openfaas-server.js",
       "docker-configuration": "dist/docker-configuration.js",
       "docker-events": "dist/docker-events.js",
       "docker-actions": "dist/docker-actions.js",
@@ -62,13 +60,9 @@
     }
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "docker-compose": "^0.23.2",
     "dockerode": "^2.5.8",
-    "openfaas": "^0.1.1",
-    "stream": "0.0.2",
-    "xterm": "^4.3.0",
-    "xterm-addon-attach": "^0.4.0"
+    "stream": "0.0.2"
   },
   "devDependencies": {
     "@types/dockerode": "^2.5.20",
