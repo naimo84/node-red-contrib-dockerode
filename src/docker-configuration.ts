@@ -21,19 +21,20 @@ module.exports = function (RED: Red) {
         node.port = n.port;
         node.options = n.options;
 
-        let dockeropt = {};
-
-        if (node.host.includes("docker.sock")) {
-            dockeropt = {
-                socketPath: node.host
-            }
-        } else {
-            dockeropt = {
-                host: node.host,
-                port: node.port
-            }
-        }
         node.getClient = (): Dockerode => {
+            let dockeropt = {};
+
+            if (node.host.includes("docker.sock")) {
+                dockeropt = {
+                    socketPath: node.host
+                }
+            } else {
+                dockeropt = {
+                    host: node.host,
+                    port: node.port
+                }
+            }
+            console.log(dockeropt)
             return new Dockerode(dockeropt);
         };
     }
