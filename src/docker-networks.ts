@@ -2,10 +2,8 @@ import { Red } from 'node-red';
 import { DockerConfiguration } from './docker-configuration';
 
 module.exports = function (RED: Red) {
-
-    function DockerContainers(n) {
+    function DockerNetworks(n) {
         RED.nodes.createNode(this, n);
-        console.log(n.config);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
         if (!config) {
             this.status({ fill: "red", shape: "ring", text: "no configuration" });
@@ -14,9 +12,9 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
 
         this.on('input', (msg) => {
-            client.listContainers({ all: false })
-                .then(containers => {
-                    this.send(Object.assign(msg, { payload: containers }));
+            client.listNetworks({ all: false })
+                .then(networks => {
+                    this.send(Object.assign(msg, { payload: networks }));
                 })
                 .catch(err => {
                     this.send({ payload: {} })
@@ -25,26 +23,27 @@ module.exports = function (RED: Red) {
 
         });
     }
-
-    RED.httpAdmin.post("/containerSearch", function (req, res) {
-        RED.log.debug("POST /containerSearch");
+    
+    RED.httpAdmin.post("/networkSearch", function (req, res) {
+        RED.log.debug("POST /networkSearch");
 
         const nodeId = req.body.id;
         let config = RED.nodes.getNode(nodeId);
 
-        discoverSonos(config, (containers) => {
-            RED.log.debug("GET /containerSearch: " + containers.length + " found");
-            res.json(containers);
+        discoverSonos(config, (networks) => {
+            RED.log.debug("GET /networkSearch: " + networks.length + " found");
+            res.json(networks);
         });
     });
 
     function discoverSonos(config, discoveryCallback) {
         let client = config.getClient();
-        client.listContainers({ all: false })
-            .then(containers => discoveryCallback(containers))
+        client.listNetworks({ all: false })
+//            .then(networks => console.log(networks))
+            .then(networks => discoveryCallback(networks))
             .catch(err => this.error(err));
     }
 
-    RED.nodes.registerType('docker-containers', DockerContainers);
+    RED.nodes.registerType('docker-networks', DockerNetworks);
 }
 

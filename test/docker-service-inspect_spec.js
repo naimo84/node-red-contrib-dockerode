@@ -7,7 +7,7 @@ helper.init(require.resolve('node-red'));
 
 
 
-describe('Iamges Node', function () {
+describe('Inspect Service', function () {
 
     beforeEach(function (done) {
         helper.startServer(done);
@@ -22,16 +22,16 @@ describe('Iamges Node', function () {
     it('should be loaded', function (done) {
         var flow = [
             { id: "c1", type: "docker-configuration" },
-            { id: "n1", type: "docker-images", config: "c1" }
+            { id: "n1", type: "docker-service-inspect", config: "c1" }
         ];
-        var dockerContainersNode = require("../dist/docker-images.js");
+        var dockerContainersNode = require("../dist/docker-service-inspect.js");
         var dockerConfigNode = require("../dist/docker-config.js");
 
 
 
         helper.load([dockerConfigNode, dockerContainersNode], flow, function () {
             var n1 = helper.getNode("n1");
-            n1.should.have.property('type', 'docker-images');
+            n1.should.have.property('type', 'docker-service-inspect');
             done();
         });
     });

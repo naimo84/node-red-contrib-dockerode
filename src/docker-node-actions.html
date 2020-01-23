@@ -1,23 +1,22 @@
-<!-- Actions for running containers -->
+<!-- Actions for running nodes -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-container-actions', {
+    RED.nodes.registerType('docker-node-actions', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            container: { value: "" },
-            action: { value: "" },
-            cmd: { value: "" }
+            node: { value: "" },
+            action: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Container Action"
+            return this.name || "Node Action"
         },
         paletteLabel: function () {
-            return this.name || "Container Action"
+            return this.name || "Node Action"
         },
         oneditprepare: function () {
             let id = this.config;
@@ -31,18 +30,18 @@
             })
 
 
-            $("#node-input-container").click(function () {
-                $.post('containerSearch', { id: id }, function (data) {
+            $("#node-input-node").click(function () {
+                $.post('nodeSearch', { id: id }, function (data) {
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        let name = element.Description.Hostname;
                         dataArray.push(name);
                     });
-                    $("#node-input-container").autocomplete({
+                    $("#node-input-node").autocomplete({
                         source: dataArray,
                         minLength: 0,
                         close: function (event, ui) {
-                            $("#node-input-container").autocomplete("destroy");
+                            $("#node-input-node").autocomplete("destroy");
                         }
                     }).autocomplete("search", "");
                 });
@@ -52,7 +51,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-container-actions">
+<script type="text/x-red" data-template-name="docker-node-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -62,8 +61,8 @@
         <input type="text" id="node-input-name">
     </div>    
     <div class="form-row">
-        <label for="node-input-container"><i class="icon-tag"></i> Container</label>
-        <input type="text" id="node-input-container" style="width: 60%">
+        <label for="node-input-node"><i class="icon-tag"></i> Node</label>
+        <input type="text" id="node-input-node" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
@@ -72,7 +71,6 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
-            <option value="inspect">Inspect</option>
             <option value="start">Start</option>
             <option value="stop">Stop</option>
             <option value="restart">Restart</option>
@@ -86,8 +84,8 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-container-actions">
-    <p>Manage a docker container</p>
+<script type="text/x-red" data-help-name="docker-node-actions">
+    <p>Manage a docker node</p>
 
     <p>Possible actions:
     <ul>

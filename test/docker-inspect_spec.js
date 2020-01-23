@@ -21,7 +21,7 @@ describe('Inspect Node', function () {
 
     it('should be loaded', function (done) {
         var flow = [
-            { id: "c1", type: "docker-config" },
+            { id: "c1", type: "docker-configuration" },
             { id: "n1", type: "docker-inspect", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-inspect.js");

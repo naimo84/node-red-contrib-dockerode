@@ -21,7 +21,7 @@ describe('Events Node', function () {
 
     it('should be loaded', function (done) {
         var flow = [
-            { id: "c1", type: "docker-config" },
+            { id: "c1", type: "docker-configuration" },
             { id: "n1", type: "docker-events", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-events.js");

@@ -1,28 +1,40 @@
-<!-- Actions for running containers -->
+<!-- Attach for running containers -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-container-actions', {
+
+    RED.nodes.registerType('docker-container-attach', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
-            action: { value: "" },
+            attach: { value: "" },
             cmd: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Container Action"
+            return this.name || "Container Attach"
         },
         paletteLabel: function () {
-            return this.name || "Container Action"
+            return this.name || "Container Attach"
         },
         oneditprepare: function () {
+/*
+            import { Terminal } from 'xterm';
+            import { AttachAddon } from 'xterm-addon-attach';
+
+            const term = new Terminal();
+            const socket = new WebSocket('wss://localhost/containers/mycontainerid/attach/ws');
+            const attachAddon = new AttachAddon(socket);
+
+            // Attach the socket to term
+            term.loadAddon(attachAddon);
+*/
             let id = this.config;
-            $('#node-input-action').change(function () {
-                var value = $('#node-input-action').val()
+            $('#node-input-attach').change(function () {
+                var value = $('#node-input-attach').val()
                 if (value !== 'exec') {
                     $('#cmd').hide()
                 } else {
@@ -52,7 +64,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-container-actions">
+<script type="text/x-red" data-template-name="docker-container-attach">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -69,9 +81,9 @@
         </a>
     </div>
     <div class="form-row">
-        <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
-        <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
+        <label for="node-input-attach"><i class="fa fa-wrench"></i> Attach</label>      
+        <select type="text" id="node-input-attach" style="display: inline-block; vertical-align: top;">
+            <option value="">Use 'msg.attach'</option>
             <option value="inspect">Inspect</option>
             <option value="start">Start</option>
             <option value="stop">Stop</option>
@@ -86,10 +98,10 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-container-actions">
+<script type="text/x-red" data-help-name="docker-container-attach">
     <p>Manage a docker container</p>
 
-    <p>Possible actions:
+    <p>Possible attach:
     <ul>
         <li>start</li>
         <li>stop</li>

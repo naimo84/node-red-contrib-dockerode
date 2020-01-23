@@ -1,6 +1,6 @@
 <!-- List Images -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-containers', {
+    RED.nodes.registerType('docker-tasks', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
@@ -11,15 +11,15 @@
         outputs: 1,
         icon: 'docker.png',
         label: function() {
-            return this.name || "Containers"
+            return this.name || "Tasks"
         },
         paletteLabel: function() {
-            return this.name || "Containers"
+            return this.name || "Tasks"
         }
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-containers">
+<script type="text/x-red" data-template-name="docker-tasks">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -30,6 +30,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-containers">
-    <p>Get running docker container.</p>   
+<script type="text/x-red" data-help-name="docker-tasks">
+    <p>Get running docker task.</p>   
 </script>
