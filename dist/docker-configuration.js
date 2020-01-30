@@ -1,44 +1,29 @@
-import { Red } from 'node-red';
-import * as Dockerode from 'dockerode';
-
-
-export interface DockerConfiguration {
-    host: string,
-    port: number, action: string,
-    container: string
-    options: any,
-    getClient(): Dockerode
-}
-
-module.exports = function (RED: Red) {
-
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var Dockerode = require("dockerode");
+module.exports = function (RED) {
     function DockerConfiguration(n) {
         RED.nodes.createNode(this, n);
-
-        let node: DockerConfiguration = this;
+        var node = this;
         node.host = n.host;
         node.port = n.port;
         node.options = n.options;
-
-        node.getClient = (): Dockerode => {
-            let dockeropt = {};
-
+        node.getClient = function () {
+            var dockeropt = {};
             if (node.host.includes("docker.sock")) {
                 dockeropt = {
                     socketPath: node.host
-                }
-            } else {
+                };
+            }
+            else {
                 dockeropt = {
                     host: node.host,
                     port: node.port
-                }
+                };
             }
-            console.log(dockeropt)
+            console.log(dockeropt);
             return new Dockerode(dockeropt);
         };
     }
     RED.nodes.registerType("docker-configuration", DockerConfiguration);
-
-}
-
+};

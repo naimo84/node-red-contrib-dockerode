@@ -1,0 +1,83 @@
+<!-- Actions for running volumes -->
+<script type="text/javascript">
+    RED.nodes.registerType('docker-volume-actions', {
+        category: 'docker',
+        color: '#D8BFD8',
+        defaults: {
+            name: { value: "" },
+            config: { value: "", type: "docker-configuration", required: true },
+            volume: { value: "" },
+            action: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'docker.png',
+        label: function () {
+            return this.name || "Volume Action"
+        },
+        paletteLabel: function () {
+            return this.name || "Volume Action"
+        },
+        oneditprepare: function () {
+            let id = this.config;
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+            })
+
+
+            $("#node-input-volume").click(function () {
+                $.post('volumeSearch', { id: id }, function (data) {
+                    var dataArray = [];
+                    $.each(data.Volumes, function (i, element) {
+                        let name = element.Name;
+                        dataArray.push(name);
+                    });
+                    $("#node-input-volume").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-volume").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
+    })
+</script>
+
+<script type="text/x-red" data-template-name="docker-volume-actions">
+    <div class="form-row">
+        <label for="node-input-config"><i class="icon-server"></i> Config</label>
+        <input type="text" id="node-input-config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>    
+    <div class="form-row">
+        <label for="node-input-volume"><i class="icon-tag"></i> Volume</label>
+        <input type="text" id="node-input-volume" style="width: 60%">
+        <a id="node-config-lookup-uuid" class="btn">
+            <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
+        </a>
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
+        <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
+            <option value="">Use 'msg.action'</option>
+            <option value="inspect">Inspect</option>
+            <option value="remove">Remove</option>      
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="docker-volume-actions">
+    <p>Manage a docker volume</p>
+
+    <p>Possible actions:
+    <ul>
+        <li>inspect</li>
+        <li>remove</li>
+    </ul>
+</script>

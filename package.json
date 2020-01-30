@@ -1,20 +1,25 @@
 {
-  "name": "node-red-contrib-dockernode",
-  "version": "0.3.7",
+
+  "name": "node-red-contrib-dockerode",
+  "version": "0.4.4",
   "description": "node-red nodes to communicate with docker",
   "author": {
-    "name": "ethanbrooks",
-    "email": "ethan.brooks@gmail.com"
+    "name": "naimo84",
+    "email": "git@neumann-benjamin.de"
   },
   "contributors": [
     {
       "name": "naimo84",
       "email": "git@neumann-benjamin.de"
+    },
+    {
+      "name": "ethanbrooks",
+      "email": "ethan.brooks@gmail.com"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ethanbrooks/node-red-contrib-dockerode"
+    "url": "https://github.com/naimo84/node-red-contrib-dockerode"
   },
   "keywords": [
     "node-red",
@@ -24,7 +29,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/ethanbrooks/node-red-contrib-dockerode/blob/master/LICENSE"
+      "url": "https://github.com/naimo84/node-red-contrib-dockerode/blob/master/LICENSE"
     }
   ],
   "scripts": {
@@ -73,7 +78,7 @@
     "gulp-typescript": "^5.0.1",
     "husky": "^3.1.0",
     "mocha": "6.2.0",
-    "node-red": "0.20.7",
+    "node-red": "0.20.8",
     "node-red-contrib-mock-node": "^0.4.0",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",

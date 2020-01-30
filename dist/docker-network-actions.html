@@ -1,0 +1,85 @@
+<!-- Actions for running networks -->
+<script type="text/javascript">
+    RED.nodes.registerType('docker-network-actions', {
+        category: 'docker',
+        color: '#D8BFD8',
+        defaults: {
+            name: { value: "" },
+            config: { value: "", type: "docker-configuration", required: true },
+            network: { value: "" },
+            action: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'docker.png',
+        label: function () {
+            return this.name || "Network Action"
+        },
+        paletteLabel: function () {
+            return this.name || "Network Action"
+        },
+        oneditprepare: function () {
+            let id = this.config;
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+            })
+
+
+            $("#node-input-network").click(function () {
+                $.post('networkSearch', { id: id }, function (data) {
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        let name = element.Name;
+                        dataArray.push(name);
+                    });
+                    $("#node-input-network").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-network").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
+    })
+</script>
+
+<script type="text/x-red" data-template-name="docker-network-actions">
+    <div class="form-row">
+        <label for="node-input-config"><i class="icon-server"></i> Config</label>
+        <input type="text" id="node-input-config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>    
+    <div class="form-row">
+        <label for="node-input-network"><i class="icon-tag"></i> Network</label>
+        <input type="text" id="node-input-network" style="width: 60%">
+        <a id="node-config-lookup-uuid" class="btn">
+            <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
+        </a>
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
+        <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
+            <option value="">Use 'msg.action'</option>
+            <option value="inspect">Inspect</option>
+            <option value="update">Update</option>
+            <option value="logs">Logs</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="docker-network-actions">
+    <p>Manage a docker network</p>
+
+    <p>Possible actions:
+    <ul>
+        <li>inspect</li>
+        <li>update</li>
+        <li>logs</li>
+    </ul>
+</script>
