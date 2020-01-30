@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockernode",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "ethanbrooks",
@@ -71,7 +71,7 @@
     "dockerode-mock": "^0.3.2",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
-    "husky": "^3.0.5",
+    "husky": "^3.1.0",
     "mocha": "6.2.0",
     "node-red": "0.20.7",
     "node-red-contrib-mock-node": "^0.4.0",
