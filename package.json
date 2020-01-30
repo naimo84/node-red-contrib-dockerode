@@ -1,7 +1,6 @@
 {
-
   "name": "node-red-contrib-dockerode",
-  "version": "0.4.4",
+  "version": "0.4.2",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
@@ -65,7 +64,7 @@
   },
   "dependencies": {
     "docker-compose": "^0.23.2",
-    "dockerode": "^2.5.8",
+    "dockerode": "^3.0.2",
     "stream": "0.0.2"
   },
   "devDependencies": {
@@ -76,9 +75,9 @@
     "dockerode-mock": "^0.3.2",
     "gulp": "^4.0.2",
     "gulp-typescript": "^5.0.1",
-    "husky": "^3.1.0",
+    "husky": "^3.0.5",
     "mocha": "6.2.0",
-    "node-red": "0.20.8",
+    "node-red": "0.20.7",
     "node-red-contrib-mock-node": "^0.4.0",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",

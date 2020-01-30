@@ -34,7 +34,6 @@ module.exports = function (RED: Red) {
                     port: node.port
                 }
             }
-            console.log(dockeropt)
             return new Dockerode(dockeropt);
         };
     }
