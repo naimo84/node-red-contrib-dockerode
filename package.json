@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
@@ -41,7 +41,7 @@
       "docker-events": "dist/docker-events.js",
       "docker-configs": "dist/docker-configs.js",
       "docker-config-action": "dist/docker-config-action.js",
-      "docker-images": "dist/docker-image.js",
+      "docker-images": "dist/docker-images.js",
       "docker-image-actions": "dist/docker-image-actions.js",
       "docker-containers": "dist/docker-containers.js",
       "docker-container-actions": "dist/docker-container-actions.js",
