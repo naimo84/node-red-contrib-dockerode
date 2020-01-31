@@ -25,7 +25,7 @@ describe('Iamges Node', function () {
             { id: "n1", type: "docker-images", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-images.js");
-        var dockerConfigNode = require("../dist/docker-config.js");
+        var dockerConfigNode = require("../dist/docker-configuration.js");
 
 
 

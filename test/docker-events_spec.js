@@ -25,7 +25,7 @@ describe('Events Node', function () {
             { id: "n1", type: "docker-events", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-events.js");
-        var dockerConfigNode = require("../dist/docker-config.js");
+        var dockerConfigNode = require("../dist/docker-configuration.js");
 
 
 

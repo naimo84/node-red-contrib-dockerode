@@ -21,7 +21,7 @@ describe('Container Actions Node', function () {
             { id: "n1", type: "docker-container-actions", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-container-actions.js");
-        var dockerConfigNode = require("../dist/docker-config.js");
+        var dockerConfigNode = require("../dist/docker-configuration.js");
 
 
 

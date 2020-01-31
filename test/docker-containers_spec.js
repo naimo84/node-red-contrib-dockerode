@@ -25,7 +25,7 @@ describe('Containers Node', function () {
             { id: "n1", type: "docker-containers", config: "c1" }
         ];
         var dockerContainersNode = require("../dist/docker-containers.js");
-        var dockerConfigNode = require("../dist/docker-config.js");
+        var dockerConfigNode = require("../dist/docker-configuration.js");
 
 
 
@@ -66,7 +66,7 @@ describe('Containers Node', function () {
     //     ];
 
     //     var dockerContainersNode = require("../dist/docker-containers.js");
-    //     var dockerConfigNode = require("../dist/docker-config.js");
+    //     var dockerConfigNode = require("../dist/configuration.js");
 
     //     helper.load([dockerConfigNode, dockerContainersNode], flow, function () {
     //         try {
