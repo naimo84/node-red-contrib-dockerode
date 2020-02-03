@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.17](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.10...v0.4.17) (2020-02-03)
+
+
+### Bug Fixes
+
+* dockerode 3.0.2 is not working correctly ([3bead2a](https://github.com/naimo84/node-red-contrib-dockerode/commit/3bead2ab6484c15107060d6ad8a7262c6b350b89))
+
 ### [0.4.16](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.15...v0.4.16) (2020-01-31)
 
 ### [0.4.15](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.14...v0.4.15) (2020-01-31)
