@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.18](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.17...v0.4.18) (2020-02-05)
 
+
+### Features
+
+* Added engine and swarm modules
+
 ### [0.4.17](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.10...v0.4.17) (2020-02-03)
 
 
