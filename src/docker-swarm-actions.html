@@ -1,0 +1,82 @@
+<!-- Actions for running swarms -->
+<script type="text/javascript">
+    RED.nodes.registerType('docker-swarm-actions', {
+        category: 'docker',
+        color: '#D8BFD8',
+        defaults: {
+            name: { value: "" },
+            config: { value: "", type: "docker-configuration", required: true },
+            service: { value: "" },
+            action: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'docker.png',
+        label: function () {
+            return this.name || "Swarm Action"
+        },
+        paletteLabel: function () {
+            return this.name || "Swarm Action"
+        },
+        oneditprepare: function () {
+            let id = this.config;
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+            })
+
+
+            $("#node-input-swarm").click(function () {
+                $.post('swarmSearch', { id: id }, function (data) {
+                    var dataArray = [];
+                    $.each(data, function (i, element) {
+                        let name = element.Spec.Name;
+                        dataArray.push(name);
+                    });
+                    $("#node-input-swarm").autocomplete({
+                        source: dataArray,
+                        minLength: 0,
+                        close: function (event, ui) {
+                            $("#node-input-swarm").autocomplete("destroy");
+                        }
+                    }).autocomplete("search", "");
+                });
+            });
+
+        },
+    })
+</script>
+
+<script type="text/x-red" data-template-name="docker-swarm-actions">
+    <div class="form-row">
+        <label for="node-input-config"><i class="icon-server"></i> Config</label>
+        <input type="text" id="node-input-config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>    
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
+        <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
+            <option value="">Use 'msg.action'</option>
+            <option value="inspect">Inspect</option>
+            <option value="join">Join</option>
+            <option value="leave">Leave</option>
+            <option value="update">Update</option>
+            <option value="init">Init</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="docker-swarm-actions">
+    <p>Manage a docker swarm</p>
+
+    <p>Possible actions:
+    <ul>
+        <li>inspect</li>
+        <li>join</li>
+        <li>leave</li>
+        <li>update</li>
+        <li>init</li>
+    </ul>
+</script>

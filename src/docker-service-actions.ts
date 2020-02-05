@@ -11,31 +11,31 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.service || msg.service || undefined;
+            let sid: string = n.service || msg.service || undefined;
             let action = n.action || msg.action || msg.payload || undefined;
             let cmd = n.cmd || msg.cmd|| msg.command || undefined;
 
-            if (cid === undefined) {
+            if (sid === undefined) {
                 this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(sid, client, action, cmd, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+        function executeAction(sid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
             console.log(cmd);
-            let service = client.getService(cid);
+            let service = client.getService(sid);
 
             switch (action) {
                 case 'inspect':
                     service.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: sid + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 304) {
-                                node.warn(`Unable to start service "${cid}", service is already started.`);
+                                node.warn(`Unable to start service "${sid}", service is already started.`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Error starting service:  [${err.statusCode}] ${err.reason}`);
@@ -43,14 +43,15 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
-/*                case 'update':
-                    service.update()
+                    
+               case 'update':
+                    service.update(cmd)
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.status({ fill: 'green', shape: 'dot', text: sid + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 304) {
-                                node.warn(`Unable to stop service "${cid}", service is already stopped.`);
+                                node.warn(`Unable to stop service "${sid}", service is already stopped.`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Error stopping service: [${err.statusCode}] ${err.reason}`);
@@ -58,15 +59,15 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
-*/
+
                 case 'remove':
                     service.remove()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: sid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 304) {
-                                node.warn(`Unable to stop service "${cid}", service is already removed.`);
+                                node.warn(`Unable to stop service "${sid}", service is already removed.`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Error removing service: [${err.statusCode}] ${err.reason}`);
@@ -78,11 +79,11 @@ module.exports = function (RED: Red) {
                 case 'logs':
                     service.logs()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                            node.status({ fill: 'green', shape: 'dot', text: sid + ' killed' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 304) {
-                                node.warn(`Unable to kill service "${cid}".`);
+                                node.warn(`Unable to kill service "${sid}".`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Error killing service: [${err.statusCode}] ${err.reason}`);
