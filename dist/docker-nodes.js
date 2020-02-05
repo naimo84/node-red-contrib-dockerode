@@ -11,7 +11,7 @@ module.exports = function (RED) {
         }
         var client = config.getClient();
         this.on('input', function (msg) {
-            client.listNodes({ all: false })
+            client.listNodes({ all: true })
                 .then(function (nodes) {
                 _this.send(Object.assign(msg, { payload: nodes }));
             })
@@ -33,8 +33,7 @@ module.exports = function (RED) {
     function discoverSonos(config, discoveryCallback) {
         var _this = this;
         var client = config.getClient();
-        client.listNodes({ all: false })
-            //            .then(nodes => console.log(nodes))
+        client.listNodes({ all: true })
             .then(function (nodes) { return discoveryCallback(nodes); })
             .catch(function (err) { return _this.error(err); });
     }

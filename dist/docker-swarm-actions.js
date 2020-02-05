@@ -88,7 +88,11 @@ module.exports = function (RED) {
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 304) {
-                            node.warn("Unable to init swarm \"" + cid + "\", swarm is already init.");
+                            node.warn("Unable to init swarm.");
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 400) {
+                            node.warn("Unable to init swarm. Bad payload.");
                             node.send({ payload: err });
                         }
                         else {

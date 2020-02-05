@@ -4,7 +4,6 @@ module.exports = function (RED) {
     function DockerContainers(n) {
         var _this = this;
         RED.nodes.createNode(this, n);
-        console.log(n.config);
         var config = RED.nodes.getNode(n.config);
         if (!config) {
             this.status({ fill: "red", shape: "ring", text: "no configuration" });
@@ -12,7 +11,7 @@ module.exports = function (RED) {
         }
         var client = config.getClient();
         this.on('input', function (msg) {
-            client.listContainers({ all: false })
+            client.listContainers({ all: true })
                 .then(function (containers) {
                 _this.send(Object.assign(msg, { payload: containers }));
             })
@@ -34,7 +33,7 @@ module.exports = function (RED) {
     function discoverSonos(config, discoveryCallback) {
         var _this = this;
         var client = config.getClient();
-        client.listContainers({ all: false })
+        client.listContainers({ all: true })
             .then(function (containers) { return discoveryCallback(containers); })
             .catch(function (err) { return _this.error(err); });
     }

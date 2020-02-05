@@ -91,7 +91,10 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 304) {
-                                node.warn(`Unable to init swarm "${cid}", swarm is already init.`);
+                                node.warn(`Unable to init swarm.`);
+                                node.send({ payload: err });
+                            }else if (err.statusCode === 400) {
+                                node.warn(`Unable to init swarm. Bad payload.`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Error init swarm: [${err.statusCode}] ${err.reason}`);

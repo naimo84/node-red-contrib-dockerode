@@ -12,7 +12,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
 
         this.on('input', (msg) => {
-            client.listVolumes({ all: false })
+            client.listVolumes({ all: true })
                 .then(volumes => {
                     this.send(Object.assign(msg, { payload: volumes }));
                 })
@@ -38,7 +38,7 @@ module.exports = function (RED: Red) {
 
     function discoverSonos(config, discoveryCallback) {
         let client = config.getClient();
-        client.listVolumes({ all: false })
+        client.listVolumes({ all: true })
 //            .then(volumes => console.log(volumes))
             .then(volumes => discoveryCallback(volumes))
             .catch(err => this.error(err));

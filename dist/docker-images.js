@@ -11,7 +11,7 @@ module.exports = function (RED) {
         }
         var client = config.getClient();
         this.on('input', function (msg) {
-            client.listImages({ all: false })
+            client.listImages({ all: true })
                 .then(function (images) {
                 _this.send(Object.assign(msg, { payload: images }));
             })
@@ -33,8 +33,7 @@ module.exports = function (RED) {
     function discoverSonos(config, discoveryCallback) {
         var _this = this;
         var client = config.getClient();
-        client.listImages({ all: false })
-            //            .then(images => console.log(images))
+        client.listImages({ all: true })
             .then(function (images) { return discoveryCallback(images); })
             .catch(function (err) { return _this.error(err); });
     }

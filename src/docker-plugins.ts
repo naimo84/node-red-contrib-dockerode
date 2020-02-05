@@ -2,6 +2,7 @@ import { Red } from 'node-red';
 import { DockerConfiguration } from './docker-configuration';
 
 module.exports = function (RED: Red) {
+
     function DockerPlugins(n) {
         RED.nodes.createNode(this, n);
         let config = (RED.nodes.getNode(n.config) as unknown as DockerConfiguration);
@@ -12,7 +13,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
 
         this.on('input', (msg) => {
-            client.listPlugins({ all: false })
+            client.listPlugins({ all: true })
                 .then(plugins => {
                     this.send(Object.assign(msg, { payload: plugins }));
                 })
@@ -38,8 +39,7 @@ module.exports = function (RED: Red) {
 
     function discoverSonos(config, discoveryCallback) {
         let client = config.getClient();
-        client.listPlugins({ all: false })
-//            .then(plugins => console.log(plugins))
+        client.listPlugins({ all: true })
             .then(plugins => discoveryCallback(plugins))
             .catch(err => this.error(err));
     }
