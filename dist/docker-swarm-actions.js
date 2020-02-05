@@ -7,14 +7,13 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var cid = n.swarm || msg.swarm || undefined;
-            var action = n.action || msg.action || msg.payload || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || undefined;
+            var cid = n.container || msg.payload.container || msg.container || undefined;
+            var action = n.action || msg.action || msg.payload.action || undefined;
+            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
             _this.status({});
             executeAction(cid, client, action, cmd, _this, msg);
         });
         function executeAction(cid, client, action, cmd, node, msg) {
-            console.log(cmd);
             var swarm = client;
             switch (action) {
                 case 'inspect':
@@ -23,12 +22,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to start swarm \"" + cid + "\", swarm is already started.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error starting swarm:  [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -39,12 +38,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop swarm \"" + cid + "\", swarm is already stopped.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error stopping swarm: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -55,12 +54,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop swarm \"" + cid + "\", swarm is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing swarm: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -71,12 +70,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to leaving swarm \"" + cid + "\", swarm is already left.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error leaving swarm: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -87,8 +86,8 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to init swarm.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 400) {

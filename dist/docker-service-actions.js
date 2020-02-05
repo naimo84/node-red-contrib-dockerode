@@ -7,32 +7,34 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var sid = n.service || msg.service || undefined;
-            var action = n.action || msg.action || msg.payload || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || undefined;
-            if (sid === undefined) {
+            var serviceId = n.serviceId || msg.payload.serviceId || msg.serviceId || undefined;
+            if (serviceId === undefined) {
+                serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
+            }
+            if (serviceId === undefined) {
                 _this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
+            var action = n.action || msg.action || msg.payload.action || undefined;
+            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
             _this.status({});
-            executeAction(sid, client, action, cmd, _this, msg);
+            executeAction(serviceId, client, action, cmd, _this, msg);
         });
-        function executeAction(sid, client, action, cmd, node, msg) {
-            console.log(cmd);
-            var service = client.getService(sid);
+        function executeAction(serviceId, client, action, cmd, node, msg) {
+            var service = client.getService(serviceId);
             switch (action) {
                 case 'inspect':
                     service.inspect()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: sid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: 'Inspected: ' + serviceId });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to start service \"" + sid + "\", service is already started.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error starting service:  [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -40,15 +42,15 @@ module.exports = function (RED) {
                 case 'update':
                     service.update(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: sid + ' stopped' });
+                        node.status({ fill: 'green', shape: 'dot', text: 'Updated: ' + serviceId });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop service \"" + sid + "\", service is already stopped.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error stopping service: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -56,15 +58,15 @@ module.exports = function (RED) {
                 case 'remove':
                     service.remove()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: sid + ' remove' });
+                        node.status({ fill: 'green', shape: 'dot', text: 'Update: ' + serviceId });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop service \"" + sid + "\", service is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing service: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -73,15 +75,15 @@ module.exports = function (RED) {
                 case 'logs':
                     service.logs()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: sid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: 'Logging: ' + serviceId });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to kill service \"" + sid + "\".");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error killing service: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });

@@ -40,6 +40,7 @@
       "docker-configuration": "dist/docker-configuration.js",
       "docker-events": "dist/docker-events.js",
       "docker-swarm-actions": "dist/docker-swarm-actions.js",
+      "docker-exec-actions": "dist/docker-exec-actions.js",
       "docker-engine-actions": "dist/docker-engine-actions.js",
       "docker-configs": "dist/docker-configs.js",
       "docker-config-actions": "dist/docker-config-actions.js",

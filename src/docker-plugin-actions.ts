@@ -4,16 +4,15 @@ import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
  
-
     function DockerPluginAction(n: any) {
         RED.nodes.createNode(this, n);
         let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.plugin || msg.plugin || undefined;
-            let action = n.action || msg.action || msg.payload || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || undefined;
+            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let action = n.action || msg.action || msg.payload.action || undefined;
+            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
 
             if (cid === undefined) {
                 this.error("Plugin id/name must be provided via configuration or via `msg.plugin`");
@@ -24,7 +23,7 @@ module.exports = function (RED: Red) {
         });
 
         function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
-            console.log(cmd);
+
             let remote ={};
             let plugin = client.getPlugin(cid, remote);
 
@@ -35,11 +34,11 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to start plugin "${cid}", plugin is already started.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error starting plugin:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -50,11 +49,11 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -65,11 +64,11 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -80,11 +79,11 @@ module.exports = function (RED: Red) {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
@@ -95,11 +94,11 @@ module.exports = function (RED: Red) {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
@@ -110,11 +109,11 @@ module.exports = function (RED: Red) {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
@@ -125,48 +124,48 @@ module.exports = function (RED: Red) {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
                         break;
-/*
+
                     case 'pull':
-                        plugin.pull()
+                        plugin.pull(cmd)
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
                         break;
 
                     case 'upgrade':
-                        plugin.upgrade()
+                        plugin.upgrade(cmd)
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
                         break;
-*/
+
                 default:
                     node.error(`Called with an unknown action: ${action}`);
                     return;

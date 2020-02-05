@@ -10,31 +10,31 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.engine || msg.engine || undefined;
-            let action = n.action || msg.action || msg.payload || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || undefined;
+            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let action = n.action || msg.action || msg.payload.action || undefined;
+            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
             let file = n.cmd || msg.cmd|| msg.command || undefined;
 
             this.status({});
-            executeAction(cid, client, action, cmd, file, this,msg);
+            executeAction(cid, file, client, action, cmd, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, file: File, node: Node,msg) {
-            console.log(cmd);
+        function executeAction(cid: string, file: File, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+
             let engine = client;
 
             switch (action) {
-                case 'version':
-                    engine.version()
+                case 'auth':
+                    engine.checkAuth(cmd)
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to start engine "${cid}", engine is already started.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error starting engine:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -42,14 +42,30 @@ module.exports = function (RED: Red) {
                 case 'info':
                     engine.info()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
+                case 'version':
+                    engine.version()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: 'Engine started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -57,14 +73,14 @@ module.exports = function (RED: Red) {
                 case 'ping':
                     engine.ping()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -72,14 +88,14 @@ module.exports = function (RED: Red) {
                 case 'df':
                     engine.df()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -87,14 +103,14 @@ module.exports = function (RED: Red) {
                 case 'import-image':
                     engine.importImage(cmd, file)
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -102,14 +118,14 @@ module.exports = function (RED: Red) {
 /*                    case 'run':
                         engine.run()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
-                                if (err.statusCode === 304) {
-                                    node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                     return;
                                 }
                             });
@@ -118,45 +134,31 @@ module.exports = function (RED: Red) {
                 case 'build':
                     engine.buildImage(cmd)
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to stop engine "${cid}", engine is already stopped.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error stopping engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
                     break;
 
-                case 'auth':
-                    engine.checkAuth(cmd)
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
-                        }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to stop engine "${cid}", engine is already removed.`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`Error removing engine: [${err.statusCode}] ${err.reason}`);
-                                return;
-                            }
-                        });
-                    break;
+
                 case 'exec-start':
                     engine.getExec(cid).start(cmd)
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to leaving engine "${cid}", engine is already left.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error leaving engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -167,11 +169,11 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -182,11 +184,11 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to init engine "${cid}", engine is already init.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error init engine: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });

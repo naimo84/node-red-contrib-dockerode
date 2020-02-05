@@ -7,9 +7,9 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var cid = n.plugin || msg.plugin || undefined;
-            var action = n.action || msg.action || msg.payload || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || undefined;
+            var cid = n.container || msg.payload.container || msg.container || undefined;
+            var action = n.action || msg.action || msg.payload.action || undefined;
+            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
             if (cid === undefined) {
                 _this.error("Plugin id/name must be provided via configuration or via `msg.plugin`");
                 return;
@@ -18,7 +18,6 @@ module.exports = function (RED) {
             executeAction(cid, client, action, cmd, _this, msg);
         });
         function executeAction(cid, client, action, cmd, node, msg) {
-            console.log(cmd);
             var remote = {};
             var plugin = client.getPlugin(cid, remote);
             switch (action) {
@@ -28,12 +27,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to start plugin \"" + cid + "\", plugin is already started.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error starting plugin:  [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -44,12 +43,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -60,12 +59,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -76,12 +75,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -92,12 +91,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -108,12 +107,12 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
@@ -124,49 +123,48 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 304) {
-                            node.warn("Unable to stop plugin \"" + cid + "\", plugin is already removed.");
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
-                            node.error("Error removing plugin: [" + err.statusCode + "] " + err.reason);
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
                             return;
                         }
                     });
                     break;
-                /*
-                                    case 'pull':
-                                        plugin.pull()
-                                            .then(res => {
-                                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
-                                                node.send(Object.assign(msg,{ payload: res }));
-                                            }).catch(err => {
-                                                if (err.statusCode === 304) {
-                                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
-                                                    node.send({ payload: err });
-                                                } else {
-                                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
-                                                    return;
-                                                }
-                                            });
-                                        break;
-                
-                                    case 'upgrade':
-                                        plugin.upgrade()
-                                            .then(res => {
-                                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
-                                                node.send(Object.assign(msg,{ payload: res }));
-                                            }).catch(err => {
-                                                if (err.statusCode === 304) {
-                                                    node.warn(`Unable to stop plugin "${cid}", plugin is already removed.`);
-                                                    node.send({ payload: err });
-                                                } else {
-                                                    node.error(`Error removing plugin: [${err.statusCode}] ${err.reason}`);
-                                                    return;
-                                                }
-                                            });
-                                        break;
-                */
+                case 'pull':
+                    plugin.pull(cmd)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
+                case 'upgrade':
+                    plugin.upgrade(cmd)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 default:
                     node.error("Called with an unknown action: " + action);
                     return;

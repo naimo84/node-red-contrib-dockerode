@@ -4,29 +4,26 @@ import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
  
-
     function DockerNodeAction(n: any) {
         RED.nodes.createNode(this, n);
         let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.node || msg.node || undefined;
-            let action = n.action || msg.action || msg.payload || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || undefined;
+            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let action = n.action || msg.action || msg.payload.action || undefined;
 
             if (cid === undefined) {
                 this.error("Node id/name must be provided via configuration or via `msg.node`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(cid, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
-console.log(cmd);
-            let nodeClient = client.getNode(cid);
+        function executeAction(cid: string, client: Dockerode, action: string, node: Node,msg) {
 
+            let nodeClient = client.getNode(cid);
 
             switch (action) {
                 case 'inspect':
@@ -35,11 +32,11 @@ console.log(cmd);
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to start node "${cid}", node is already started.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error starting node:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -50,11 +47,11 @@ console.log(cmd);
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to stop node "${cid}", node is already stopped.`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error stopping node: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -65,11 +62,11 @@ console.log(cmd);
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
-                            if (err.statusCode === 304) {
-                                node.warn(`Unable to restart node "${cid}".`);
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Error restarting node: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });

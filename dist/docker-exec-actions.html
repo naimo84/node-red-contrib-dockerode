@@ -1,30 +1,38 @@
 <!-- Actions for running containers -->
 <script type="text/javascript">
-    RED.nodes.registerType('docker-container-actions', {
+    RED.nodes.registerType('docker-exec-actions', {
         category: 'docker',
         color: '#D8BFD8',
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
-            action: { value: "" }
+            action: { value: "" },
+            cmd: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Container Action"
+            return this.name || "Exec Action"
         },
         paletteLabel: function () {
-            return this.name || "Container Action"
+            return this.name || "Exec Action"
         },
         oneditprepare: function () {
             let id = this.config;
-           
+            $('#node-input-action').change(function () {
+                var value = $('#node-input-action').val()
+                if (value !== 'exec') {
+                    $('#cmd').hide()
+                } else {
+                    $('#cmd').show()
+                }
+            })
+
 
             $("#node-input-container").click(function () {
                 $.post('containerSearch', { id: id }, function (data) {
-
                     var dataArray = [];
                     $.each(data, function (i, element) {
                         let name = element.Names[0].replace('/','');
@@ -44,7 +52,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-container-actions">
+<script type="text/x-red" data-template-name="docker-exec-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -63,36 +71,30 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="inspect">ContainerInspect</option>
-            <option value="top">ContainerTop</option> 
-            <option value="logs">ContainerLogs</option> 
-            <option value="changes">ContainerChanges</option> 
-            <option value="export">ContainerExport</option> 
-            <option value="stats">ContainerStats</option> 
-            <option value="resize">ContainerResize</option> 
-            <option value="start">ContainerStart</option> 
-            <option value="stop">ContainerStop</option> 
-            <option value="restart">ContainerRestart</option> 
-            <option value="kill">ContainerKill</option> 
-            <option value="update">ContainerUpdate</option> 
-            <option value="rename">ContainerRename</option> 
-            <option value="pause">ContainerPause</option> 
-            <option value="unpause">ContainerUnpause</option> 
-            <option value="attach">ContainerAttach</option> 
-            <option value="wait">ContainerWait</option> 
-            <option value="remove>ContainerDelete</option> 
-            <option value="archive-info">ContainerArchiveInfo</option> 
-            <option value="get-archive">ContainerArchive</option> 
-            <!--// <option value="prune">ContainerPrune</option>  //-->          
+            <option value="">Use 'msg.action'</option>
+            <option value="inspect">Inspect</option>
+            <option value="start">Start</option>
+            <option value="stop">Stop</option>
+            <option value="restart">Restart</option>
+            <option value="kill">Kill</option>
+            <option value="exec">exec</option>            
         </select>
+    </div>
+    <div class="form-row" id="cmd">
+        <label for="node-input-cmd"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-cmd">
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="docker-container-actions">
+<script type="text/x-red" data-help-name="docker-exec-actions">
     <p>Manage a docker container</p>
 
     <p>Possible actions:
-<!--// ContainerCreate //-->
-
-
+    <ul>
+        <li>start</li>
+        <li>stop</li>
+        <li>restart</li>
+        <li>kill</li>
+        <li>exec</li>
+    </ul>
 </script>
