@@ -42,8 +42,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 ### Features
-
 * merge fork back to master ([9c30994](https://github.com/naimo84/node-red-contrib-dockerode/commit/9c309942cd5941eef898319dadb5431d6551433c))
+* added: docker-config-actions, docker-configs, docker-engine-actions, docker-events, docker-image-actions, docker-network-actions, docker-networks, docker-node-actions, docker-nodes, docker-plugin-actions, docker-plugins, docker-secret-actions, docker-secrets, docker-service-actions, docker-services, docker-task-actions, docker-tasks, docker-volume-actions, docker-volumes
+* removed: docker-commands, docker-inspect
+* renamed: docker-config --> docker-configuration
 
 ### [0.3.3](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.2...v0.3.3) (2019-10-08)
 
