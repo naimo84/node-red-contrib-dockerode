@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* Added engine and swarm modules
+* Added docker-engine-actions and docker-swarm-actions modules
 
 ### [0.4.17](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.10...v0.4.17) (2020-02-03)
 
