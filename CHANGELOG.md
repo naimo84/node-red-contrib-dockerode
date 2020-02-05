@@ -2,42 +2,73 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.4.17](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.16...v0.4.17) (2020-02-05)
 
-### [0.4.16](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.15...v0.4.16) (2020-01-31)
 
-### [0.4.15](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.14...v0.4.15) (2020-01-31)
+### [0.4.17](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.10...v0.4.17) (2020-02-03)
 
-### [0.4.14](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.13...v0.4.14) (2020-01-31)
-
-### [0.4.13](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.12...v0.4.13) (2020-01-31)
-
-### [0.4.12](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.11...v0.4.12) (2020-01-31)
-
-### [0.4.11](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.10...v0.4.11) (2020-01-31)
-
-### [0.4.10](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.9...v0.4.10) (2020-01-31)
-
-### [0.4.9](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.8...v0.4.9) (2020-01-31)
-
-### [0.4.8](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.7...v0.4.8) (2020-01-31)
-
-### [0.4.7](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.6...v0.4.7) (2020-01-31)
-
-### [0.4.6](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.5...v0.4.6) (2020-01-31)
-
-### [0.4.5](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.4...v0.4.5) (2020-01-30)
-
-### [0.4.4](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.3...v0.4.4) (2020-01-30)
-
-### [0.3.7](https://github.com/ethanbrooks/node-red-contrib-dockerode/compare/v0.3.6...v0.3.7) (2020-01-30)
-
-### [0.3.6](https://github.com/ethanbrooks/node-red-contrib-dockerode/compare/v0.3.5...v0.3.6) (2020-01-30)
-
-### [0.3.5](https://github.com/ethanbrooks/node-red-contrib-dockerode/compare/v0.3.4...v0.3.5) (2020-01-22)
-
-# Changelog
 
 ### Bug Fixes
 
+* dockerode 3.0.2 is not working correctly ([3bead2a](https://github.com/naimo84/node-red-contrib-dockerode/commit/3bead2ab6484c15107060d6ad8a7262c6b350b89))
+
+
+### [0.4.3](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.2...v0.4.3) (2020-01-23)
+
+
+### Bug Fixes
+
+* dependency dockerode downgrade for compatibility ([74118f8](https://github.com/naimo84/node-red-contrib-dockerode/commit/74118f8c6142fa769ce4ffb9bb3cc783476b521e))
+
+### [0.4.2](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.1...v0.4.2) (2020-01-23)
+
+
 ### Features
+
+* logging config ([5957b16](https://github.com/naimo84/node-red-contrib-dockerode/commit/5957b16))
+
+### [0.4.1](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.0...v0.4.1) (2020-01-23)
+
+
+### Bug Fixes
+
+* dist folder removed from gitignore ([110289b](https://github.com/naimo84/node-red-contrib-dockerode/commit/110289b))
+
+## [0.4.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.3...v0.4.0) (2020-01-23)
+
+
+### Features
+
+* merge fork back to master ([9c30994](https://github.com/naimo84/node-red-contrib-dockerode/commit/9c309942cd5941eef898319dadb5431d6551433c))
+
+### [0.3.3](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.2...v0.3.3) (2019-10-08)
+
+
+### Bug Fixes
+
+* disabled unittests ([7cd2414](https://github.com/naimo84/node-red-contrib-dockerode/commit/7cd2414))
+* issue [#2](https://github.com/naimo84/node-red-contrib-dockerode/issues/2) ([6ab9f1c](https://github.com/naimo84/node-red-contrib-dockerode/commit/6ab9f1c))
+
+### [0.3.2](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.3.1...v0.3.2) (2019-09-22)
+
+
+### Features
+
+* docker.sock  as config option implemented ([94c4121](https://github.com/naimo84/node-red-contrib-dockerode/commit/94c4121))
+* standard-version ([da776e7](https://github.com/naimo84/node-red-contrib-dockerode/commit/da776e7))
+
+### 0.3.1 (2019-09-02)
+
+<a name="0.3.0"></a>
+## [0.3.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.2.0...v0.3.0) (2019-08-30)
+
+### Features
+
+* **container-inspect:** docker inspect + extra health check 
+
+<a name="0.2.0"></a>
+## [0.2.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.1.2...v0.2.0) (2019-08-29)
+
+### Features
+
+* **container-actions:** click on container-textbox to search for containers
+* **container-actions:** restart, kill, exec implemented
