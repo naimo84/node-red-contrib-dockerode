@@ -134,6 +134,25 @@ module.exports = function (RED: Red) {
         }
     }
 
+    RED.httpAdmin.post("/imageSearch", function (req, res) {
+        RED.log.debug("POST /imageSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (images) => {
+            RED.log.debug("GET /imageSearch: " + images.length + " found");
+            res.json(images);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listImages({ all: true })
+            .then(images => discoveryCallback(images))
+            .catch(err => this.error(err));
+    }
+
     RED.nodes.registerType('docker-image-actions', DockerImageAction);
 }
 

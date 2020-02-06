@@ -115,5 +115,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/serviceSearch", function (req, res) {
+        RED.log.debug("POST /serviceSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (services) {
+            RED.log.debug("GET /serviceSearch: " + services.length + " found");
+            res.json(services);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listServices({ all: true })
+            .then(function (services) { return discoveryCallback(services); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-service-actions', DockerServiceAction);
 };

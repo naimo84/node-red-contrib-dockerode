@@ -101,6 +101,27 @@ module.exports = function (RED: Red) {
         }
     }
 
+
+    RED.httpAdmin.post("/nodeSearch", function (req, res) {
+        RED.log.debug("POST /nodeSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (nodes) => {
+            RED.log.debug("GET /nodeSearch: " + nodes.length + " found");
+            res.json(nodes);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listNodes({ all: true })
+            .then(nodes => discoveryCallback(nodes))
+            .catch(err => this.error(err));
+    }
+
+
     RED.nodes.registerType('docker-node-actions', DockerNodeAction);
 }
 

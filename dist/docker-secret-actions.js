@@ -95,5 +95,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/secretSearch", function (req, res) {
+        RED.log.debug("POST /secretSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (secrets) {
+            RED.log.debug("GET /secretSearch: " + secrets.length + " found");
+            res.json(secrets);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listSecrets({ all: true })
+            .then(function (secrets) { return discoveryCallback(secrets); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-secret-actions', DockerSecretAction);
 };

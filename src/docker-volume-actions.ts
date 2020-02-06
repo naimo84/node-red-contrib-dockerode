@@ -85,6 +85,26 @@ module.exports = function (RED: Red) {
             }
         }
     }
+    
+    RED.httpAdmin.post("/volumeSearch", function (req, res) {
+        RED.log.debug("POST /volumeSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (volumes) => {
+            RED.log.debug("GET /volumeSearch: " + volumes.length + " found");
+            res.json(volumes);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listVolumes({ all: true })
+//            .then(volumes => console.log(volumes))
+            .then(volumes => discoveryCallback(volumes))
+            .catch(err => this.error(err));
+    }
 
     RED.nodes.registerType('docker-volume-actions', DockerVolumeAction);
 }

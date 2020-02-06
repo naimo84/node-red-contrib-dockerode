@@ -62,5 +62,22 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/taskSearch", function (req, res) {
+        RED.log.debug("POST /taskSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (tasks) {
+            RED.log.debug("GET /taskSearch: " + tasks.length + " found");
+            res.json(tasks);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listTasks({ all: true })
+            //            .then(tasks => console.log(tasks))
+            .then(function (tasks) { return discoveryCallback(tasks); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-task-actions', DockerTaskAction);
 };

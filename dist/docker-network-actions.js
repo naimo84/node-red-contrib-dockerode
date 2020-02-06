@@ -110,5 +110,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/networkSearch", function (req, res) {
+        RED.log.debug("POST /networkSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (networks) {
+            RED.log.debug("GET /networkSearch: " + networks.length + " found");
+            res.json(networks);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listNetworks({ all: true })
+            .then(function (networks) { return discoveryCallback(networks); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-network-actions', DockerNetworkAction);
 };

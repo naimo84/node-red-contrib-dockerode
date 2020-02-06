@@ -94,5 +94,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/nodeSearch", function (req, res) {
+        RED.log.debug("POST /nodeSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (nodes) {
+            RED.log.debug("GET /nodeSearch: " + nodes.length + " found");
+            res.json(nodes);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listNodes({ all: true })
+            .then(function (nodes) { return discoveryCallback(nodes); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-node-actions', DockerNodeAction);
 };

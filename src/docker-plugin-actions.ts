@@ -195,6 +195,25 @@ module.exports = function (RED: Red) {
         }
     }
 
+    RED.httpAdmin.post("/pluginSearch", function (req, res) {
+        RED.log.debug("POST /pluginSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (plugins) => {
+            RED.log.debug("GET /pluginSearch: " + plugins.length + " found");
+            res.json(plugins);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listPlugins({ all: true })
+            .then(plugins => discoveryCallback(plugins))
+            .catch(err => this.error(err));
+    }
+    
     RED.nodes.registerType('docker-plugin-actions', DockerPluginAction);
 }
 

@@ -100,6 +100,25 @@ module.exports = function (RED: Red) {
         }
     }
 
+    RED.httpAdmin.post("/secretSearch", function (req, res) {
+        RED.log.debug("POST /secretSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (secrets) => {
+            RED.log.debug("GET /secretSearch: " + secrets.length + " found");
+            res.json(secrets);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listSecrets({ all: true })
+            .then(secrets => discoveryCallback(secrets))
+            .catch(err => this.error(err));
+    }
+    
     RED.nodes.registerType('docker-secret-actions', DockerSecretAction);
 }
 

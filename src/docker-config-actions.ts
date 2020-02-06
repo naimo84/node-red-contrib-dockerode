@@ -147,6 +147,26 @@ module.exports = function (RED: Red) {
         }
     }
 
+    
+    RED.httpAdmin.post("/configSearch", function (req, res) {
+        RED.log.debug("POST /configSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (configs) => {
+            RED.log.debug("GET /configSearch: " + configs.length + " found");
+            res.json(configs);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listConfigs({ all: true })
+            .then(configs => discoveryCallback(configs))
+            .catch(err => this.error(err));
+    }
+
     RED.nodes.registerType('docker-config-actions', DockerConfigAction);
 }
 

@@ -71,6 +71,26 @@ module.exports = function (RED: Red) {
         }
     }
 
+    RED.httpAdmin.post("/taskSearch", function (req, res) {
+        RED.log.debug("POST /taskSearch");
+
+        const nodeId = req.body.id;
+        let config = RED.nodes.getNode(nodeId);
+
+        discoverSonos(config, (tasks) => {
+            RED.log.debug("GET /taskSearch: " + tasks.length + " found");
+            res.json(tasks);
+        });
+    });
+
+    function discoverSonos(config, discoveryCallback) {
+        let client = config.getClient();
+        client.listTasks({ all: true })
+//            .then(tasks => console.log(tasks))
+            .then(tasks => discoveryCallback(tasks))
+            .catch(err => this.error(err));
+    }
+    
     RED.nodes.registerType('docker-task-actions', DockerTaskAction);
 }
 

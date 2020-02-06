@@ -547,5 +547,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/containerSearch", function (req, res) {
+        RED.log.debug("POST /containerSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (containers) {
+            RED.log.debug("GET /containerSearch: " + containers.length + " found");
+            res.json(containers);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listContainers({ all: true })
+            .then(function (containers) { return discoveryCallback(containers); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-container-actions', DockerContainerAction);
 };

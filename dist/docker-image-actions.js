@@ -128,5 +128,21 @@ module.exports = function (RED) {
             }
         }
     }
+    RED.httpAdmin.post("/imageSearch", function (req, res) {
+        RED.log.debug("POST /imageSearch");
+        var nodeId = req.body.id;
+        var config = RED.nodes.getNode(nodeId);
+        discoverSonos(config, function (images) {
+            RED.log.debug("GET /imageSearch: " + images.length + " found");
+            res.json(images);
+        });
+    });
+    function discoverSonos(config, discoveryCallback) {
+        var _this = this;
+        var client = config.getClient();
+        client.listImages({ all: true })
+            .then(function (images) { return discoveryCallback(images); })
+            .catch(function (err) { return _this.error(err); });
+    }
     RED.nodes.registerType('docker-image-actions', DockerImageAction);
 };
