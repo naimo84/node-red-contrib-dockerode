@@ -11,11 +11,11 @@ module.exports = function (RED) {
             if (serviceId === undefined) {
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             }
-            if (serviceId === undefined) {
+            var action = n.action || msg.action || msg.payload.action || undefined;
+            if (serviceId === undefined && !['list'].includes(action)) {
                 _this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
-            var action = n.action || msg.action || msg.payload.action || undefined;
             var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
             _this.status({});
             executeAction(serviceId, client, action, cmd, _this, msg);
@@ -23,6 +23,27 @@ module.exports = function (RED) {
         function executeAction(serviceId, client, action, cmd, node, msg) {
             var service = client.getService(serviceId);
             switch (action) {
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceList
+                    client.listServices({ all: true })
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: serviceId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 400) {
+                            node.error("Bad parameter:  " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 case 'inspect':
                     service.inspect()
                         .then(function (res) {

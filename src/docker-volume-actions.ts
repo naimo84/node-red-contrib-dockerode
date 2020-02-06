@@ -10,26 +10,47 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let volumeId: string = n.volumeId || msg.payload.volumeId || msg.volumeId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
 
-            if (cid === undefined) {
+            if (volumeId === undefined && !['list'].includes(action)) {
                 this.error("Volume id/name must be provided via configuration or via `msg.volume`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, this,msg);
+            executeAction(volumeId, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(volumeId: string, client: Dockerode, action: string, node: Node,msg) {
 
-            let volume = client.getVolume(cid);
+            let volume = client.getVolume(volumeId);
 
             switch (action) {
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImagesList
+                    client.listVolumes({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'inspect':
                     volume.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -44,7 +65,7 @@ module.exports = function (RED: Red) {
                 case 'remove':
                     volume.remove()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {

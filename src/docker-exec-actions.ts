@@ -12,21 +12,21 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let containerId: string = n.containerId || msg.payload.containerId || msg.containerId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
 
-            if (cid === undefined) {
-                this.error("Container id/name must be provided via configuration or via `msg.container`");
+            if (containerId === undefined) {
+                this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(containerId, client, action, cmd, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+        function executeAction(containerId: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
 
-            let container = client.getContainer(cid);
+            let container = client.getContainer(containerId);
 
             switch (action) {
 
@@ -71,7 +71,7 @@ module.exports = function (RED: Red) {
 
                         }).catch(err => {
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${cid}]`);
+                                node.error(`No such container: [${containerId}]`);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);

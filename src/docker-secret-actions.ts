@@ -10,26 +10,48 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let secretId: string = n.secretId || msg.payload.secretId || msg.secretId || undefined;
+            //TODO: make this disabled by default
             let action = n.action || msg.action || msg.payload.action || undefined;
 
-            if (cid === undefined) {
+            if (secretId === undefined && !['list'].includes(action)) {
                 this.error("Secret id/name must be provided via configuration or via `msg.secret`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, this,msg);
+            executeAction(secretId, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(secretId: string, client: Dockerode, action: string, node: Node,msg) {
 
-            let secret = client.getSecret(cid);
+            let secret = client.getSecret(secretId);
 
             switch (action) {
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SecretList
+                    client.listSecrets({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: secretId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'inspect':
                     secret.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: secretId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -44,7 +66,7 @@ module.exports = function (RED: Red) {
                 case 'remove':
                     secret.remove()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                            node.status({ fill: 'green', shape: 'dot', text: secretId + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -59,7 +81,7 @@ module.exports = function (RED: Red) {
                 case 'update':
                     secret.update()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                            node.status({ fill: 'green', shape: 'dot', text: secretId + ' restarted' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {

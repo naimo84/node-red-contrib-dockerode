@@ -8,18 +8,18 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var cid = n.container || msg.payload.container || msg.container || undefined;
+            var containerId = n.containerId || msg.payload.containerId || msg.containerId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
-            if (cid === undefined) {
-                _this.error("Container id/name must be provided via configuration or via `msg.container`");
+            if (containerId === undefined) {
+                _this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             _this.status({});
-            executeAction(cid, client, action, cmd, _this, msg);
+            executeAction(containerId, client, action, cmd, _this, msg);
         });
-        function executeAction(cid, client, action, cmd, node, msg) {
-            var container = client.getContainer(cid);
+        function executeAction(containerId, client, action, cmd, node, msg) {
+            var container = client.getContainer(containerId);
             switch (action) {
                 case 'exec':
                     var options = {
@@ -56,7 +56,7 @@ module.exports = function (RED) {
                         }
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {

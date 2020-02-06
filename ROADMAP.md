@@ -26,45 +26,65 @@ GET /distribution/{name}/json [API v1.40 - DistributionInspect](https://docs.doc
 * * Locate or implement
 * GET /containers/(id or name)/json [API v1.40 - ContainerInspect](https://docs.docker.com/engine/api/v1.40/#operation/ContainerInspect)
 * * ~~Errors~~
+* * ~~Tested~~ 
 * GET /containers/(id or name)/top [API v1.40 - ContainerTop](https://docs.docker.com/engine/api/v1.40/#operation/ContainerTop)
 * * ~~Errors~~
+* * ~~Tested~~ 
 * GET /containers/(id or name)/logs [API v1.40 - ContainerLogs](https://docs.docker.com/engine/api/v1.40/#operation/ContainerLogs)
 * * ~~Errors~~
+* * Failed
 * GET /containers/(id or name)/changes [API v1.40 - ContainerChanges](https://docs.docker.com/engine/api/v1.40/#operation/ContainerChanges)
 * * ~~Errors~~
+* * ~~Tested~~ 
 * GET /containers/(id or name)/export  [API v1.40 - ContainerExport](https://docs.docker.com/engine/api/v1.40/#operation/ContainerExport)
 * * ~~Errors~~
+* * Failed
 * GET /containers/(id or name)/stats [API v1.40 - ContainerStats](https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats)
 * * ~~Errors~~
+* * Failed
 * POST /containers/{id}/resize [API v1.40 - ](https://docs.docker.com/engine/api/v1.40/#operation/ContainerResize)
 * * ~~Errors~~
+* * Failed
 * POST /containers/(id or name)/start [API v1.40 - ContainerResize](https://docs.docker.com/engine/api/v1.40/#operation/ContainerStart)
 * * ~~Errors~~
+* * Failed  Odd messge
 * POST /containers/(id or name)/stop [API v1.40 - ContainerStop](https://docs.docker.com/engine/api/v1.40/#operation/ContainerStop)
 * * ~~Errors~~
+* * Failed  Odd messge
 * POST /containers/(id or name)/restart [API v1.40 - ](https://docs.docker.com/engine/api/v1.40/#operation/ContainerRestart)
 * * ~~Errors~~
+* * Failed  Odd messge
 * POST /containers/(id or name)/kill [API v1.40 - ](https://docs.docker.com/engine/api/v1.40/#operation/ContainerKill)
 * * ~~Errors~~
+* * Failed Odd messge
 * POST /containers/(id or name)/update [API v1.40 - ContainerKill](https://docs.docker.com/engine/api/v1.40/#operation/ContainerUpdate)
 * * ~~Errors~~
+* * Failed Odd messge
 * POST /containers/(id or name)/rename [API v1.40 - ContainerRename](https://docs.docker.com/engine/api/v1.40/#operation/ContainerRename)
 * * ~~Errors~~
+* * Failed Odd messge
 * POST /containers/(id or name)/pause [API v1.40 - ContainerPause](https://docs.docker.com/engine/api/v1.40/#operation/ContainerPause)
 * * ~~Errors~~
+* * Failed Odd messge
 * POST /containers/(id or name)/unpause [API v1.40 - ContainerUnpause](https://docs.docker.com/engine/api/v1.40/#operation/ContainerUnpause)
 * * ~~Errors~~
+* * Failed Odd messge
 * POST /containers/(id or name)/attach [API v1.40 - ](https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach)
 * * ~~Errors~~
+* * Failed Odd messge
 * GET /containers/{id}/attach/ws [API v1.40 - ContainerAttach](https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttachWebsocket)
 * * ~~Errors~~
+* * Failed Odd messge
 * * Not found in dockerode
 * POST /containers/(id or name)/wait [API v1.40 - ContainerWait](https://docs.docker.com/engine/api/v1.40/#operation/ContainerWait)
 * * ~~Errors~~
+* * Failed Odd messge
 * DELETE /containers/(id or name) [API v1.40 - ContainerDelete](https://docs.docker.com/engine/api/v1.40/#operation/ContainerDelete)
 * * ~~Errors~~
+* * Failed Odd messge
 * HEAD /containers/{id}/archive [API v1.40 - ContainerArchiveInfo](https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo)
 * * ~~Errors~~
+* * Failed Odd messge
 * PUT /containers/(id or name)/archive [API v1.40 - ContainerArchive](https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchive)
 * * ~~Errors~~
 * * Fix and test
@@ -138,9 +158,14 @@ GET /distribution/{name}/json [API v1.40 - DistributionInspect](https://docs.doc
 ### Configs
 * GET /configs [API v1.40 - ConfigList](https://docs.docker.com/engine/api/v1.40/#operation/ConfigList)
 * POST /configs/create [API v1.40 - ConfigCreate](https://docs.docker.com/engine/api/v1.40/#operation/ConfigCreate)
+* * ~~Errors~~
+* * ~~Tested~~ 
 * GET /configs/{id} [API v1.40 - ConfigInspect](https://docs.docker.com/engine/api/v1.40/#operation/ConfigInspect)
+* * ~~Errors~~
 * DELETE /configs/{id} [API v1.40 - ConfigDelete](https://docs.docker.com/engine/api/v1.40/#operation/ConfigDelete)
+* * ~~Errors~~
 * POST /configs/{id}/update [API v1.40 - ConfigUpdate](https://docs.docker.com/engine/api/v1.40/#operation/ConfigUpdate)
+* * ~~Errors~~
 * ## TODO:
 * * Test
 

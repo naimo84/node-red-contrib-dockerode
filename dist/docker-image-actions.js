@@ -7,22 +7,43 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var cid = n.container || msg.payload.container || msg.container || undefined;
+            var imageId = n.imageId || msg.payload.imageId || msg.imageId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (cid === undefined) {
+            if (imageId === undefined && !['list'].includes(action)) {
                 _this.error("Image id/name must be provided via configuration or via `msg.image`");
                 return;
             }
             _this.status({});
-            executeAction(cid, client, action, _this, msg);
+            executeAction(imageId, client, action, _this, msg);
         });
-        function executeAction(cid, client, action, node, msg) {
-            var image = client.getImage(cid);
+        function executeAction(imageId, client, action, node, msg) {
+            var image = client.getImage(imageId);
             switch (action) {
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImagesList
+                    client.listImages({ all: true })
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 400) {
+                            node.error("Bad parameter:  " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 case 'inspect':
                     image.inspect()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 500) {
@@ -38,7 +59,7 @@ module.exports = function (RED) {
                 case 'remove':
                     image.remove()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 500) {
@@ -54,7 +75,7 @@ module.exports = function (RED) {
                 case 'history':
                     image.history()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 500) {
@@ -72,7 +93,7 @@ module.exports = function (RED) {
                     var tag = 'Hello';
                     image.tag({ "repo": repo, "tag": tag })
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 500) {
@@ -88,7 +109,7 @@ module.exports = function (RED) {
                 case 'push':
                     image.push()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                        node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 500) {

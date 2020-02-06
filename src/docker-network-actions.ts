@@ -3,7 +3,6 @@ import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
- 
 
     function DockerNetworkAction(n: any) {
         RED.nodes.createNode(this, n);
@@ -11,28 +10,49 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let networkId: string = n.networkId || msg.payload.networkId || msg.networkId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
-
-            if (cid === undefined) {
+           
+            if (networkId === undefined && !['list'].includes(action)) {
                 this.error("Network id/name must be provided via configuration or via `msg.network`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(networkId, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
-            console.log(cmd);
+        function executeAction(networkId: string, client: Dockerode, action: string, node: Node,msg) {
 
-            let network = client.getNetwork(cid);
+            let network = client.getNetwork(networkId);
 
             switch (action) {
+
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NetworkList
+                    client.listNetworks({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: networkId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
+                
                 case 'inspect':
                     network.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: networkId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -47,7 +67,7 @@ module.exports = function (RED: Red) {
                 case 'remove':
                     network.remove()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -62,7 +82,7 @@ module.exports = function (RED: Red) {
                 case 'connect':
                     network.connect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -77,7 +97,7 @@ module.exports = function (RED: Red) {
                     case 'disconnect':
                         network.disconnect()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {

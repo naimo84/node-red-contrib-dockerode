@@ -6,7 +6,7 @@
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            image: { value: "" },
+            container: { value: "" },
             action: { value: "" }
         },
         inputs: 1,
@@ -66,6 +66,7 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
+            <option value="list">Image List</option>
             <option value="inspect">Inspect</option>
             <option value="remove">remove</option>
             <option value="enable">enable</option>

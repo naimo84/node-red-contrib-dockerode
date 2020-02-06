@@ -14,12 +14,12 @@ module.exports = function (RED: Red) {
             if(serviceId === undefined){
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             } 
-            if (serviceId === undefined) {
+            let action = n.action || msg.action || msg.payload.action || undefined;
+            if (serviceId === undefined && !['list'].includes(action)) {
                 this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
 
-            let action = n.action || msg.action || msg.payload.action || undefined;
             let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
 
             this.status({});
@@ -31,6 +31,27 @@ module.exports = function (RED: Red) {
             let service = client.getService(serviceId);
 
             switch (action) {
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceList
+                    client.listServices({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: serviceId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'inspect':
                     service.inspect()
                         .then(res => {

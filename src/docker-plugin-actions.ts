@@ -10,28 +10,50 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let pluginId: string = n.pluginId || msg.payload.pluginId || msg.pluginId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
 
-            if (cid === undefined) {
+            if (pluginId === undefined && !['list'].includes(action)) {
                 this.error("Plugin id/name must be provided via configuration or via `msg.plugin`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(pluginId, client, action, cmd, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+        function executeAction(pluginId: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
 
             let remote ={};
-            let plugin = client.getPlugin(cid, remote);
+            let plugin = client.getPlugin(pluginId, remote);
 
             switch (action) {
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
+                    client.listPlugins({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
+
                 case 'inspect':
                     plugin.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -46,7 +68,7 @@ module.exports = function (RED: Red) {
                 case 'remove':
                     plugin.remove()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -61,7 +83,7 @@ module.exports = function (RED: Red) {
                 case 'enable':
                     plugin.enable()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                            node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
@@ -76,7 +98,7 @@ module.exports = function (RED: Red) {
                     case 'disable':
                         plugin.disable()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {
@@ -91,7 +113,7 @@ module.exports = function (RED: Red) {
                     case 'configure':
                         plugin.configure()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {
@@ -106,7 +128,7 @@ module.exports = function (RED: Red) {
                     case 'privileges':
                         plugin.privileges()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {
@@ -121,7 +143,7 @@ module.exports = function (RED: Red) {
                     case 'push':
                         plugin.push()
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {
@@ -137,7 +159,7 @@ module.exports = function (RED: Red) {
                     case 'pull':
                         plugin.pull(cmd)
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {
@@ -153,7 +175,7 @@ module.exports = function (RED: Red) {
                     case 'upgrade':
                         plugin.upgrade(cmd)
                             .then(res => {
-                                node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
+                                node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                                 node.send(Object.assign(msg,{ payload: res }));
                             }).catch(err => {
                                 if (err.statusCode === 500) {

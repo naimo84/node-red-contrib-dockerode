@@ -6,6 +6,8 @@
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
+            container: { value: "" },
+            action: { value: "" }
         },
         inputs: 1,
         outputs: 1,
@@ -64,9 +66,11 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
-            <option value="inspect">Inspect</option>
-            <option value="update">Update</option>
-            <option value="logs">Logs</option>
+            <option value="list">Config List</option>
+            <option value="create">Config Create</option>
+            <option value="inspect">Config Inspect</option>
+            <option value="remove">Config Delete</option>
+            <option value="update">Config Update</option>
         </select>
     </div>
 </script>
@@ -74,10 +78,4 @@
 <script type="text/x-red" data-help-name="docker-config-actions">
     <p>Manage a docker config</p>
 
-    <p>Possible actions:
-    <ul>
-        <li>inspect</li>
-        <li>update</li>
-        <li>logs</li>
-    </ul>
 </script>

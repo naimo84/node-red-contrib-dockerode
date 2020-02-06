@@ -7,28 +7,49 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var cid = n.container || msg.payload.container || msg.container || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
-            if (cid === undefined) {
-                _this.error("Container id/name must be provided via configuration or via `msg.container`");
+            var containerId = n.containerId || msg.payload.containerId || msg.containerId || n.containerName || msg.payload.containerName || msg.containerName || undefined;
+            if (containerId === undefined && !['list'].includes(action)) {
+                _this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             _this.status({});
-            executeAction(cid, client, action, cmd, _this, msg);
+            executeAction(containerId, client, action, cmd, _this, msg);
         });
-        function executeAction(cid, client, action, cmd, node, msg) {
-            var container = client.getContainer(cid);
+        function executeAction(containerId, client, action, cmd, node, msg) {
+            var container = client.getContainer(containerId);
             switch (action) {
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerList
+                    client.listContainers({ all: true })
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 400) {
+                            node.error("Bad parameter:  " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 case 'inspect':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerInspect
                     container.inspect()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -45,11 +66,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerTop
                     container.top()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -66,11 +87,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerLogs
                     container.logs()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' restarted' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -87,11 +108,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerChanges
                     container.changes()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -108,11 +129,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerExport
                     container.export()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -129,11 +150,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats
                     container.stats()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' restarted' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -150,11 +171,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerResize
                     container.resize()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -171,11 +192,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStart
                     container.start()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -192,11 +213,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStop
                     container.stop()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -213,11 +234,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerRestart
                     container.restart()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' restarted' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' restarted' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -234,11 +255,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerKill
                     container.kill()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -255,11 +276,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerUpdate
                     container.update(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -276,11 +297,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerRename
                     container.rename(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 409) {
@@ -301,11 +322,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPause
                     container.pause()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -322,11 +343,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerUnpause
                     container.unpause()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -343,11 +364,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach
                     container.attach(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 400) {
@@ -370,11 +391,11 @@ module.exports = function (RED) {
                                         // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttachWebsocket
                                         container.attach-ws()
                                             .then(res => {
-                                                node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                                                node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                                                 node.send(Object.assign(msg,{ payload: res }));
                                             }).catch(err => {
                                                 if (err.statusCode === 404) {
-                                                    node.error(`No such container: [${cid}]`);
+                                                    node.error(`No such container: [${containerId}]`);
                                                     node.send({ payload: err });
                                                 } else if (err.statusCode === 400) {
                                                     node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
@@ -393,11 +414,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerWait
                     container.wait()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -414,11 +435,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerDelete
                     container.remove()
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("No such container: [" + cid + "]");
+                            node.error("No such container: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -435,11 +456,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo
                     container.infoArchive(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("Container or path does not exist: [" + cid + "]");
+                            node.error("Container or path does not exist: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -456,11 +477,11 @@ module.exports = function (RED) {
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchive
                     container.getArchive(cmd)
                         .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
                         if (err.statusCode === 404) {
-                            node.error("Container or path does not exist: [" + cid + "]");
+                            node.error("Container or path does not exist: [" + containerId + "]");
                             node.send({ payload: err });
                         }
                         else if (err.statusCode === 500) {
@@ -479,11 +500,11 @@ module.exports = function (RED) {
                                     // https://docs.docker.com/engine/api/v1.40/#operation/PutContainerArchive
                                     container.putArchive(file, options)
                                         .then(res => {
-                                            node.status({ fill: 'green', shape: 'dot', text: cid + ' killed' });
+                                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                                             node.send(Object.assign(msg,{ payload: res }));
                                         }).catch(err => {
                                             if (err.statusCode === 404) {
-                                                node.error(`No such container or path does not exist inside the container: [${cid}]`);
+                                                node.error(`No such container or path does not exist inside the container: [${containerId}]`);
                                                 node.send({ payload: err });
                                             } else if (err.statusCode === 400) {
                                                 node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
@@ -507,11 +528,11 @@ module.exports = function (RED) {
                                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune
                                     container.prune()
                                         .then(res => {
-                                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                                             node.send(Object.assign(msg,{ payload: res }));
                                         }).catch(err => {
                                             if (err.statusCode === 404) {
-                                                node.error(`No such container: [${cid}]`);
+                                                node.error(`No such container: [${containerId}]`);
                                                 node.send({ payload: err });
                                             } else if (err.statusCode === 500) {
                                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);

@@ -6,7 +6,7 @@
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            node: { value: "" },
+            container: { value: "" },
             action: { value: "" }
         },
         inputs: 1,
@@ -71,6 +71,7 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
+            <option value="list">Node List</option>
             <option value="start">Start</option>
             <option value="stop">Stop</option>
             <option value="restart">Restart</option>

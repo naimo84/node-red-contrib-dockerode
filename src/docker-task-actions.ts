@@ -10,27 +10,48 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let cid: string = n.container || msg.payload.container || msg.container || undefined;
+            let taskId: string = n.taskId || msg.payload.taskId || msg.taskId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
 
 
-            if (cid === undefined) {
+            if (taskId === undefined && !['list'].includes(action)) {
                 this.error("Task id/name must be provided via configuration or via `msg.task`");
                 return;
             }
             this.status({});
-            executeAction(cid, client, action, this,msg);
+            executeAction(taskId, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(taskId: string, client: Dockerode, action: string, node: Node,msg) {
 
-            let task = client.getTask(cid);
+            let task = client.getTask(taskId);
 
             switch (action) {
+
+                case 'list':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceList
+                    client.listTasks({ all: true })
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'inspect':
                     task.inspect()
                         .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
+                            node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
