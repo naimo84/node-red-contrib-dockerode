@@ -12,15 +12,15 @@ module.exports = function (RED) {
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             }
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (serviceId === undefined && !['list'].includes(action)) {
+            if (serviceId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
+            var options = n.options || msg.options || msg.payload.options || undefined;
             _this.status({});
-            executeAction(serviceId, client, action, cmd, _this, msg);
+            executeAction(serviceId, options, client, action, _this, msg);
         });
-        function executeAction(serviceId, client, action, cmd, node, msg) {
+        function executeAction(serviceId, options, client, action, node, msg) {
             var service = client.getService(serviceId);
             switch (action) {
                 case 'list':
@@ -44,7 +44,29 @@ module.exports = function (RED) {
                         }
                     });
                     break;
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceCreate
+                    client.createService(options)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: serviceId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 400) {
+                            node.error("Bad parameter:  " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceInspect
                     service.inspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: 'Inspected: ' + serviceId });
@@ -61,7 +83,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'update':
-                    service.update(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceUpdate
+                    service.update(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: 'Updated: ' + serviceId });
                         node.send(Object.assign(msg, { payload: res }));
@@ -77,6 +100,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceDelete
                     service.remove()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: 'Update: ' + serviceId });
@@ -94,6 +118,7 @@ module.exports = function (RED) {
                     break;
                 //Todo: tail
                 case 'logs':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceLogs
                     service.logs()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: 'Logging: ' + serviceId });

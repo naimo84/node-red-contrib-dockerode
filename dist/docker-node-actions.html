@@ -23,9 +23,9 @@
             $('#node-input-action').change(function () {
                 var value = $('#node-input-action').val()
                 if (value !== 'exec') {
-                    $('#cmd').hide()
+                    $('#options').hide()
                 } else {
-                    $('#cmd').show()
+                    $('#options').show()
                 }
             })
 
@@ -72,28 +72,23 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
             <option value="list">Node List</option>
-            <option value="start">Start</option>
-            <option value="stop">Stop</option>
-            <option value="restart">Restart</option>
-            <option value="kill">Kill</option>
-            <option value="exec">exec</option>            
+            <option value="inspect">Node Inspect</option>
+            <option value="remove">Node Remove</option>
+            <option value="update">Node Update</option>
         </select>
     </div>
-    <div class="form-row" id="cmd">
-        <label for="node-input-cmd"><i class="icon-tag"></i> Command</label>
-        <input type="text" id="node-input-cmd">
+    <div class="form-row" id="options">
+        <label for="node-input-options"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-options">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-node-actions">
     <p>Manage a docker node</p>
-
-    <p>Possible actions:
     <ul>
-        <li>start</li>
-        <li>stop</li>
-        <li>restart</li>
-        <li>kill</li>
-        <li>exec</li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NodeList">client.listNodes({ all: true }) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NodeInspect">nodeClient.inspect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NodeDelete">nodeClient.remove() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NodeUpdate">nodeClient.update() </a></li>
     </ul>
 </script>

@@ -9,14 +9,15 @@ module.exports = function (RED) {
         this.on('input', function (msg) {
             var cid = n.container || msg.payload.container || msg.container || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
+            var options = n.options || msg.options || msg.options || msg.payload.options || undefined;
             _this.status({});
-            executeAction(cid, client, action, cmd, _this, msg);
+            executeAction(cid, options, client, action, _this, msg);
         });
-        function executeAction(cid, client, action, cmd, node, msg) {
+        function executeAction(cid, options, client, action, node, msg) {
             var swarm = client;
             switch (action) {
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmInspect
                     swarm.swarmInspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
@@ -33,7 +34,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'update':
-                    swarm.swarmUpdate(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmUpdate
+                    swarm.swarmUpdate(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -49,7 +51,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'join':
-                    swarm.swarmJoin(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmJoin
+                    swarm.swarmJoin(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -65,7 +68,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'leave':
-                    swarm.swarmLeave(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmLeave
+                    swarm.swarmLeave(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -81,7 +85,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'init':
-                    swarm.swarmInit(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmInit
+                    swarm.swarmInit(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));

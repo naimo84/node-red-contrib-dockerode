@@ -67,20 +67,26 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
             <option value="list">Netork List</option>
-            <option value="inspect">Inspect</option>
-            <option value="update">Update</option>
-            <option value="logs">Logs</option>
+            <option value="inspect">Network Inspect</option>
+            <option value="remove">Network Delete</option>
+            <option value="connect">Network Connect</option>
+            <option value="disconnect">Network Disconnect</option>
+            <option value="prune">Network Prune</option>
+            <option value="create">Network Create</option>
+            Network
         </select>
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-network-actions">
     <p>Manage a docker network</p>
-
-    <p>Possible actions:
     <ul>
-        <li>inspect</li>
-        <li>update</li>
-        <li>logs</li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkList">client.listNetworks({ all: true }) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkInspect">network.inspect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkRemove">network.remove() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkConnect">network.connect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkDisconnect">network.disconnect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkPrune">client.pruneImages() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/NetworkCreate">client.createNetwork(options) </a></li>
     </ul>
 </script>

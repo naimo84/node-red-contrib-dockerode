@@ -8,21 +8,21 @@ module.exports = function (RED) {
         var client = config.getClient();
         this.on('input', function (msg) {
             var action = n.action || msg.action || msg.payload.action || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
-            var file = n.cmd || msg.cmd || msg.command || undefined;
+            var options = n.options || msg.options || msg.options || msg.payload.options || undefined;
+            var file = n.options || msg.options || msg.options || undefined;
             var containerId = n.containerId || msg.payload.containerId || msg.containerId || n.containerName || msg.payload.containerName || msg.containerName || undefined;
-            if (containerId === undefined && !['list'].includes(action)) {
+            if (containerId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             _this.status({});
-            executeAction(containerId, file, client, action, cmd, _this, msg);
+            executeAction(containerId, file, client, action, options, _this, msg);
         });
-        function executeAction(containerId, file, client, action, cmd, node, msg) {
+        function executeAction(containerId, file, client, action, options, node, msg) {
             var engine = client;
             switch (action) {
                 case 'auth':
-                    engine.checkAuth(cmd)
+                    engine.checkAuth(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -102,7 +102,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'import-image':
-                    engine.importImage(cmd, file)
+                    engine.importImage(options, file)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -134,7 +134,7 @@ module.exports = function (RED) {
                                         break;
                 */
                 case 'build':
-                    engine.buildImage(cmd)
+                    engine.buildImage(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -150,7 +150,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'exec-start':
-                    engine.getExec(containerId).start(cmd)
+                    engine.getExec(containerId).start(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -166,7 +166,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'exec-resize':
-                    engine.getExec(containerId).start(cmd)
+                    engine.getExec(containerId).start(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));

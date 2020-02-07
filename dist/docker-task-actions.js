@@ -9,7 +9,7 @@ module.exports = function (RED) {
         this.on('input', function (msg) {
             var taskId = n.taskId || msg.payload.taskId || msg.taskId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (taskId === undefined && !['list'].includes(action)) {
+            if (taskId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Task id/name must be provided via configuration or via `msg.task`");
                 return;
             }
@@ -20,7 +20,7 @@ module.exports = function (RED) {
             var task = client.getTask(taskId);
             switch (action) {
                 case 'list':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceList
+                    // https://docs.docker.com/engine/api/v1.40/#operation/TaskList
                     client.listTasks({ all: true })
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
@@ -41,6 +41,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/TaskInspect
                     task.inspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
@@ -56,6 +57,24 @@ module.exports = function (RED) {
                         }
                     });
                     break;
+                /*
+                                    case 'log':
+                                        // https://docs.docker.com/engine/api/v1.40/#operation/Session
+                                        task.logs(options)
+                                            .then(res => {
+                                                node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
+                                                node.send(Object.assign(msg,{ payload: res }));
+                                            }).catch(err => {
+                                                if (err.statusCode === 500) {
+                                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                                    node.send({ payload: err });
+                                                } else {
+                                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                                    return;
+                                                }
+                                            });
+                                        break;
+                */
                 default:
                     node.error("Called with an unknown action: " + action);
                     return;

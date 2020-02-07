@@ -14,7 +14,7 @@ module.exports = function (RED: Red) {
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
 
-            if (networkId === undefined && !['list'].includes(action)) {
+            if (networkId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Network id/name must be provided via configuration or via `msg.network`");
                 return;
             }
@@ -133,6 +133,7 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NetworkCreate
                     client.createNetwork(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });

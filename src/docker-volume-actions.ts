@@ -13,7 +13,7 @@ module.exports = function (RED: Red) {
             let volumeId: string = n.volumeId || msg.payload.volumeId || msg.volumeId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
-            if (volumeId === undefined && !['list'].includes(action)) {
+            if (volumeId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Volume id/name must be provided via configuration or via `msg.volume`");
                 return;
             }

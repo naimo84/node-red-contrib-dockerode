@@ -9,20 +9,20 @@ module.exports = function (RED) {
         this.on('input', function (msg) {
             var pluginId = n.pluginId || msg.payload.pluginId || msg.pluginId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
-            if (pluginId === undefined && !['list'].includes(action)) {
+            var options = n.options || msg.options || msg.payload.options || undefined;
+            if (pluginId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Plugin id/name must be provided via configuration or via `msg.plugin`");
                 return;
             }
             _this.status({});
-            executeAction(pluginId, client, action, cmd, _this, msg);
+            executeAction(pluginId, options, client, action, _this, msg);
         });
-        function executeAction(pluginId, client, action, cmd, node, msg) {
+        function executeAction(pluginId, options, client, action, node, msg) {
             var remote = {};
             var plugin = client.getPlugin(pluginId, remote);
             switch (action) {
                 case 'list':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginList
                     client.listPlugins({ all: true })
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
@@ -43,6 +43,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginInspect
                     plugin.inspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
@@ -59,6 +60,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginDelete
                     plugin.remove()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -75,6 +77,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'enable':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginEndable
                     plugin.enable()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -91,6 +94,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'disable':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginDisable
                     plugin.disable()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -107,6 +111,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'configure':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginConfigue
                     plugin.configure()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -123,6 +128,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'privileges':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginPrivledges
                     plugin.privileges()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -139,6 +145,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'push':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginPush
                     plugin.push()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -155,7 +162,8 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'pull':
-                    plugin.pull(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginPull
+                    plugin.pull(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -171,7 +179,25 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'upgrade':
-                    plugin.upgrade(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginUpgrade
+                    plugin.upgrade(options)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginCreate
+                    client.createPlugin(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
                         node.send(Object.assign(msg, { payload: res }));

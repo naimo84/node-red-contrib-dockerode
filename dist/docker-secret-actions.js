@@ -10,14 +10,15 @@ module.exports = function (RED) {
             var secretId = n.secretId || msg.payload.secretId || msg.secretId || undefined;
             //TODO: make this disabled by default
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (secretId === undefined && !['list'].includes(action)) {
+            var options = n.options || msg.options || msg.payload.options || undefined;
+            if (secretId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Secret id/name must be provided via configuration or via `msg.secret`");
                 return;
             }
             _this.status({});
-            executeAction(secretId, client, action, _this, msg);
+            executeAction(secretId, options, client, action, _this, msg);
         });
-        function executeAction(secretId, client, action, node, msg) {
+        function executeAction(secretId, options, client, action, node, msg) {
             var secret = client.getSecret(secretId);
             switch (action) {
                 case 'list':
@@ -42,6 +43,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SecretInspect
                     secret.inspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: secretId + ' started' });
@@ -58,6 +60,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SecretDelete
                     secret.remove()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: secretId + ' stopped' });
@@ -74,7 +77,25 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'update':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SecretUpdate
                     secret.update()
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: secretId + ' restarted' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SecretCreate
+                    client.createSecret(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: secretId + ' restarted' });
                         node.send(Object.assign(msg, { payload: res }));

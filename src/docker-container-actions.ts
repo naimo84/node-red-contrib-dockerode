@@ -12,18 +12,17 @@ module.exports = function (RED: Red) {
         this.on('input', (msg) => {
 
             let action = n.action || msg.action || msg.payload.action || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
+            let options = n.options || msg.options|| msg.options || msg.payload.options || undefined;
             let containerId: string = n.containerId || msg.payload.containerId || msg.containerId || n.containerName || msg.payload.containerName || msg.containerName || undefined;
-            if (containerId === undefined && !['list'].includes(action)) {
+            if (containerId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             this.status({});
-            executeAction(containerId, client, action, cmd, this,msg);
+            executeAction(containerId, options, client, action, this,msg);
         });
 
-        function executeAction(containerId: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
-
+        function executeAction(containerId: string, options: any, client: Dockerode, action: string, node: Node,msg) {
             let container = client.getContainer(containerId);
 
             switch (action) {
@@ -269,7 +268,7 @@ module.exports = function (RED: Red) {
 
                 case 'update':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerUpdate
-                    container.update(cmd)
+                    container.update(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -289,7 +288,7 @@ module.exports = function (RED: Red) {
 
                 case 'rename':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerRename
-                    container.rename(cmd)
+                    container.rename(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -352,7 +351,7 @@ module.exports = function (RED: Red) {
     
                 case 'attach':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach
-                    container.attach(cmd)
+                    container.attach(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -440,7 +439,7 @@ module.exports = function (RED: Red) {
 
                 case 'archive-info':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo
-                    container.infoArchive(cmd)
+                    container.infoArchive(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -460,7 +459,7 @@ module.exports = function (RED: Red) {
 
                 case 'get-archive':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchive
-                    container.getArchive(cmd)
+                    container.getArchive(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -506,11 +505,11 @@ module.exports = function (RED: Red) {
                         });
                     break;
 */
-/*
+
 //TODO: not found in dockerode
                 case 'prune':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune
-                    container.prune()
+                    client.pruneContainers()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -527,7 +526,29 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
-*/
+
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerCreate
+                    client.createContainer(options)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parmeter: [${err.reason}]`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+                default:
+                    node.error(`Called with an unknown action: ${action}`);
+                    return;
             }
         }
     }

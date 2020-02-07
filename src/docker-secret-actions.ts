@@ -14,7 +14,7 @@ module.exports = function (RED: Red) {
             //TODO: make this disabled by default
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
-            if (secretId === undefined && !['list'].includes(action)) {
+            if (secretId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Secret id/name must be provided via configuration or via `msg.secret`");
                 return;
             }

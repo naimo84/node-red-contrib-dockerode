@@ -14,7 +14,7 @@ module.exports = function (RED: Red) {
             let action = n.action || msg.action || msg.payload.action || undefined;
 
 
-            if (taskId === undefined && !['list'].includes(action)) {
+            if (taskId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Task id/name must be provided via configuration or via `msg.task`");
                 return;
             }

@@ -10,24 +10,26 @@ module.exports = function (RED) {
         this.on('input', function (msg) {
             var containerId = n.containerId || msg.payload.containerId || msg.containerId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
+            var options = n.options || msg.options || msg.options || msg.payload.options || undefined;
+            var cmd = n.options || msg.cmd || msg.comand || msg.payload.comand || undefined;
             if (containerId === undefined) {
                 _this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             _this.status({});
-            executeAction(containerId, client, action, cmd, _this, msg);
+            executeAction(containerId, options, cmd, client, action, _this, msg);
         });
-        function executeAction(containerId, client, action, cmd, node, msg) {
+        function executeAction(containerId, options, cmd, client, action, node, msg) {
             var container = client.getContainer(containerId);
+            console.log(options);
             switch (action) {
                 case 'exec':
-                    var options = {
+                    var execOptions = {
                         Cmd: ['sh', '-c', cmd],
                         AttachStdout: true,
                         AttachStderr: true
                     };
-                    container.exec(options)
+                    container.exec(execOptions)
                         .then(function (res) {
                         if (res) {
                             res.start(function (err, input_stream) {

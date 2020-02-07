@@ -14,7 +14,7 @@ module.exports = function (RED: Red) {
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
 
-            if (pluginId === undefined && !['list'].includes(action)) {
+            if (pluginId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Plugin id/name must be provided via configuration or via `msg.plugin`");
                 return;
             }
@@ -22,7 +22,7 @@ module.exports = function (RED: Red) {
             executeAction(pluginId, options, client, action, this,msg);
         });
 
-        function executeAction(pluginId: string, options: any, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(pluginId: string, options: any, client: Dockerode, action: string, node: Node ,msg) {
 
             let remote ={};
             let plugin = client.getPlugin(pluginId, remote);
@@ -30,7 +30,7 @@ module.exports = function (RED: Red) {
             switch (action) {
 
                 case 'list':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginList
                     client.listPlugins({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
@@ -51,7 +51,7 @@ module.exports = function (RED: Red) {
 
 
                 case 'inspect':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeInspect
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginInspect
                     plugin.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: pluginId + ' started' });
@@ -67,7 +67,7 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'remove':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeDelete
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginDelete
                     plugin.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -83,10 +83,8 @@ module.exports = function (RED: Red) {
                         });
                     break;
 
-
-
-
                 case 'enable':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/PluginEndable
                     plugin.enable()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -103,6 +101,7 @@ module.exports = function (RED: Red) {
                     break;
 
                     case 'disable':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginDisable
                         plugin.disable()
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -119,6 +118,7 @@ module.exports = function (RED: Red) {
                         break;
 
                     case 'configure':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginConfigue
                         plugin.configure()
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -136,6 +136,7 @@ module.exports = function (RED: Red) {
 
 
                     case 'privileges':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginPrivledges
                         plugin.privileges()
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -151,6 +152,7 @@ module.exports = function (RED: Red) {
                             });
                         break;
                     case 'push':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginPush
                         plugin.push()
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -167,6 +169,7 @@ module.exports = function (RED: Red) {
                         break;
 
                     case 'pull':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginPull
                         plugin.pull(options)
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -183,6 +186,7 @@ module.exports = function (RED: Red) {
                         break;
 
                     case 'upgrade':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginUpgrade
                         plugin.upgrade(options)
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });
@@ -199,6 +203,7 @@ module.exports = function (RED: Red) {
                         break;
 
                     case 'create':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/PluginCreate
                         client.createPlugin(options)
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: pluginId + ' remove' });

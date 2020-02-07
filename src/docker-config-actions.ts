@@ -13,7 +13,7 @@ module.exports = function (RED: Red) {
             let configId: string = n.configId || msg.payload.configId || msg.configId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
-            if (configId === undefined && !['list'].includes(action)) {
+            if (configId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Config id/name must be provided via configuration or via `msg.config`");
                 return;
             }

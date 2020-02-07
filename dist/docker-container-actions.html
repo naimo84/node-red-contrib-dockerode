@@ -65,6 +65,7 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action or msg.payload.action'</option>
             <option value="list">Container List</option>
+            <option value="create">Container Create</option>
             <option value="inspect">Container Inspect</option>
             <option value="top">Container Top</option> 
             <option value="logs">Container Logs</option> 
@@ -92,9 +93,30 @@
 
 <script type="text/x-red" data-help-name="docker-container-actions">
     <p>Manage a docker container</p>
-
-    <p>Possible actions:
-<!--// ContainerCreate //-->
-
-
+    <ul>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerList">client.listContainers({ all: true }) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerInspect">container.inspect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerTop">container.top() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerLogs">container.logs() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerChanges">container.changes() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerExport">container.export() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats">container.stats() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerResize">container.resize() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerStart">container.start() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerStop">container.stop() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerRestart">container.restart() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerKill">container.kill() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerUpdate">container.update(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerRename">container.rename(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerPause">container.pause() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerUnpause">container.unpause() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach">container.attach(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerWait">container.wait() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerDelete/ container.remove() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo">container.infoArchive(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchive">container.getArchive(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PutContainerArchive">container.putArchive(file, options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune">client.pruneContainers() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ContainerCreate">client.createContainer(options) </a></li>
+    </ul>
 </script>

@@ -67,32 +67,34 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
             <option value="list">Image List</option>
-            <option value="inspect">Inspect</option>
-            <option value="remove">remove</option>
-            <option value="enable">enable</option>
-            <option value="disable">Inspect</option>
-            <option value="configure">Configure</option>
-            <option value="privileges">Privileges</option>
-            <option value="push">Push</option>
-            <option value="pull">Pull</option>
-            <option value="upgrade">Upgrade</option>
+            <option value="inspect">Image Inspect</option>
+            <option value="remove">Image Delete</option>
+            <option value="create">Image Create</option>
+            <option value="build">Image Build</option>
+            <option value="build-prune">Build Prune</option>
+            <option value="history">Image History</option>
+            <option value="push">Image Push</option>
+            <option value="tag">Image Tag</option>
+            <option value="search-images">Image Search</option>
+            <option value="image-prune">Image Prune</option>
+            <option value="commit">Image Commit</option>
+            <option value="get">Image Get</option>
+            <option value="load">Image Load</option>
         </select>
     </div>
 </script>
 
+
+
 <script type="text/x-red" data-help-name="docker-image-actions">
     <p>Manage a docker image</p>
-
-    <p>Possible actions:
     <ul>
-        <li>inspect</li>
-        <li>remove</li>
-        <li>enable</li>
-        <li>disable</li>
-        <li>configure</li>
-        <li>privileges</li>
-        <li>push</li>
-        <li>pull</li>
-        <li>upgrade</li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImagesList">client.listImages({ all: true }) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImageInspect">image.inspect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImageCreate">client.createImage(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImageRemove">image.remove() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImageHistory">image.history() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImageTag">image.tag() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/ImagePush">image.push() </a></li>
     </ul>
 </script>

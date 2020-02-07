@@ -16,7 +16,7 @@ module.exports = function (RED: Red) {
             let options = {};
 
 
-            if (imageId === undefined && !['list'].includes(action)) {
+            if (imageId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Image id/name must be provided via configuration or via `msg.image`");
                 return;
             }

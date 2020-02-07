@@ -70,8 +70,8 @@
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
             <option value="list">Plugin List</option>
-            <option value="create"></option>
-            <option value="privileges">Get Plugin Privileges</option>
+            <option value="create">Plugin Create</option>
+            <option value="privileges">Plugin Privileges</option>
             <option value="pull">Plugin Pull</option>
             <option value="inspect">Plugin Inspect</option>
             <option value="remove">Plugin Delete</option>
@@ -86,4 +86,17 @@
 
 <script type="text/x-red" data-help-name="docker-plugin-actions">
     <p>Manage a docker plugin</p>
+    <ul>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginList">client.listPlugins({ all: true }) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginInspect">plugin.inspect() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginDelete">plugin.remove() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginEndable">plugin.enable() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginDisable">plugin.disable() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginConfigue">plugin.configure() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginPrivledges">plugin.privileges() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginPush">plugin.push() </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginPull">plugin.pull(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginUpgrade">plugin.upgrade(options) </a></li>
+        <li><a href="https://docs.docker.com/engine/api/v1.40/#operation/PluginCreate"> client.createPlugin(options) </a></li>
+    </ul>
 </script>

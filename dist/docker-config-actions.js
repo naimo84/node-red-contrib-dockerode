@@ -10,14 +10,15 @@ module.exports = function (RED) {
             RED.log.debug(msg);
             var configId = n.configId || msg.payload.configId || msg.configId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (configId === undefined && !['list'].includes(action)) {
+            var options = n.options || msg.options || msg.payload.options || undefined;
+            if (configId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Config id/name must be provided via configuration or via `msg.config`");
                 return;
             }
             _this.status({});
-            executeAction(configId, client, action, _this, msg);
+            executeAction(configId, options, client, action, _this, msg);
         });
-        function executeAction(configId, client, action, node, msg) {
+        function executeAction(configId, options, client, action, node, msg) {
             var config = client.getConfig(configId);
             switch (action) {
                 case 'list':
@@ -41,28 +42,27 @@ module.exports = function (RED) {
                         }
                     });
                     break;
-                /*
-                //TODO: locate in dockerode
-                                    case 'create':
-                                        // https://docs.docker.com/engine/api/v1.40/#operation/ConfigCreate
-                                        config.
-                                            .then(res => {
-                                                node.status({ fill: 'green', shape: 'dot', text: configId + ' remove' });
-                                                node.send(Object.assign(msg,{ payload: res }));
-                                            }).catch(err => {
-                                                if (err.statusCode === 500) {
-                                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                                    node.send({ payload: err });
-                                                } else if (err.statusCode === 409) {
-                                                    node.error(`Name conflicts with an existing objectd: [${configId}]`);
-                                                    node.send({ payload: err });
-                                                } else {
-                                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
-                                                    return;
-                                                }
-                                            });
-                                        break;
-                */
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ConfigCreate
+                    client.createConfig(options)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: configId + ' remove' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 409) {
+                            node.error("Name conflicts with an existing objectd: [" + configId + "]");
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
                 case 'inspect':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ConfigInspect
                     config.inspect()

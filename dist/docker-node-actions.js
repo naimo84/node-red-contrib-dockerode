@@ -9,7 +9,7 @@ module.exports = function (RED) {
         this.on('input', function (msg) {
             var nodeId = n.nodeId || msg.payload.nodeId || msg.nodeId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
-            if (nodeId === undefined && !['list'].includes(action)) {
+            if (nodeId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Node id/name must be provided via configuration or via `msg.node`");
                 return;
             }
@@ -21,7 +21,7 @@ module.exports = function (RED) {
             switch (action) {
                 case 'list':
                     // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
-                    client.listNetworks({ all: true })
+                    client.listNodes({ all: true })
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: nodeId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -41,6 +41,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeInspect
                     nodeClient.inspect()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: nodeId + ' started' });
@@ -57,6 +58,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeDelete
                     nodeClient.remove()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: nodeId + ' stopped' });
@@ -73,6 +75,7 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'update':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/NodeUpdate
                     nodeClient.update()
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: nodeId + ' restarted' });

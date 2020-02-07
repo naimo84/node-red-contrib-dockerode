@@ -8,16 +8,16 @@ module.exports = function (RED) {
         var client = config.getClient();
         this.on('input', function (msg) {
             var action = n.action || msg.action || msg.payload.action || undefined;
-            var cmd = n.cmd || msg.cmd || msg.command || msg.payload.command || undefined;
+            var options = n.options || msg.options || msg.options || msg.payload.options || undefined;
             var containerId = n.containerId || msg.payload.containerId || msg.containerId || n.containerName || msg.payload.containerName || msg.containerName || undefined;
-            if (containerId === undefined && !['list'].includes(action)) {
+            if (containerId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
             _this.status({});
-            executeAction(containerId, client, action, cmd, _this, msg);
+            executeAction(containerId, options, client, action, _this, msg);
         });
-        function executeAction(containerId, client, action, cmd, node, msg) {
+        function executeAction(containerId, options, client, action, node, msg) {
             var container = client.getContainer(containerId);
             switch (action) {
                 case 'list':
@@ -274,7 +274,7 @@ module.exports = function (RED) {
                     break;
                 case 'update':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerUpdate
-                    container.update(cmd)
+                    container.update(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -295,7 +295,7 @@ module.exports = function (RED) {
                     break;
                 case 'rename':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerRename
-                    container.rename(cmd)
+                    container.rename(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -362,7 +362,7 @@ module.exports = function (RED) {
                     break;
                 case 'attach':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach
-                    container.attach(cmd)
+                    container.attach(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -454,7 +454,7 @@ module.exports = function (RED) {
                     break;
                 case 'archive-info':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo
-                    container.infoArchive(cmd)
+                    container.infoArchive(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -475,7 +475,7 @@ module.exports = function (RED) {
                     break;
                 case 'get-archive':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchive
-                    container.getArchive(cmd)
+                    container.getArchive(options)
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -522,28 +522,52 @@ module.exports = function (RED) {
                                         });
                                     break;
                 */
-                /*
                 //TODO: not found in dockerode
-                                case 'prune':
-                                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune
-                                    container.prune()
-                                        .then(res => {
-                                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
-                                            node.send(Object.assign(msg,{ payload: res }));
-                                        }).catch(err => {
-                                            if (err.statusCode === 404) {
-                                                node.error(`No such container: [${containerId}]`);
-                                                node.send({ payload: err });
-                                            } else if (err.statusCode === 500) {
-                                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                                node.send({ payload: err });
-                                            } else {
-                                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
-                                                return;
-                                            }
-                                        });
-                                    break;
-                */
+                case 'prune':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune
+                    client.pruneContainers()
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 404) {
+                            node.error("No such container: [" + containerId + "]");
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerCreate
+                    client.createContainer(options)
+                        .then(function (res) {
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(function (err) {
+                        if (err.statusCode === 400) {
+                            node.error("Bad parmeter: [" + err.reason + "]");
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                            node.send({ payload: err });
+                        }
+                        else {
+                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            return;
+                        }
+                    });
+                    break;
+                default:
+                    node.error("Called with an unknown action: " + action);
+                    return;
             }
         }
     }

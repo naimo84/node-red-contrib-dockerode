@@ -15,7 +15,7 @@ module.exports = function (RED: Red) {
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             } 
             let action = n.action || msg.action || msg.payload.action || undefined;
-            if (serviceId === undefined && !['list'].includes(action)) {
+            if (serviceId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }

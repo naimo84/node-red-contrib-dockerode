@@ -8,7 +8,7 @@
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
             action: { value: "" },
-            cmd: { value: "" }
+            options: { value: "" }
         },
         inputs: 1,
         outputs: 1,
@@ -24,9 +24,9 @@
             $('#node-input-action').change(function () {
                 var value = $('#node-input-action').val()
                 if (value !== 'exec') {
-                    $('#cmd').hide()
+                    $('#options').hide()
                 } else {
-                    $('#cmd').show()
+                    $('#options').show()
                 }
             })
 
@@ -80,21 +80,15 @@
             <option value="exec">exec</option>            
         </select>
     </div>
-    <div class="form-row" id="cmd">
-        <label for="node-input-cmd"><i class="icon-tag"></i> Command</label>
-        <input type="text" id="node-input-cmd">
+    <div class="form-row" id="options">
+        <label for="node-input-options"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-options">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-exec-actions">
     <p>Manage a docker container</p>
-
-    <p>Possible actions:
     <ul>
-        <li>start</li>
-        <li>stop</li>
-        <li>restart</li>
-        <li>kill</li>
-        <li>exec</li>
+        <li></li>
     </ul>
 </script>

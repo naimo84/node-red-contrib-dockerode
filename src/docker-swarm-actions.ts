@@ -12,7 +12,7 @@ module.exports = function (RED: Red) {
 
             let cid: string = n.container || msg.payload.container || msg.container || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-            let options = n.options || msg.options|| msg.command || msg.payload.command || undefined;
+            let options = n.options || msg.options|| msg.options || msg.payload.options || undefined;
 
             this.status({});
             executeAction(cid, options, client, action, this,msg);
