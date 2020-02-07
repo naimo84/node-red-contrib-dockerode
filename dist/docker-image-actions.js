@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var imageId = n.imageId || msg.payload.imageId || msg.imageId || undefined;
+            var imageId = n.image || msg.payload.imageId || msg.imageId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var options = {};
             if (imageId === undefined && !['list', 'prune', 'create'].includes(action)) {

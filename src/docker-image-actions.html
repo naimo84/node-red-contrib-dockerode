@@ -6,7 +6,7 @@
         defaults: {
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
-            container: { value: "" },
+            image: { value: "" },
             action: { value: "" }
         },
         inputs: 1,
@@ -57,7 +57,7 @@
     </div>    
     <div class="form-row">
         <label for="node-input-image"><i class="icon-tag"></i> Image</label>
-        <input type="text" id="node-input-image" style="width: 60%">
+        <input type="text" id="node-input-imageId" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>

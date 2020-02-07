@@ -8,7 +8,7 @@ module.exports = function (RED) {
         var client = config.getClient();
         this.on('input', function (msg) {
             RED.log.debug(msg);
-            var configId = n.configId || msg.payload.configId || msg.configId || undefined;
+            var configId = n.config || msg.payload.configId || msg.configId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var options = n.options || msg.options || msg.payload.options || undefined;
             if (configId === undefined && !['list', 'prune', 'create'].includes(action)) {

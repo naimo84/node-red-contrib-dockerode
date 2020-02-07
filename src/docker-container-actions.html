@@ -7,7 +7,8 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
-            action: { value: "" }
+            action: { value: "" },
+            options: { value: "" }
         },
         inputs: 1,
         outputs: 1,
@@ -64,6 +65,7 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action or msg.payload.action'</option>
+            <option value="exec">Container Exec</option>        
             <option value="list">Container List</option>
             <option value="create">Container Create</option>
             <option value="inspect">Container Inspect</option>
@@ -88,6 +90,10 @@
             <option value="get-archive">Container Archive</option> 
             <!--// <option value="prune">Container Prune</option>  //-->          
         </select>
+    </div>
+    <div class="form-row" id="options">
+        <label for="node-input-options"><i class="icon-tag"></i> Command</label>
+        <input type="text" id="node-input-options">
     </div>
 </script>
 

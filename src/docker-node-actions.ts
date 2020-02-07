@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let nodeId: string = n.nodeId || msg.payload.nodeId || msg.nodeId || undefined;
+            let nodeId: string = n.node || msg.payload.nodeId || msg.nodeId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
 
             if (nodeId === undefined && !['list', 'prune', 'create'].includes(action)) {

@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var networkId = n.networkId || msg.payload.networkId || msg.networkId || undefined;
+            var networkId = n.network || msg.payload.networkId || msg.networkId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var options = n.options || msg.options || msg.payload.options || undefined;
             if (networkId === undefined && !['list', 'prune', 'create'].includes(action)) {

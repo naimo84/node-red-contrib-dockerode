@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var secretId = n.secretId || msg.payload.secretId || msg.secretId || undefined;
+            var secretId = n.secret || msg.payload.secretId || msg.secretId || undefined;
             //TODO: make this disabled by default
             var action = n.action || msg.action || msg.payload.action || undefined;
             var options = n.options || msg.options || msg.payload.options || undefined;

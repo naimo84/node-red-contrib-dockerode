@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let taskId: string = n.taskId || msg.payload.taskId || msg.taskId || undefined;
+            let taskId: string = n.task || msg.payload.taskId || msg.taskId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
 
 

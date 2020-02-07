@@ -48,6 +48,7 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
+                        //                            404 No such volume
                         if (err.statusCode === 500) {
                             node.error("Server Error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
@@ -65,8 +66,16 @@ module.exports = function (RED) {
                         node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
                         node.send(Object.assign(msg, { payload: res }));
                     }).catch(function (err) {
-                        if (err.statusCode === 500) {
-                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
+                        if (err.statusCode === 404) {
+                            node.error("No such volume or volume driver");
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 409) {
+                            node.error("Volume is in use and cannot be removed");
+                            node.send({ payload: err });
+                        }
+                        else if (err.statusCode === 500) {
+                            node.error("Server error: [" + err.statusCode + "] " + err.reason);
                             node.send({ payload: err });
                         }
                         else {
@@ -77,20 +86,7 @@ module.exports = function (RED) {
                     break;
                 case 'create':
                     // https://docs.docker.com/engine/api/v1.40/#operation/VolumeCreate
-                    client.createVolume(options)
-                        .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
-                        node.send(Object.assign(msg, { payload: res }));
-                    }).catch(function (err) {
-                        if (err.statusCode === 500) {
-                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
-                            node.send({ payload: err });
-                        }
-                        else {
-                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
-                            return;
-                        }
-                    });
+                    console.log(options);
                     break;
                 case 'prune':
                     // https://docs.docker.com/engine/api/v1.40/#operation/VolumePrune         

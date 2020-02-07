@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let serviceId: string = n.serviceId || msg.payload.serviceId || msg.serviceId || undefined;
+            let serviceId: string = n.service || msg.payload.serviceId || msg.serviceId || undefined;
             if(serviceId === undefined){
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             } 

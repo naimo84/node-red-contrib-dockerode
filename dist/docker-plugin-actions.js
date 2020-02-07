@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var pluginId = n.pluginId || msg.payload.pluginId || msg.pluginId || undefined;
+            var pluginId = n.plugin || msg.payload.pluginId || msg.pluginId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             var options = n.options || msg.options || msg.payload.options || undefined;
             if (pluginId === undefined && !['list', 'prune', 'create'].includes(action)) {

@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
             RED.log.debug(msg);
-            let configId: string = n.configId || msg.payload.configId || msg.configId || undefined;
+            let configId: string = n.config || msg.payload.configId || msg.configId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
             if (configId === undefined && !['list', 'prune', 'create'].includes(action)) {

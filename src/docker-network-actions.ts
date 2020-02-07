@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let networkId: string = n.networkId || msg.payload.networkId || msg.networkId || undefined;
+            let networkId: string = n.network || msg.payload.networkId || msg.networkId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
 

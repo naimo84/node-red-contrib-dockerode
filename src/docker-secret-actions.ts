@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let secretId: string = n.secretId || msg.payload.secretId || msg.secretId || undefined;
+            let secretId: string = n.secret || msg.payload.secretId || msg.secretId || undefined;
             //TODO: make this disabled by default
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;

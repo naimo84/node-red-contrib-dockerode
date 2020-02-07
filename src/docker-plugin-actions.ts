@@ -10,7 +10,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let pluginId: string = n.pluginId || msg.payload.pluginId || msg.pluginId || undefined;
+            let pluginId: string = n.plugin || msg.payload.pluginId || msg.pluginId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = n.options || msg.options || msg.payload.options || undefined;
 

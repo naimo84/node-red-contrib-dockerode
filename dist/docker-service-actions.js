@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var serviceId = n.serviceId || msg.payload.serviceId || msg.serviceId || undefined;
+            var serviceId = n.service || msg.payload.serviceId || msg.serviceId || undefined;
             if (serviceId === undefined) {
                 serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
             }

@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var taskId = n.taskId || msg.payload.taskId || msg.taskId || undefined;
+            var taskId = n.task || msg.payload.taskId || msg.taskId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             if (taskId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Task id/name must be provided via configuration or via `msg.task`");

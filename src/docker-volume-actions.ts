@@ -2,6 +2,7 @@ import { Red, Node } from 'node-red';
 import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 
+
 module.exports = function (RED: Red) {
 
     function DockerVolumeAction(n: any) {
@@ -54,6 +55,7 @@ module.exports = function (RED: Red) {
                             node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
+//                            404 No such volume
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
@@ -69,9 +71,15 @@ module.exports = function (RED: Red) {
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
-                        }).catch(err => {
-                            if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                        }).catch(err => {                   
+                            if (err.statusCode === 404) {
+                                node.error(`No such volume or volume driver`);
+                                node.send({ payload: err });
+                            }else if (err.statusCode === 409) {
+                                node.error(`Volume is in use and cannot be removed`);
+                                node.send({ payload: err });
+                            }else if (err.statusCode === 500) {
+                                node.error(`Server error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
                                 node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
@@ -80,20 +88,9 @@ module.exports = function (RED: Red) {
                         });
                     break; 
                 case 'create':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumeCreate
-                    client.createVolume(options)
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
-                            node.send(Object.assign(msg,{ payload: res }));
-                        }).catch(err => {
-                            if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
-                                return;
-                            }
-                        });
+                                // https://docs.docker.com/engine/api/v1.40/#operation/VolumeCreate
+           
+                    console.log(options);
                     break; 
 
                 case 'prune':

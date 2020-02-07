@@ -11,7 +11,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let imageId: string = n.imageId || msg.payload.imageId || msg.imageId || undefined;
+            let imageId: string = n.image || msg.payload.imageId || msg.imageId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
             let options = {};
 

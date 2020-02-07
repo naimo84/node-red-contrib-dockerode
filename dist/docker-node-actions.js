@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var config = RED.nodes.getNode(n.config);
         var client = config.getClient();
         this.on('input', function (msg) {
-            var nodeId = n.nodeId || msg.payload.nodeId || msg.nodeId || undefined;
+            var nodeId = n.node || msg.payload.nodeId || msg.nodeId || undefined;
             var action = n.action || msg.action || msg.payload.action || undefined;
             if (nodeId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 _this.error("Node id/name must be provided via configuration or via `msg.node`");
