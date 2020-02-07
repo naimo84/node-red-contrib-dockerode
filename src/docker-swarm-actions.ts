@@ -12,18 +12,19 @@ module.exports = function (RED: Red) {
 
             let cid: string = n.container || msg.payload.container || msg.container || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
+            let options = n.options || msg.options|| msg.command || msg.payload.command || undefined;
 
             this.status({});
-            executeAction(cid, client, action, cmd, this,msg);
+            executeAction(cid, options, client, action, this,msg);
         });
 
-        function executeAction(cid: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+        function executeAction(cid: string, options: any, client: Dockerode, action: string,  node: Node,msg) {
 
             let swarm = client;
 
             switch (action) {
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmInspect
                     swarm.swarmInspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' started' });
@@ -38,8 +39,10 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+
                 case 'update':
-                    swarm.swarmUpdate(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmUpdate
+                    swarm.swarmUpdate(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' stopped' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -55,7 +58,8 @@ module.exports = function (RED: Red) {
                     break;
 
                 case 'join':
-                    swarm.swarmJoin(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmJoin
+                    swarm.swarmJoin(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -70,7 +74,8 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'leave':
-                    swarm.swarmLeave(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmLeave
+                    swarm.swarmLeave(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -84,8 +89,10 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+
                 case 'init':
-                    swarm.swarmInit(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/SwarmInit
+                    swarm.swarmInit(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: cid + ' remove' });
                             node.send(Object.assign(msg,{ payload: res }));

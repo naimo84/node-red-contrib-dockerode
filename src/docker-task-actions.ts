@@ -27,9 +27,11 @@ module.exports = function (RED: Red) {
             let task = client.getTask(taskId);
 
             switch (action) {
+      
+
 
                 case 'list':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceList
+                    // https://docs.docker.com/engine/api/v1.40/#operation/TaskList
                     client.listTasks({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
@@ -49,6 +51,7 @@ module.exports = function (RED: Red) {
                     break;
 
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/TaskInspect
                     task.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
@@ -63,7 +66,24 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
-
+/*
+                    case 'log':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/Session
+                        task.logs(options)
+                            .then(res => {
+                                node.status({ fill: 'green', shape: 'dot', text: taskId + ' started' });
+                                node.send(Object.assign(msg,{ payload: res }));
+                            }).catch(err => {
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                    node.send({ payload: err });
+                                } else {
+                                    node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                    return;
+                                }
+                            });
+                        break;
+*/
                 default:
                     node.error(`Called with an unknown action: ${action}`);
                     return;

@@ -20,13 +20,13 @@ module.exports = function (RED: Red) {
                 return;
             }
 
-            let cmd = n.cmd || msg.cmd|| msg.command || msg.payload.command || undefined;
+            let options = n.options || msg.options || msg.payload.options || undefined;
 
             this.status({});
-            executeAction(serviceId, client, action, cmd, this,msg);
+            executeAction(serviceId, options, client, action, this,msg);
         });
 
-        function executeAction(serviceId: string, client: Dockerode, action: string, cmd: any, node: Node,msg) {
+        function executeAction(serviceId: string, options: any ,client: Dockerode, action: string, node: Node,msg) {
 
             let service = client.getService(serviceId);
 
@@ -52,7 +52,28 @@ module.exports = function (RED: Red) {
                         });
                     break;
 
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceCreate
+                    client.createService(options)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: serviceId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 400) {
+                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceInspect
                     service.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: 'Inspected: ' + serviceId });
@@ -69,7 +90,8 @@ module.exports = function (RED: Red) {
                     break;
                     
                case 'update':
-                    service.update(cmd)
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceUpdate
+                    service.update(options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: 'Updated: ' + serviceId });
                             node.send(Object.assign(msg,{ payload: res }));
@@ -85,6 +107,7 @@ module.exports = function (RED: Red) {
                     break;
 
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceDelete
                     service.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: 'Update: ' + serviceId });
@@ -101,6 +124,7 @@ module.exports = function (RED: Red) {
                     break;
 //Todo: tail
                 case 'logs':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ServiceLogs
                     service.logs()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: 'Logging: ' + serviceId });

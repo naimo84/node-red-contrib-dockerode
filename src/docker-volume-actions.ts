@@ -12,23 +12,23 @@ module.exports = function (RED: Red) {
 
             let volumeId: string = n.volumeId || msg.payload.volumeId || msg.volumeId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-
+            let options = n.options || msg.options || msg.payload.options || undefined;
             if (volumeId === undefined && !['list'].includes(action)) {
                 this.error("Volume id/name must be provided via configuration or via `msg.volume`");
                 return;
             }
             this.status({});
-            executeAction(volumeId, client, action, this,msg);
+            executeAction(volumeId, options, client, action, this,msg);
         });
 
-        function executeAction(volumeId: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(volumeId: string, options: any, client: Dockerode, action: string, node: Node,msg) {
 
             let volume = client.getVolume(volumeId);
 
             switch (action) {
-
+                
                 case 'list':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/ImagesList
+                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumeList
                     client.listVolumes({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
@@ -48,6 +48,7 @@ module.exports = function (RED: Red) {
                     break;
 
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumeInspect
                     volume.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: volumeId + ' started' });
@@ -63,6 +64,7 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumeDelete
                     volume.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
@@ -77,7 +79,39 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break; 
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumeCreate
+                    client.createVolume(options)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break; 
 
+                case 'prune':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/VolumePrune         
+                    client.pruneVolumes()
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: volumeId + ' stopped' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break; 
 
                 default:
                     node.error(`Called with an unknown action: ${action}`);

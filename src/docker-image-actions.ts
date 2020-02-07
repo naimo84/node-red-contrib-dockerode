@@ -13,7 +13,7 @@ module.exports = function (RED: Red) {
 
             let imageId: string = n.imageId || msg.payload.imageId || msg.imageId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-
+            let options = {};
 
 
             if (imageId === undefined && !['list'].includes(action)) {
@@ -21,10 +21,10 @@ module.exports = function (RED: Red) {
                 return;
             }
             this.status({});
-            executeAction(imageId, client, action, this,msg);
+            executeAction(imageId, options, client, action, this,msg);
         });
 
-        function executeAction(imageId: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(imageId: string, options: any, client: Dockerode, action: string, node: Node,msg) {
 
             let image = client.getImage(imageId);
 
@@ -51,6 +51,7 @@ module.exports = function (RED: Red) {
                     break;
 
                 case 'inspect':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImageInspect
                     image.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: imageId + ' started' });
@@ -65,7 +66,26 @@ module.exports = function (RED: Red) {
                             }
                         });
                     break;
+
+                case 'create':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImageCreate
+                    client.createImage(options)
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        });
+                    break;
+
                 case 'remove':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImageRemove
                     image.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
@@ -81,6 +101,7 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'history':
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ImageHistory
                     image.history()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });
@@ -96,6 +117,7 @@ module.exports = function (RED: Red) {
                         });
                     break;
                     case 'tag':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/ImageTag
                         let repo = 'bla/bla';
                         let tag = 'Hello';
                         image.tag({"repo": repo, "tag": tag})
@@ -113,6 +135,7 @@ module.exports = function (RED: Red) {
                             });
                         break;
                     case 'push':
+                        // https://docs.docker.com/engine/api/v1.40/#operation/ImagePush
                         image.push()
                             .then(res => {
                                 node.status({ fill: 'green', shape: 'dot', text: imageId + ' remove' });

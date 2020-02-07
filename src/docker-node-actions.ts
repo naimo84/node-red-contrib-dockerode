@@ -26,8 +26,7 @@ module.exports = function (RED: Red) {
             let nodeClient = client.getNode(nodeId);
 
             switch (action) {
-
-
+ 
                 case 'list':
                     // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
                     client.listNetworks({ all: true })

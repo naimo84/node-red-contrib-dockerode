@@ -59,24 +59,16 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="">Use 'msg.action'</option>
-            <option value="inspect">Inspect</option>
-            <option value="join">Join</option>
-            <option value="leave">Leave</option>
-            <option value="update">Update</option>
-            <option value="init">Init</option>
+            <option value="init">Swarm Init</option>
+            <option value="inspect">Swarm Inspect</option>
+            <option value="join">Swarm Join</option>
+            <option value="leave">Swarm Leave</option>
+            <option value="update">Swarm Update</option>
+
         </select>
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-swarm-actions">
     <p>Manage a docker swarm</p>
-
-    <p>Possible actions:
-    <ul>
-        <li>inspect</li>
-        <li>join</li>
-        <li>leave</li>
-        <li>update</li>
-        <li>init</li>
-    </ul>
 </script>
