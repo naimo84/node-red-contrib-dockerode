@@ -16,7 +16,14 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Service Inspect";
+                var actions = {
+                    "list": "Service List",
+                    "create": "Service Create",
+                    "inspect": "Service Inspect",
+                    "update": "Service Update",
+                    "logs": "Service Logs",
+                };
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -72,7 +79,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
             <option value="list">Service List</option>
             <option value="create">Service Create</option>
             <option value="inspect">Service Inspect</option>

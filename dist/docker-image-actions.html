@@ -16,7 +16,23 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Task Inspect";
+                var actions = {
+                    "list": "Image List",
+                    "inspect": "Image Inspect",
+                    "remove": "Image Delete",
+                    "create": "Image Create",
+                    "build": "Image Build",
+                    "build-prune": "Build Prune",
+                    "history": "Image History",
+                    "push": "Image Push",
+                    "tag": "Image Tag",
+                    "search-images": "Image Search",
+                    "image-prune": "Image Prune",
+                    "commit": "Image Commit",
+                    "get": "Image Get",
+                    "load": "Image Load"
+                };               
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -72,7 +88,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
             <option value="list">Image List</option>
             <option value="inspect">Image Inspect</option>
             <option value="remove">Image Delete</option>

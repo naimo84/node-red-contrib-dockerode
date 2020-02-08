@@ -17,8 +17,35 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||this.action//"Config Inspect";
+                var actions = {
+                    "exec": "Container Exec",        
+                    "list": "Container List",
+                    "create": "Container Create",
+                    "inspect": "Container Inspect",
+                    "top": "Container Top", 
+                    "logs": "Container Logs", 
+                    "changes": "Container Changes", 
+                    "export": "Container Export", 
+                    "stats": "Container Stats", 
+                    "resize": "Container Resize", 
+                    "start": "Container Start", 
+                    "stop": "Container Stop", 
+                    "restart": "Container Restart", 
+                    "kill": "Container Kill", 
+                    "update": "Container Update", 
+                    "rename": "Container Rename", 
+                    "pause": "Container Pause", 
+                    "unpause": "Container Unpause", 
+                    "attach": "Container Attach", 
+                    "wait": "Container Wait", 
+                    "remove": "Container Delete", 
+                    "archive-info": "Container ArchiveInfo", 
+                    "get-archive": "Container Archive", 
+                    "prune": "Container Prune"
+                };
+                return this.label||actions[this.action];
             }
+            console.log(this.actions);
         },
         paletteLabel: function () {
             return this.name || "Container"
@@ -71,7 +98,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action or msg.payload.action'</option>
             <option value="exec">Container Exec</option>        
             <option value="list">Container List</option>
             <option value="create">Container Create</option>

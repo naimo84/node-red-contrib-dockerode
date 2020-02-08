@@ -16,7 +16,16 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Network Inspect";
+                var actions = {
+                    "list": "Netork List",
+                    "inspect": "Network Inspect",
+                    "remove": "Network Delete",
+                    "connect": "Network Connect",
+                    "disconnect": "Network Disconnect",
+                    "prune": "Network Prune",
+                    "create": "Network Create"
+                };
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -72,7 +81,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
             <option value="list">Netork List</option>
             <option value="inspect">Network Inspect</option>
             <option value="remove">Network Delete</option>
@@ -80,7 +88,6 @@
             <option value="disconnect">Network Disconnect</option>
             <option value="prune">Network Prune</option>
             <option value="create">Network Create</option>
-            Network
         </select>
     </div>
 </script>

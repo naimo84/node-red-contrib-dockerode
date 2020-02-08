@@ -15,7 +15,14 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Swarm Inspect";
+                var actions = {
+                    "init": "Swarm Init",
+                    "inspect": "Swarm Inspect",
+                    "join": "Swarm Join",
+                    "leave": "Swarm Leave",
+                    "update": "Swarm Update",
+                };
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -45,13 +52,11 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
             <option value="init">Swarm Init</option>
             <option value="inspect">Swarm Inspect</option>
             <option value="join">Swarm Join</option>
             <option value="leave">Swarm Leave</option>
             <option value="update">Swarm Update</option>
-
         </select>
     </div>
 </script>

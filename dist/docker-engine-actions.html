@@ -16,7 +16,20 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Engine Info";
+                var actions = {
+                    "build": "Engine Build",
+                    "auth": "Engine Auth",
+                    "exec-start": "Engine Exec start",
+                    "exec-resize": "Engine Exec resize",
+                    "exec-json": "Engine Exec json",
+                    "run": "Engine Run",
+                    "info": "Engine Info",
+                    "version": "Engine Version",
+                    "ping": "Engine Ping",
+                    "df": "Engine DF",
+                    "import-image": "Engine Import Image"
+                };
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -66,8 +79,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
-
             <option value="build">Build</option>
             <option value="auth">Auth</option>
             <option value="exec-start">Exec start</option>

@@ -16,7 +16,20 @@
             if (this.name){
                 return this.name;
             } else {
-                return this.label||"Plugin Inspect";
+                var actions = {
+                    "list": "Plugin List",
+                    "create": "Plugin Create",
+                    "privileges": "Plugin Privileges",
+                    "pull": "Plugin Pull",
+                    "inspect": "Plugin Inspect",
+                    "remove": "Plugin Delete",
+                    "enable": "Plugin Enable",
+                    "disable": "Plugin Disable",
+                    "update": "Plugin Upgrade",
+                    "push": "Plugin Push",
+                    "configure": "Plugin Set"
+                };
+                return this.label||actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -75,7 +88,6 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
-            <option value="">Use 'msg.action'</option>
             <option value="list">Plugin List</option>
             <option value="create">Plugin Create</option>
             <option value="privileges">Plugin Privileges</option>

@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.20](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.20) (2020-02-08)
 
-### [0.4.19](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.20) (2020-02-08)
-
  * Added auto node naming. 
+ * Added document links
+ * Confirmed Docker API completeness. 
 
 ### [0.4.19](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.18...v0.4.19) (2020-02-07)
 
