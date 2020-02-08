@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.4.19",
+  "version": "0.4.20",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",

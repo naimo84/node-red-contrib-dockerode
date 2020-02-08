@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.20](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.20) (2020-02-08)
+
+### [0.4.19](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.20) (2020-02-08)
+
+ * Added auto node naming. 
+
 ### [0.4.19](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.18...v0.4.19) (2020-02-07)
+
+ * consolidate the action and list modules
 
 ### [0.4.18](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.17...v0.4.18) (2020-02-05)
 
