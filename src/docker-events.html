@@ -14,7 +14,10 @@
         icon: 'docker.png',
         label: function() {
             return this.name || this.topic || "Events"
-        }
+        },
+        paletteLabel: function () {
+            return this.name || "Events"
+        },
     });
 </script>
 

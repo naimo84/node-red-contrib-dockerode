@@ -7,17 +7,24 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
-            action: { value: "" },
+            action: { value: "inspect" },
             options: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            return this.name || "Container Action"
+            if (this.name){
+                return this.name;
+            } else {
+                return this.label||this.action//"Config Inspect";
+            }
         },
         paletteLabel: function () {
-            return this.name || "Container Action"
+            return this.name || "Container"
+        },
+        oneditsave: function () {
+            this.label = $('#node-input-action option:selected').text();
         },
         oneditprepare: function () {
             let id = this.config;
