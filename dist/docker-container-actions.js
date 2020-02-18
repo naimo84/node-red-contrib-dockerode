@@ -198,23 +198,38 @@ module.exports = function (RED) {
                     break;
                 case 'stats':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats
-                    container.stats()
-                        .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' restarted' });
-                        node.send(Object.assign(msg, { payload: res }));
-                    }).catch(function (err) {
-                        if (err.statusCode === 404) {
-                            node.error("No such container: [" + containerId + "]");
-                            node.send({ payload: err });
-                        }
-                        else if (err.statusCode === 500) {
-                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
-                            node.send({ payload: err });
-                        }
-                        else {
-                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
-                            return;
-                        }
+                    container.stats().then(function (events) {
+                        node.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
+                        events.on('data', function (data) {
+                            var event = {};
+                            try {
+                                event = JSON.parse(data.toString());
+                            }
+                            catch (e) {
+                                node.error('Error parsing JSON', e);
+                                return;
+                            }
+                            node.send({
+                                _msgid: RED.util.generateId(),
+                                type: event.Type,
+                                action: event.Action,
+                                time: event.time,
+                                timeNano: event.timeNano,
+                                payload: event
+                            });
+                        });
+                        events.on('close', function () {
+                            node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                            node.warn('Docker event stream closed.');
+                        });
+                        events.on('error', function (err) {
+                            node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                            node.error('Error:', err);
+                        });
+                        events.on('end', function () {
+                            node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
+                            node.warn('Docker event stream ended.');
+                        });
                     });
                     break;
                 case 'resize':
@@ -411,29 +426,75 @@ module.exports = function (RED) {
                     });
                     break;
                 case 'attach':
+                    /*
+                                      
+                                            container.attach(execOptions)
+                                                .then(res => {
+                                                    if (res) {
+                                                        res.start((err, input_stream) => {
+                                                            if (err) {
+                                                                //console.log("error : " + err);
+                                                                return;
+                                                            }
+                        
+                                                            var stdout = new stream.PassThrough();
+                                                            var stderr = new stream.PassThrough();
+                                                            container.modem.demuxStream(input_stream, stdout, stderr);
+                        
+                                                            let buffer_stdout = "";
+                                                            stdout.on('data', (chunk) => {
+                                                                buffer_stdout += chunk.toString();
+                                                            });
+                        
+                                                            let buffer_stderr = "";
+                                                            stderr.on('data', (chunk) => {
+                                                                buffer_stderr += chunk.toString();
+                                                            });
+                        
+                                                            input_stream.on('end', () => {
+                                                                node.send(Object.assign(msg,{ payload: buffer_stdout }));
+                                                                if(buffer_stderr.trim().length>0){
+                                                                    node.error(`Error exec container: ${buffer_stderr}`);
+                                                                }
+                                                            });
+                                                        });
+                                                    }
+                        
+                                                }).catch(err => {
+                                                    if (err.statusCode === 404) {
+                                                        node.error(`No such container: [${containerId}]`);
+                                                        node.send({ payload: err });
+                                                    } else if (err.statusCode === 500) {
+                                                        node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                                        node.send({ payload: err });
+                                                    } else {
+                                                        node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                                        return;
+                                                    }
+                                                });
+                                            break;
+                                            */
+                    /*
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach
                     container.attach(options)
-                        .then(function (res) {
-                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
-                        node.send(Object.assign(msg, { payload: res }));
-                    }).catch(function (err) {
-                        if (err.statusCode === 404) {
-                            node.error("No such container: [" + containerId + "]");
-                            node.send({ payload: err });
-                        }
-                        else if (err.statusCode === 400) {
-                            node.error("Bad parameter: [" + err.statusCode + "] " + err.reason);
-                            node.send({ payload: err });
-                        }
-                        else if (err.statusCode === 500) {
-                            node.error("Server Error: [" + err.statusCode + "] " + err.reason);
-                            node.send({ payload: err });
-                        }
-                        else {
-                            node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
-                            return;
-                        }
-                    });
+                        .then(res => {
+                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                            node.send(Object.assign(msg,{ payload: res }));
+                        }).catch(err => {
+                            if (err.statusCode === 404) {
+                                node.error(`No such container: [${containerId}]`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 400) {
+                                node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else if (err.statusCode === 500) {
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.send({ payload: err });
+                            } else {
+                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                return;
+                            }
+                        }); */
                     break;
                 /*
                 //TODO: not found in dockerode
@@ -504,7 +565,7 @@ module.exports = function (RED) {
                     break;
                 case 'archive-info':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo
-                    container.infoArchive(options)
+                    container.infoArchive({ 'path': cmd })
                         .then(function (res) {
                         node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                         node.send(Object.assign(msg, { payload: res }));
@@ -519,6 +580,7 @@ module.exports = function (RED) {
                         }
                         else {
                             node.error("Sytem Error:  [" + err.statusCode + "] " + err.reason);
+                            console.log(err);
                             return;
                         }
                     });
