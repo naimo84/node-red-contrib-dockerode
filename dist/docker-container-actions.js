@@ -196,6 +196,7 @@ module.exports = function (RED) {
                         }
                     });
                     break;
+                // TODO: make this it own objects
                 case 'stats':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats
                     container.stats().then(function (events) {
