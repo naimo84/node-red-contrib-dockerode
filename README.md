@@ -97,4 +97,4 @@ Coded with :heart: in :it:
 [badge_paypal]: https://img.shields.io/badge/Donate-PayPal-blue.svg
 [paypal-donations]: https://paypal.me/NeumannBenjamin
 [brave]: https://brave.com/nai412
-[contributing]: /CONTRIBUTING.md
+[contributing]: /CONTRIBUTING.md# node-red-contrib-flexviews
