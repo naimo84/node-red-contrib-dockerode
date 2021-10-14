@@ -7,43 +7,48 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
+            image: { value: "" },
+            imagetype: { value: "" },
             action: { value: "inspect" },
-            options: { value: "" }
+            options: { value: "" },
+            optionstype: { value: "" }
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            if (this.name){
+            if (this.name) {
                 return this.name;
             } else {
                 var actions = {
-                    "exec": "Container Exec",        
+                    "exec": "Container Exec",
+                    "run": "Container Run",
+                    "pull": "Container Image Pull",
                     "list": "Container List",
                     "create": "Container Create",
                     "inspect": "Container Inspect",
-                    "top": "Container Top", 
-                    "logs": "Container Logs", 
-                    "changes": "Container Changes", 
-                    "export": "Container Export", 
-                    "stats": "Container Stats", 
-                    "resize": "Container Resize", 
-                    "start": "Container Start", 
-                    "stop": "Container Stop", 
-                    "restart": "Container Restart", 
-                    "kill": "Container Kill", 
-                    "update": "Container Update", 
-                    "rename": "Container Rename", 
-                    "pause": "Container Pause", 
-                    "unpause": "Container Unpause", 
-                    "attach": "Container Attach", 
-                    "wait": "Container Wait", 
-                    "remove": "Container Delete", 
-                    "archive-info": "Container ArchiveInfo", 
-                    "get-archive": "Container Archive", 
+                    "top": "Container Top",
+                    "logs": "Container Logs",
+                    "changes": "Container Changes",
+                    "export": "Container Export",
+                    "stats": "Container Stats",
+                    "resize": "Container Resize",
+                    "start": "Container Start",
+                    "stop": "Container Stop",
+                    "restart": "Container Restart",
+                    "kill": "Container Kill",
+                    "update": "Container Update",
+                    "rename": "Container Rename",
+                    "pause": "Container Pause",
+                    "unpause": "Container Unpause",
+                    "attach": "Container Attach",
+                    "wait": "Container Wait",
+                    "remove": "Container Delete",
+                    "archive-info": "Container ArchiveInfo",
+                    "get-archive": "Container Archive",
                     "prune": "Container Prune"
                 };
-                return this.label||actions[this.action];
+                return this.label || actions[this.action];
             }
             console.log(this.actions);
         },
@@ -55,14 +60,22 @@
         },
         oneditprepare: function () {
             let id = this.config;
-           
+            $("#node-input-image").typedInput({
+                types: ["str", "msg"],
+                typeField: "#node-input-imagetype"
+            });
+
+            $("#node-input-options").typedInput({
+                types: ["str", "msg"],
+                typeField: "#node-input-optionstype"
+            });
 
             $("#node-input-container").click(function () {
                 $.post('containerSearch', { id: id }, function (data) {
 
                     var dataArray = [];
                     $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/','');
+                        let name = element.Names[0].replace('/', '');
                         dataArray.push(name);
                     });
                     $("#node-input-container").autocomplete({
@@ -99,6 +112,8 @@
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="exec">Container Exec</option>        
+            <option value="run">Container Run</option>        
+            <option value="pull">Container Image Pull</option>
             <option value="list">Container List</option>
             <option value="create">Container Create</option>
             <option value="inspect">Container Inspect</option>
@@ -127,6 +142,12 @@
     <div class="form-row" id="options">
         <label for="node-input-options"><i class="icon-tag"></i> Command</label>
         <input type="text" id="node-input-options">
+        <input type="hidden" id="node-input-optionstype">
+    </div>
+    <div class="form-row">
+        <label for="node-input-image"><i class="icon-tag"></i> Image</label>
+        <input type="text" id="node-input-image">
+        <input type="hidden" id="node-input-imagetype">
     </div>
 </script>
 

@@ -33,7 +33,8 @@
   ],
   "scripts": {
     "build": "gulp",
-    "release": "gulp && standard-version"
+    "release": "gulp && standard-version",
+    "dev": "gulp develop"
   },
   "node-red": {
     "nodes": {
@@ -54,7 +55,7 @@
     }
   },
   "dependencies": {
-    "dockerode": "^2.5.8",
+    "dockerode": "^3.3.1",
     "stream": "0.0.2"
   },
   "devDependencies": {
@@ -64,7 +65,10 @@
     "commitlint": "^8.1.0",
     "dockerode-mock": "^0.3.2",
     "gulp": "^4.0.2",
-    "gulp-typescript": "^5.0.1",
+    "gulp-nodemon": "^2.4.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-watch": "^5.0.1",
     "husky": "^3.0.5",
     "mocha": "6.2.0",
     "node-red": "0.20.8",
