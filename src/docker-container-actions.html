@@ -11,7 +11,8 @@
             imagetype: { value: "" },
             action: { value: "inspect" },
             options: { value: "" },
-            optionstype: { value: "" }
+            optionstype: { value: "" },
+            pullimage: { value: false },
         },
         inputs: 1,
         outputs: 1,
@@ -69,6 +70,16 @@
                 types: ["str", "msg"],
                 typeField: "#node-input-optionstype"
             });
+
+            $('#node-input-action').change(function () {
+                var action = $('#node-input-action').val();
+                if (!['pull', 'run'].includes(action)) {
+                    $('#node-input-image').parent().hide();
+                }
+                else{
+                    $('#node-input-image').parent().show();
+                }
+            })
 
             $("#node-input-container").click(function () {
                 $.post('containerSearch', { id: id }, function (data) {
