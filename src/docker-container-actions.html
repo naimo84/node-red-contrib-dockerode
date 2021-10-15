@@ -7,11 +7,11 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
-            image: { value: "" },
-            imagetype: { value: "" },
             action: { value: "inspect" },
             options: { value: "" },
             optionstype: { value: "" },
+            image: { value: "" },
+            imagetype: { value: "" },
             pullimage: { value: false },
         },
         inputs: 1,
@@ -70,17 +70,35 @@
                 types: ["str", "msg"],
                 typeField: "#node-input-optionstype"
             });
-
+            
             $('#node-input-action').change(function () {
                 var action = $('#node-input-action').val();
-                if (!['pull', 'run'].includes(action)) {
+                if (['list', 'prune', 'create', 'pull', 'run'].includes(action)) {
+                    $('#node-input-container').parent().hide();
+                } else {
+                    $('#node-input-container').parent().show();
+                }
+
+                if (['exec', 'run', 'archive-info'].includes(action)) {
+                    $('#node-input-options').parent().show();
+                } else {
+                    $('#node-input-options').parent().hide();
+                }
+
+                if (['pull', 'run'].includes(action)) {
+                    $('#node-input-image').parent().show();
+                } else {
                     $('#node-input-image').parent().hide();
                 }
-                else{
-                    $('#node-input-image').parent().show();
-                }
-            })
 
+                if (action === 'run') {
+                    $('#pull-options').show();
+                } else {
+                    $('#pull-options').hide();
+                }
+
+
+            });
             $("#node-input-container").click(function () {
                 $.post('containerSearch', { id: id }, function (data) {
 
@@ -113,18 +131,11 @@
         <input type="text" id="node-input-name">
     </div>    
     <div class="form-row">
-        <label for="node-input-container"><i class="icon-tag"></i> Container</label>
-        <input type="text" id="node-input-container" style="width: 60%">
-        <a id="node-config-lookup-uuid" class="btn">
-            <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
-        </a>
-    </div>
-    <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
         <select type="text" id="node-input-action" style="display: inline-block; vertical-align: top;">
             <option value="exec">Container Exec</option>        
             <option value="run">Container Run</option>        
-            <option value="pull">Container Image Pull</option>
+            <option value="pull">Container Pull</option>        
             <option value="list">Container List</option>
             <option value="create">Container Create</option>
             <option value="inspect">Container Inspect</option>
@@ -150,15 +161,34 @@
             <option value="prune">Container Prune</option>       
         </select>
     </div>
+    <div class="form-row">
+        <label for="node-input-container"><i class="icon-tag"></i> Container</label>
+        <input type="text" id="node-input-container" style="width: 60%">
+        <a id="node-config-lookup-uuid" class="btn">
+            <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
+        </a>
+    </div>
+    <div class="form-row" id="options">
+        <label for="node-input-image"><i class="icon-tag"></i> Image</label>
+        <input type="text" id="node-input-image">
+        <input type="hidden" id="node-input-imagetype">
+
+    </div>
     <div class="form-row" id="options">
         <label for="node-input-options"><i class="icon-tag"></i> Command</label>
         <input type="text" id="node-input-options">
         <input type="hidden" id="node-input-optionstype">
+
     </div>
-    <div class="form-row">
-        <label for="node-input-image"><i class="icon-tag"></i> Image</label>
-        <input type="text" id="node-input-image">
-        <input type="hidden" id="node-input-imagetype">
+    <div id="pull-options">
+        <div class="form-row" >
+            <label for="node-input-pullimage"><i class="icon-tag"></i> Pull Image Always</label>
+            <input type="checkbox" id="node-input-pullimage" style="width:auto">
+            <div class="form-tips" id="hint_v1">     
+                <i class="fa fa-exclamation"></i>
+                    <b>ATTENTION:</b> If Image is not present and Checkbox is false, it will fail.         
+            </div>
+        </div>
     </div>
 </script>
 
