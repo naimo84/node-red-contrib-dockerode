@@ -6,6 +6,7 @@ module.exports = {
       description: 'Connects Node RED with Docker daemon'
     }
   },
+  base: '/node-red-contrib-dockerode/',
   dest: './build',
   head: [
     ['link', { rel: 'icon', href: '/favicon.png' }],
