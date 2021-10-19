@@ -6,7 +6,7 @@ This Node RED module connects Docker with Node-RED.
 
 <p align="center">
 <a href="https://naimo84.github.io/node-red-contrib-dockerode">
-<img src="https://img.shields.io/badge/naimo84.github.io-0078D6?style=for-the-badge&logo=github&logoColor=white"/>
+    <img src="https://img.shields.io/badge/doku-naimo84.github.io-0078D6?style=for-the-badge&logo=github&logoColor=white"/>    
 </a>
 </p>
 
