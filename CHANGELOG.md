@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.22](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.22) (2021-10-25)
+
+
+### Features
+
+* add docker run ([06d85ba](https://github.com/naimo84/node-red-contrib-dockerode/commit/06d85ba30f8d713cd0dd5307bef459404fe5f28f))
+* add docker run [#24](https://github.com/naimo84/node-red-contrib-dockerode/issues/24) ([ca10d6b](https://github.com/naimo84/node-red-contrib-dockerode/commit/ca10d6b2af5dc3a6580fe1133a70075e95965883))
+* publish docs ([c2dc017](https://github.com/naimo84/node-red-contrib-dockerode/commit/c2dc017e32a14f7290e4dcfd519a6ff94c635454))
+* publish docs ([0cac125](https://github.com/naimo84/node-red-contrib-dockerode/commit/0cac1254dd58317d8112932e2ed5f69c6e80cda8))
+* remove dist ([541af36](https://github.com/naimo84/node-red-contrib-dockerode/commit/541af3654d851efb8c7f21b853faf184b493ba35))
+
+
+### Bug Fixes
+
+* empty createOptions ([8d15df4](https://github.com/naimo84/node-red-contrib-dockerode/commit/8d15df4b840a411514b2aab5952613fff50bf672))
+
 ### [0.4.21](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.20...v0.4.21) (2020-02-18)
  * Docker Container Stats fixed
 
