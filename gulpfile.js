@@ -12,8 +12,8 @@ var paths = {
 };
 
 function copyHtml() {
-    gulp.src('src/*.svg', { base: paths.src })
-        .pipe(gulp.dest(paths.dist+'/icons'))
+    gulp.src('src/icons/*.png', { base: paths.src })
+        .pipe(gulp.dest(paths.dist))
     return gulp.src(paths.pages, { base: paths.src })
         .pipe(gulp.dest(paths.dist));
 }
@@ -29,7 +29,7 @@ gulp.task('develop', function (done) {
         ignore: ["*.map"],
         done: done,
         verbose: true,
-        delay: 2000,
+        delay: 1000,
         env: { "NO_UPDATE_NOTIFIER": "1" }
     });
 

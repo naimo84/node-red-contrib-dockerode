@@ -11,6 +11,7 @@
         "target": "es5",
         "moduleResolution": "node",
         "strict": false,
+        "sourceMap": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
     },

@@ -13,6 +13,10 @@
             image: { value: "" },
             imagetype: { value: "" },
             pullimage: { value: false },
+            createOptions: {},
+            startOptions: {},
+            createOptionsType: {},
+            startOptionsType: {}
         },
         inputs: 1,
         outputs: 1,
@@ -64,6 +68,16 @@
             $("#node-input-image").typedInput({
                 types: ["str", "msg"],
                 typeField: "#node-input-imagetype"
+            });
+
+            $("#node-input-startOptions").typedInput({
+                types: ["json", "msg"],
+                typeField: "#node-input-startOptionsType"
+            });
+
+            $("#node-input-createOptions").typedInput({
+                types: ["json", "msg"],
+                typeField: "#node-input-createOptionsType"
             });
 
             $("#node-input-options").typedInput({
@@ -180,7 +194,20 @@
         <input type="hidden" id="node-input-optionstype">
 
     </div>
+
     <div id="pull-options">
+        <div class="form-row" id="options">
+            <label for="node-input-createOptions"><i class="icon-tag"></i> createOptions</label>
+            <input type="text" id="node-input-createOptions">
+            <input type="hidden" id="node-input-createOptionsType">
+    
+        </div>
+        <!-- <div class="form-row" id="options">
+            <label for="node-input-startOptions"><i class="icon-tag"></i> startOptions</label>
+            <input type="text" id="node-input-startOptions">
+            <input type="hidden" id="node-input-startOptionsType">
+    
+        </div> -->
         <div class="form-row" >
             <label for="node-input-pullimage"><i class="icon-tag"></i> Pull Image Always</label>
             <input type="checkbox" id="node-input-pullimage" style="width:auto">

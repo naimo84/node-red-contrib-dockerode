@@ -15,7 +15,7 @@ module.exports = function (RED: Red) {
             let cmd = n.options || msg.cmd || msg.comand || msg.payload?.comand || undefined;
             let image = RED.util.evaluateNodeProperty(n.image, n.imagetype, n, msg);
             let action = n.action || msg.action || msg.payload?.action || undefined;
-            let options = msg.options || msg.options || msg.payload?.options || RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg)||  undefined;
+            let options = msg.options || msg.options || msg.payload?.options || RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg) || undefined;
             let containerId: string = n.container || msg.payload?.containerId || msg.containerId || msg.payload?.containerName || msg.containerName || undefined;
 
             if (containerId === undefined && !['list', 'prune', 'create', 'pull', 'run'].includes(action)) {
@@ -26,7 +26,9 @@ module.exports = function (RED: Red) {
 
             executeAction(containerId, options, cmd, client, action, this, msg, image, {
                 cmd: cmd,
-                pullimage: n.pullimage
+                pullimage: n.pullimage,
+                createOptions: RED.util.evaluateNodeProperty(n.createOptions, n.createOptionsType, n, msg) || {},
+                startOptions: RED.util.evaluateNodeProperty(n.startOptions !== '' ? n.startOptions : '{}', n.startOptionsType, n, msg)
             });
         });
 
@@ -48,7 +50,7 @@ module.exports = function (RED: Red) {
                         client.pull(image, { "disable-content-trust": "false" }, function (_err, pull) {
                             client.modem.followProgress(pull, (_err, _output) => {
                                 //@ts-ignore
-                                client.run(image, ['sh', '-c', config.cmd], false, {}, {}, (err, data, container) => {
+                                client.run(image, [config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
                                     if (err) {
                                         node.error(err);
                                         node.send(Object.assign(msg, { payload: {}, err: err }))
@@ -62,7 +64,7 @@ module.exports = function (RED: Red) {
                         });
                     } else {
                         //@ts-ignore
-                        client.run(image, ['sh', '-c', config.cmd], false, {}, {}, (err, data, container) => {
+                        client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
                             if (err) {
                                 node.error(err);
                                 node.send(Object.assign(msg, { payload: {}, err: err }))
