@@ -27,7 +27,7 @@ module.exports = function (RED: Red) {
             executeAction(containerId, options, cmd, client, action, this, msg, image, {
                 cmd: cmd,
                 pullimage: n.pullimage,
-                createOptions: RED.util.evaluateNodeProperty(n.createOptions, n.createOptionsType, n, msg) || {},
+                createOptions: RED.util.evaluateNodeProperty(n.createOptions !== '' ? n.createOptions : '{}', n.createOptionsType, n, msg) || {},
                 startOptions: RED.util.evaluateNodeProperty(n.startOptions !== '' ? n.startOptions : '{}', n.startOptionsType, n, msg)
             });
         });
