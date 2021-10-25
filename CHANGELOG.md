@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.22...v0.5.0) (2021-10-25)
+
 ### [0.4.22](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.22) (2021-10-25)
 
 
