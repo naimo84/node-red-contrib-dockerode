@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.5.0...v0.6.0) (2021-10-26)
+
+
+### Features
+
+* add npmignore ([e5d4228](https://github.com/naimo84/node-red-contrib-dockerode/commit/e5d4228ff0fedf7d2fb9d31ceec24341f49558cd))
+
 ## [0.5.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.22...v0.5.0) (2021-10-25)
 
 ### [0.4.22](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.4.19...v0.4.22) (2021-10-25)
