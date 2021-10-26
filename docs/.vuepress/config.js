@@ -37,9 +37,9 @@ module.exports = {
   },
   theme: '@vuepress/theme-default',
   themeConfig: {
-    repo: 'naimo84/node-red-contrib-dockerode.github.io',
+    repo: 'naimo84/node-red-contrib-dockerode',
     docsDir: 'docs',
-    docsBranch: 'main',
+    docsBranch: 'docs',
     editLinks: true,
     sidebarDepth: 3,
     locales: {
@@ -58,8 +58,16 @@ module.exports = {
           }
         ],
         sidebar: {
-          '/guide/': [
-            // '/guide/',
+          '/guide/': [            
+            {
+                title: 'Overview',
+                path: '/guide/',
+                collapsable: false,
+                children: [
+                  '/guide/docker-container-actions',
+                ]
+              },
+            '/guide/debug'
             // {
             //   title: 'Installation',
             //   path: '/guide/installation',
@@ -99,7 +107,7 @@ module.exports = {
             //   ]
             // },
           ]
-          
+
         }
       }
     }
