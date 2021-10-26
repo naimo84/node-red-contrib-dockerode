@@ -34,7 +34,7 @@ module.exports = function (RED: Red) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -51,7 +51,7 @@ module.exports = function (RED: Red) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -68,7 +68,7 @@ module.exports = function (RED: Red) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
@@ -84,7 +84,7 @@ module.exports = function (RED: Red) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`Sytem Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
                                 return;
                             }
                         });
