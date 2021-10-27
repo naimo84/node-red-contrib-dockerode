@@ -81,7 +81,7 @@
             });
 
             $("#node-input-options").typedInput({
-                types: ["str", "msg"],
+                types: ["str", "json", "msg"],
                 typeField: "#node-input-optionstype"
             });
 
@@ -93,7 +93,7 @@
                     $('#node-input-container').parent().show();
                 }
 
-                if (['exec', 'run', 'archive-info'].includes(action)) {
+                if (['create', 'exec', 'run', 'archive-info'].includes(action)) {
                     $('#node-input-options').parent().show();
                 } else {
                     $('#node-input-options').parent().hide();
@@ -189,7 +189,7 @@
 
     </div>
     <div class="form-row" id="options">
-        <label for="node-input-options"><i class="icon-tag"></i> Command</label>
+        <label for="node-input-options"><i class="icon-tag"></i> Options/Command</label>
         <input type="text" id="node-input-options">
         <input type="hidden" id="node-input-optionstype">
 
