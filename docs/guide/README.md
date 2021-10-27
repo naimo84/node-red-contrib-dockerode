@@ -9,6 +9,7 @@ This Node RED module connects Docker with Node-RED.
 ## Nodes
 
 - [docker-container-actions](./docker-container-actions.md)
+- [docker-node-actions](./docker-node-actions.md)
 
 ## Debugging
 
