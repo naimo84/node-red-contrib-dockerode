@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.8.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.7.0...v0.8.0) (2021-10-27)
+
+
+### Features
+
+* add recconnect for docker events [#17](https://github.com/naimo84/node-red-contrib-dockerode/issues/17) ([7812253](https://github.com/naimo84/node-red-contrib-dockerode/commit/781225364031fcda29a3db8ccc0a1e00f35994ea))
+
 ## [0.7.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.6.1...v0.7.0) (2021-10-27)
 
 
