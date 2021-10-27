@@ -9,8 +9,8 @@
             name: {value: ""},         
             config: {value: "", type: "docker-configuration"}
         },
-        inputs: 0,
-        outputs: 1,
+        inputs: 1,
+        outputs: 2,
         icon: 'docker.png',
         label: function() {
             return this.name || this.topic || "Events"
@@ -30,6 +30,12 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name">
     </div> 
+    <hr>
+    <div class="form-row">
+        <a href="https://naimo84.github.io/node-red-contrib-dockerode/guide/docker-events.html" target="_blank">
+            <img src="https://img.shields.io/badge/doku-naimo84.github.io-0078D6?style=for-the-badge&logo=github&logoColor=white"/>
+        </a>
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="docker-events">
