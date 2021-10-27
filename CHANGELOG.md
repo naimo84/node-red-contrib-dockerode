@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.8.0...v0.9.0) (2021-10-27)
+
+
+### Features
+
+* [#12](https://github.com/naimo84/node-red-contrib-dockerode/issues/12) container create ([a7b647c](https://github.com/naimo84/node-red-contrib-dockerode/commit/a7b647c24fd7ffeb6873ac66c67ceb0c93c5bc92))
+
 ## [0.8.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.7.0...v0.8.0) (2021-10-27)
 
 
