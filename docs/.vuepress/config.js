@@ -65,6 +65,8 @@ module.exports = {
                 collapsable: false,
                 children: [
                   '/guide/docker-container-actions',
+                  '/guide/docker-events',
+                  '/guide/docker-node-actions',
                 ]
               },
             '/guide/debug'
