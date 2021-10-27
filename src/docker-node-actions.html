@@ -7,13 +7,15 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             node: { value: "" },
-            action: { value: "inspect" }
+            action: { value: "inspect" },
+            options: { value: "" },
+            optionstype: { value: "" },
         },
         inputs: 1,
         outputs: 1,
         icon: 'docker.png',
         label: function () {
-            if (this.name){
+            if (this.name) {
                 return this.name;
             } else {
                 var actions = {
@@ -22,7 +24,7 @@
                     "remove": "Node Remove",
                     "update": "Node Update"
                 };
-                return this.label||actions[this.action];
+                return this.label || actions[this.action];
             }
         },
         paletteLabel: function () {
@@ -35,12 +37,17 @@
             let id = this.config;
             $('#node-input-action').change(function () {
                 var value = $('#node-input-action').val()
-                if (value !== 'exec') {
-                    $('#options').hide()
-                } else {
+                if (['update'].includes(value)) {
                     $('#options').show()
+                } else {
+                    $('#options').hide()
                 }
             })
+
+            $("#node-input-options").typedInput({
+                types: ["json", "msg"],
+                typeField: "#node-input-optionstype"
+            });
 
 
             $("#node-input-node").click(function () {
@@ -90,8 +97,15 @@
         </select>
     </div>
     <div class="form-row" id="options">
-        <label for="node-input-options"><i class="icon-tag"></i> Command</label>
-        <input type="text" id="node-input-options">
+        <label for="node-input-options"><i class="icon-tag"></i> Options</label>
+        <input type="text" id="node-input-options" placeholder="{ 'Availability': 'active', 'Name': 'node-name', 'Role': 'manager',  'Labels': { 'foo': 'bar' }}">
+        <input type="hidden" id="node-input-optionstype" >
+    </div>
+    <hr>
+    <div class="form-row">
+        <a href="https://naimo84.github.io/node-red-contrib-dockerode/guide/docker-container-actions.html" target="_blank">
+            <img src="https://img.shields.io/badge/doku-naimo84.github.io-0078D6?style=for-the-badge&logo=github&logoColor=white"/>
+        </a>
     </div>
 </script>
 

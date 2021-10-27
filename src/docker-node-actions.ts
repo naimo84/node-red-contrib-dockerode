@@ -3,7 +3,7 @@ import { DockerConfiguration } from './docker-configuration';
 import * as Dockerode from 'dockerode';
 
 module.exports = function (RED: Red) {
- 
+
     function DockerNodeAction(n: any) {
         RED.nodes.createNode(this, n);
         let config = RED.nodes.getNode(n.config) as unknown as DockerConfiguration;
@@ -18,21 +18,23 @@ module.exports = function (RED: Red) {
                 return;
             }
             this.status({});
-            executeAction(nodeId, client, action, this,msg);
+            executeAction(nodeId, client, action, this, msg, {
+                options: RED.util.evaluateNodeProperty(n.options !== '' ? n.options : '{}', n.optionstype, n, msg) || {},
+            });
         });
 
-        function executeAction(nodeId: string, client: Dockerode, action: string, node: Node,msg) {
+        function executeAction(nodeId: string, client: Dockerode, action: string, node: Node, msg, config: { options: {} }) {
 
             let nodeClient = client.getNode(nodeId);
 
             switch (action) {
- 
+
                 case 'list':
                     // https://docs.docker.com/engine/api/v1.40/#operation/NodeList
                     client.listNodes({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: nodeId + ' started' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 400) {
                                 node.error(`Bad parameter:  ${err.reason}`);
@@ -51,7 +53,7 @@ module.exports = function (RED: Red) {
                     nodeClient.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: nodeId + ' started' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -67,7 +69,7 @@ module.exports = function (RED: Red) {
                     nodeClient.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: nodeId + ' stopped' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -80,16 +82,16 @@ module.exports = function (RED: Red) {
                     break;
                 case 'update':
                     // https://docs.docker.com/engine/api/v1.40/#operation/NodeUpdate
-                    nodeClient.update()
+                    nodeClient.update(config.options)
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: nodeId + ' restarted' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error: [${err.statusCode}] ${err}`);
                                 return;
                             }
                         });
