@@ -70,45 +70,8 @@ module.exports = {
                   '/guide/docker-volume-actions',
                 ]
               },
-            '/guide/debug'
-            // {
-            //   title: 'Installation',
-            //   path: '/guide/installation',
-            //   collapsable: false,
-            //   children: [
-            //     '/guide/installation_cli',
-            //     '/guide/installation_vscode',
-            //     '/guide/installation_httpbook'
-            //   ]
-            // },
-            // {
-            //   title: 'Language',
-            //   collapsable: false,
-            //   children: [
-            //     '/guide/request',
-            //     '/guide/metaData',
-            //     '/guide/variables',
-            //     '/guide/environments',
-            //     '/guide/scripting',
-            //     '/guide/comment',
-            //     '/guide/hooks'
-            //   ]
-            // },
-            // '/guide/troubleshooting',
-            // {
-            //   title: 'Examples',
-            //   collapsable: false,
-            //   path: '/guide/examples',
-            //   children: [
-            //     '/guide/examples_arbeitsagentur',
-            //     '/guide/examples_github',
-            //     '/guide/examples_grpcbin',
-            //     '/guide/examples_httpbin',
-            //     '/guide/examples_learnwebservices',
-            //     '/guide/examples_spacex',
-            //     '/guide/examples_springboot'
-            //   ]
-            // },
+            '/guide/debug',
+            '/guide/examples',           
           ]
 
         }
