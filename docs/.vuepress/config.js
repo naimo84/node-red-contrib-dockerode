@@ -67,6 +67,7 @@ module.exports = {
                   '/guide/docker-container-actions',
                   '/guide/docker-events',
                   '/guide/docker-node-actions',
+                  '/guide/docker-volume-actions',
                 ]
               },
             '/guide/debug'
