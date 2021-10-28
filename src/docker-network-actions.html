@@ -7,6 +7,9 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             network: { value: "" },
+            networktype: { value: "" },
+            options: { value: "" },
+            optionstype: { value: "" },
             action: { value: "inspect" }
         },
         inputs: 1,
@@ -40,7 +43,14 @@
                 var value = $('#node-input-action').val()
             })
 
-
+            $("#node-input-network").typedInput({
+                types: ["str", "msg"],
+                typeField: "#node-input-networktype"
+            });
+            $("#node-input-options").typedInput({
+                types: ["json", "msg"],
+                typeField: "#node-input-optionstype"
+            });
             $("#node-input-network").click(function () {
                 $.post('networkSearch', { id: id }, function (data) {
                     var dataArray = [];
@@ -74,9 +84,15 @@
     <div class="form-row">
         <label for="node-input-network"><i class="icon-tag"></i> Network</label>
         <input type="text" id="node-input-network" style="width: 60%">
+        <input type="hidden" id="node-input-networktype" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
+    </div>
+    <div class="form-row">
+        <label for="node-input-options"><i class="icon-tag"></i> Options</label>
+        <input type="text" id="node-input-options" style="width: 60%">
+        <input type="hidden" id="node-input-optionstype" style="width: 60%">
     </div>
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
@@ -89,6 +105,12 @@
             <option value="prune">Network Prune</option>
             <option value="create">Network Create</option>
         </select>
+    </div>
+    <hr>
+    <div class="form-row">
+        <a href="https://naimo84.github.io/node-red-contrib-dockerode/guide/docker-network-actions.html" target="_blank">
+            <img src="https://img.shields.io/badge/doku-naimo84.github.io-0078D6?style=for-the-badge&logo=github&logoColor=white"/>
+        </a>
     </div>
 </script>
 

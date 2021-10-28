@@ -10,19 +10,19 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let networkId: string = n.network || msg.payload.networkId || msg.networkId || undefined;
+            let networkId: string = RED.util.evaluateNodeProperty(n.network !== '' ? n.network : '{}', n.networktype, n, msg) || msg.payload.networkId || msg.networkId || undefined;
             let action = n.action || msg.action || msg.payload.action || undefined;
-            let options = n.options || msg.options || msg.payload.options || undefined;
+            let options = RED.util.evaluateNodeProperty(n.options !== '' ? n.options : '{}', n.optionstype, n, msg) || msg.options || msg.payload.options || undefined;
 
             if (networkId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Network id/name must be provided via configuration or via `msg.network`");
                 return;
             }
             this.status({});
-            executeAction(networkId, options, client, action, this,msg);
+            executeAction(networkId, options, client, action, this, msg);
         });
 
-        function executeAction(networkId: string, options: any, client: Dockerode, action: string, node: Node,msg) {
+        async function executeAction(networkId: string, options: any, client: Dockerode, action: string, node: Node, msg) {
 
             let network = client.getNetwork(networkId);
 
@@ -33,7 +33,7 @@ module.exports = function (RED: Red) {
                     client.listNetworks({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' started' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 400) {
                                 node.error(`Bad parameter:  ${err.reason}`);
@@ -53,7 +53,7 @@ module.exports = function (RED: Red) {
                     network.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' started' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -70,7 +70,7 @@ module.exports = function (RED: Red) {
                     network.remove()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -87,7 +87,7 @@ module.exports = function (RED: Red) {
                     network.connect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -104,7 +104,7 @@ module.exports = function (RED: Red) {
                     network.disconnect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -118,10 +118,10 @@ module.exports = function (RED: Red) {
 
                 case 'prune':
                     // https://docs.docker.com/engine/api/v1.40/#operation/NetworkPrune
-                    client.pruneImages()
+                    client.pruneNetworks()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
+                            node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
@@ -133,22 +133,34 @@ module.exports = function (RED: Red) {
                         });
                     break;
                 case 'create':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/NetworkCreate
-                    client.createNetwork(options)
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: networkId + ' remove' });
-                            node.send(Object.assign(msg,{ payload: res }));
-                        }).catch(err => {
-                            if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                return;
-                            }
-                        });
+                    let create = false;
+                    try {
+                        await network.inspect();
+                    } catch (err) {
+                        create = true
+                    }
+                    if (create) {
+                        // https://docs.docker.com/engine/api/v1.40/#operation/NetworkCreate
+                        client.createNetwork(Object.assign(options, { 'name': networkId }))
+                            .then(res => {
+                                node.status({ fill: 'green', shape: 'dot', text: networkId + ' created' });
+                                node.send(Object.assign(msg, { payload: res }));
+                            }).catch(err => {
+                                if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                    node.send({ payload: err });
+                                } else {
+                                    node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                    return;
+                                }
+                            });
+                    }
+                    else {
+                        node.status({ fill: 'green', shape: 'dot', text: networkId + ' already exists' });
+                        node.send(Object.assign(msg, { payload: {} }));
+                    }
                     break;
-                
+
                 default:
                     node.error(`Called with an unknown action: ${action}`);
                     return;
@@ -174,7 +186,7 @@ module.exports = function (RED: Red) {
             .then(networks => discoveryCallback(networks))
             .catch(err => this.error(err));
     }
-    
+
     RED.nodes.registerType('docker-network-actions', DockerNetworkAction);
 }
 

@@ -7,6 +7,7 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             container: { value: "" },
+            containertype: { value: "" },
             action: { value: "inspect" },
             options: { value: "" },
             optionstype: { value: "" },
@@ -65,6 +66,11 @@
         },
         oneditprepare: function () {
             let id = this.config;
+            $("#node-input-container").typedInput({
+                types: ["str", "msg"],
+                typeField: "#node-input-containertype"
+            });
+
             $("#node-input-image").typedInput({
                 types: ["str", "msg"],
                 typeField: "#node-input-imagetype"
@@ -87,7 +93,7 @@
 
             $('#node-input-action').change(function () {
                 var action = $('#node-input-action').val();
-                if (['list', 'prune', 'create', 'pull', 'run'].includes(action)) {
+                if (['list', 'prune',  'pull', 'run'].includes(action)) {
                     $('#node-input-container').parent().hide();
                 } else {
                     $('#node-input-container').parent().show();
@@ -178,6 +184,7 @@
     <div class="form-row">
         <label for="node-input-container"><i class="icon-tag"></i> Container</label>
         <input type="text" id="node-input-container" style="width: 60%">
+        <input type="hidden" id="node-input-containertype" style="width: 60%">
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>

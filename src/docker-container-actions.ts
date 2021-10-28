@@ -16,10 +16,10 @@ module.exports = function (RED: Red) {
             let cmd = n.options || msg.cmd || msg.comand || msg.payload?.comand || undefined;
             let image = RED.util.evaluateNodeProperty(n.image, n.imagetype, n, msg);
             let action = n.action || msg.action || msg.payload?.action || undefined;
-            let options = msg.options || msg.options || msg.payload?.options || RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg) || undefined;
-            let containerId: string = n.container || msg.payload?.containerId || msg.containerId || msg.payload?.containerName || msg.containerName || undefined;
+            let options = RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg) || msg.options || msg.options || msg.payload?.options || undefined;
+            let containerId: string = RED.util.evaluateNodeProperty(n.container, n.containertype, n, msg) || msg.payload?.containerId || msg.containerId || msg.payload?.containerName || msg.containerName || undefined;
 
-            if (containerId === undefined && !['list', 'prune', 'create', 'pull', 'run'].includes(action)) {
+            if (containerId === undefined && !['list', 'prune', 'pull', 'run'].includes(action)) {
                 this.error("Container id/name must be provided via configuration or via `msg.containerId`");
                 return;
             }
@@ -136,7 +136,7 @@ module.exports = function (RED: Red) {
 
                 case 'list':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerList
-                    
+
                     client.listContainers({ all: true })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
@@ -158,7 +158,7 @@ module.exports = function (RED: Red) {
 
                 case 'inspect':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerInspect
-                   
+
                     container.inspect()
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' inspected' });
@@ -171,7 +171,7 @@ module.exports = function (RED: Red) {
                             } else if (err.statusCode === 500) {
                                 node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
                                 node.send({ payload: err });
-                            } else {                               
+                            } else {
                                 node.error(`System Error:  [${err}]`);
                                 return;
                             }
@@ -496,103 +496,6 @@ module.exports = function (RED: Red) {
                         });
                     break;
 
-                case 'attach':
-                    /*
-                                      
-                                            container.attach(execOptions)
-                                                .then(res => {
-                                                    if (res) {
-                                                        res.start((err, input_stream) => {
-                                                            if (err) {
-                                                                //console.log("error : " + err);
-                                                                return;
-                                                            }
-                        
-                                                            var stdout = new stream.PassThrough();
-                                                            var stderr = new stream.PassThrough();
-                                                            container.modem.demuxStream(input_stream, stdout, stderr);
-                        
-                                                            let buffer_stdout = "";
-                                                            stdout.on('data', (chunk) => {
-                                                                buffer_stdout += chunk.toString();
-                                                            });
-                        
-                                                            let buffer_stderr = "";
-                                                            stderr.on('data', (chunk) => {
-                                                                buffer_stderr += chunk.toString();
-                                                            });
-                        
-                                                            input_stream.on('end', () => {
-                                                                node.send(Object.assign(msg,{ payload: buffer_stdout }));                                       
-                                                                if(buffer_stderr.trim().length>0){
-                                                                    node.error(`Error exec container: ${buffer_stderr}`);
-                                                                }
-                                                            });
-                                                        });
-                                                    }
-                        
-                                                }).catch(err => {
-                                                    if (err.statusCode === 404) {
-                                                        node.error(`No such container: [${containerId}]`);
-                                                        node.send({ payload: err });
-                                                    } else if (err.statusCode === 500) {
-                                                        node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                                        node.send({ payload: err });
-                                                    } else {
-                                                        node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                                        return;
-                                                    }
-                                                });
-                                            break;
-                                            */
-                    /*
-                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttach
-                    container.attach(options)
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
-                            node.send(Object.assign(msg,{ payload: res }));
-                        }).catch(err => {
-                            if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
-                                node.send({ payload: err });
-                            } else if (err.statusCode === 400) {
-                                node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                return;
-                            }
-                        }); */
-                    break;
-                /*
-                //TODO: not found in dockerode
-                                    case 'attach-ws':
-                                        // https://docs.docker.com/engine/api/v1.40/#operation/ContainerAttachWebsocket
-                                        container.attach-ws()
-                                            .then(res => {
-                                                node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
-                                                node.send(Object.assign(msg,{ payload: res }));
-                                            }).catch(err => {
-                                                if (err.statusCode === 404) {
-                                                    node.error(`No such container: [${containerId}]`);
-                                                    node.send({ payload: err });
-                                                } else if (err.statusCode === 400) {
-                                                    node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
-                                                    node.send({ payload: err });
-                                                } else if (err.statusCode === 500) {
-                                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                                    node.send({ payload: err });
-                                                } else {
-                                                    node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                                    return;
-                                                }
-                                            });
-                                        break;
-                */
-
                 case 'wait':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerWait
                     container.wait()
@@ -678,36 +581,6 @@ module.exports = function (RED: Red) {
                         });
                     break;
 
-                /*
-                //TODO: fix file option
-                                case 'putArchive':
-                                    // https://docs.docker.com/engine/api/v1.40/#operation/PutContainerArchive
-                                    container.putArchive(file, options)
-                                        .then(res => {
-                                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
-                                            node.send(Object.assign(msg,{ payload: res }));
-                                        }).catch(err => {
-                                            if (err.statusCode === 404) {
-                                                node.error(`No such container or path does not exist inside the container: [${containerId}]`);
-                                                node.send({ payload: err });
-                                            } else if (err.statusCode === 400) {
-                                                node.error(`Bad parameter: [${err.statusCode}] ${err.reason}`);
-                                                node.send({ payload: err });
-                                            } else if (err.statusCode === 403) {
-                                                node.error(` Permission denied, the volume or container rootfs is marked as read-only.: [${err.statusCode}] ${err.reason}`);
-                                                node.send({ payload: err });
-                                            } else if (err.statusCode === 500) {
-                                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                                node.send({ payload: err });
-                                            } else {
-                                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                                return;
-                                            }
-                                        });
-                                    break;
-                */
-
-                //TODO: not found in dockerode
                 case 'prune':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerPrune
                     client.pruneContainers()
@@ -731,23 +604,34 @@ module.exports = function (RED: Red) {
 
                 case 'create':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerCreate
-                    client.createContainer(options)
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
-                            node.send(Object.assign(msg, { payload: res }));
-                        }).catch(err => {
-                            debug(err)
-                            if (err.statusCode === 400) {
-                                node.error(`Bad parmeter: [${err.reason}]`);
-                                node.send({ payload: err });
-                            } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err}`);
-                                return;
-                            }
-                        });
+                    let create = false;
+                    try {
+                        const stats = await container.stats()
+                        console.log(stats.read)
+                    } catch (err) {
+                        create = true
+                    }
+                    if (create) {
+                        client.createContainer(Object.assign(options, { 'name': containerId }))
+                            .then(res => {
+                                node.status({ fill: 'green', shape: 'dot', text: containerId + ' started' });
+                                node.send(Object.assign(msg, { payload: res }));
+                            }).catch(err => {
+                                debug(err)
+                                if (err.statusCode === 400) {
+                                    node.error(`Bad parmeter: [${err.reason}]`);
+                                    node.send({ payload: err });
+                                } else if (err.statusCode === 500) {
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                    node.send({ payload: err });
+                                } else {
+                                    node.error(`System Error:  [${err.statusCode}] ${err}`);
+                                    return;
+                                }
+                            });
+                    }else{
+                        node.send(Object.assign(msg, { payload: {} }));
+                    }
                     break;
                 default:
                     node.error(`Called with an unknown action: ${action}`);
