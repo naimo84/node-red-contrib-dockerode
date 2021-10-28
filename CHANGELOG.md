@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.9.0...v0.10.0) (2021-10-28)
+
+
+### Features
+
+* extended nodes for pull-create-start flow, [#12](https://github.com/naimo84/node-red-contrib-dockerode/issues/12) ([ff4d379](https://github.com/naimo84/node-red-contrib-dockerode/commit/ff4d3795951b30c1f972cad7f7f09ed6f2bd7adb))
+* volumes create ([fd3fb7c](https://github.com/naimo84/node-red-contrib-dockerode/commit/fd3fb7c7327346aabd53309e274561a3fb69733d))
+
 ## [0.9.0](https://github.com/naimo84/node-red-contrib-dockerode/compare/v0.8.0...v0.9.0) (2021-10-27)
 
 
