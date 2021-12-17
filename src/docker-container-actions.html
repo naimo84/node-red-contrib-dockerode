@@ -65,10 +65,38 @@
             this.label = $('#node-input-action option:selected').text();
         },
         oneditprepare: function () {
+            var dataArray = [];
             let id = this.config;
+            $.post('containerSearch', { id: id }, function (data) {
+                $.each(data, function (i, element) {
+                    let name = element.Names[0].replace('/', '');
+                    dataArray.push(name);
+                });
+            });
+
+            
+            
             $("#node-input-container").typedInput({
                 types: ["str", "msg"],
-                typeField: "#node-input-containertype"
+                typeField: "#node-input-containertype",
+                autoComplete: function (val) {
+
+console.log(val)
+console.log(dataArray)
+                    var matches = [];
+                    dataArray.forEach(v => {
+                        var i = v.toLowerCase().indexOf(val.toLowerCase());
+                        if (i > -1) {
+                            matches.push({
+                                value: v,
+                                label: v,
+                                i: i
+                            })
+                        }
+                    });
+                    matches.sort(function (A, B) { return A.i - B.i })
+                    return matches
+                }
             });
 
             $("#node-input-image").typedInput({
@@ -93,7 +121,7 @@
 
             $('#node-input-action').change(function () {
                 var action = $('#node-input-action').val();
-                if (['list', 'prune',  'pull', 'run'].includes(action)) {
+                if (['list', 'prune', 'pull', 'run'].includes(action)) {
                     $('#node-input-container').parent().hide();
                 } else {
                     $('#node-input-container').parent().show();
@@ -119,23 +147,7 @@
 
 
             });
-            $("#node-input-container").click(function () {
-                $.post('containerSearch', { id: id }, function (data) {
 
-                    var dataArray = [];
-                    $.each(data, function (i, element) {
-                        let name = element.Names[0].replace('/', '');
-                        dataArray.push(name);
-                    });
-                    $("#node-input-container").autocomplete({
-                        source: dataArray,
-                        minLength: 0,
-                        close: function (event, ui) {
-                            $("#node-input-container").autocomplete("destroy");
-                        }
-                    }).autocomplete("search", "");
-                });
-            });
 
         },
     })

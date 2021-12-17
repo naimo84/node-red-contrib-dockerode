@@ -201,23 +201,30 @@ module.exports = function (RED: Red) {
 
                 case 'logs':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerLogs
-                    container.logs()
-                        .then(res => {
-                            node.status({ fill: 'green', shape: 'dot', text: containerId + ' restarted' });
-                            node.send(Object.assign(msg, { payload: res }));
-                        }).catch(err => {
-                            debug(err)
-                            if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
-                                node.send({ payload: err });
-                            } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
-                                node.send({ payload: err });
-                            } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
-                                return;
-                            }
-                        });
+                    let since = node.context().get("log_since") || 0;
+                    node.warn("Getting logs since " + since);
+                    container.logs({
+                        stdout: true,
+                        stderr: true,
+                        since: since,
+                        follow: false
+                    }).then(res => {
+                        node.status({ fill: 'green', shape: 'dot', text: containerId + ' logs read' });
+                        node.context().set("log_since", Math.floor((new Date()).getTime() / 1000));
+                        node.send(Object.assign(msg, { payload: res }));
+                    }).catch(err => {
+                        debug(err)
+                        if (err.statusCode === 404) {
+                            node.error(`No such container: [${containerId}]`);
+                            node.send({ payload: err });
+                        } else if (err.statusCode === 500) {
+                            node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                            node.send({ payload: err });
+                        } else {
+                            node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                            return;
+                        }
+                    });
                     break;
 
                 case 'changes':
@@ -629,7 +636,7 @@ module.exports = function (RED: Red) {
                                     return;
                                 }
                             });
-                    }else{
+                    } else {
                         node.send(Object.assign(msg, { payload: {} }));
                     }
                     break;
@@ -649,14 +656,16 @@ module.exports = function (RED: Red) {
         discoverSonos(config, (containers) => {
             RED.log.debug("GET /containerSearch: " + containers.length + " found");
             res.json(containers);
+        }, (err) => {
+            res.json(err)
         });
     });
 
-    function discoverSonos(config, discoveryCallback) {
+    function discoverSonos(config, discoveryCallback, errCallback) {
         let client = config.getClient();
         client.listContainers({ all: true })
             .then(containers => discoveryCallback(containers))
-            .catch(err => this.error(err));
+            .catch(err => errCallback(err));
     }
 
     RED.nodes.registerType('docker-container-actions', DockerContainerAction);
