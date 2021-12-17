@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-dockerode",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "node-red nodes to communicate with docker",
   "author": {
     "name": "naimo84",
@@ -34,7 +34,7 @@
   "scripts": {
     "prepack": "gulp",
     "build": "gulp",
-    "release": "release-it",    
+    "release": "release-it",
     "dev": "gulp develop"
   },
   "node-red": {
