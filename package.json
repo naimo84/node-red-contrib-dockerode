@@ -32,9 +32,9 @@
     }
   ],
   "scripts": {
+    "prepack": "gulp",
     "build": "gulp",
-    "release": "standard-version  --release-as minor",
-    "release-bugfix": "standard-version",
+    "release": "release-it",    
     "dev": "gulp develop"
   },
   "node-red": {
@@ -77,8 +77,23 @@
     "node-red-contrib-mock-node": "^0.4.0",
     "node-red-node-test-helper": "^0.2.3",
     "should": "13.2.3",
-    "standard-version": "^7.0.0",
+    "release-it": "^14.11.8",
     "typescript": "^3.5.3"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v${version}",
+      "changelog": "npx auto-changelog --stdout --commit-limit false --unreleased --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    },
+    "hooks": {
+      "after:bump": "npx auto-changelog -p"
+    }
   },
   "commitlint": {
     "format": {

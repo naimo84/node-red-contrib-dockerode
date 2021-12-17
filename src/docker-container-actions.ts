@@ -90,7 +90,7 @@ module.exports = function (RED: Red) {
                     container.exec(execOptions)
                         .then(res => {
                             if (res) {
-                                res.start((err, input_stream) => {
+                                res.start({},(err, input_stream) => {
                                     if (err) {
                                         //console.log("error : " + err);
                                         return;
