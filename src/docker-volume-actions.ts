@@ -36,13 +36,13 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 400) {
-                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.error(`Bad parameter:  ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -57,10 +57,10 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             //                            404 No such volume
                             if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -73,16 +73,16 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 404) {
-                                node.error(`No such volume or volume driver`);
+                                node.error(`No such volume or volume driver`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 409) {
-                                node.error(`Volume is in use and cannot be removed`);
+                                node.error(`Volume is in use and cannot be removed`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -96,10 +96,10 @@ module.exports = function (RED: Red) {
                         done();
                     }).catch(err => {
                         if (err.statusCode === 500) {
-                            node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                            node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                             node.send({ payload: err });
                         } else {
-                            node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                            node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                             return;
                         }
                     });
@@ -113,17 +113,17 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg, { payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
                     break;
 
                 default:
-                    node.error(`Called with an unknown action: ${action}`);
+                    node.error(`Called with an unknown action: ${action}`, msg);
                     return;
             }
         }

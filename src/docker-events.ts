@@ -18,7 +18,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         let globalEvents = null;
 
-        node.on('input', async (_msg, send, done) => {
+        node.on('input', async (msg, send, done) => {
             try {
                 if(globalEvents !== null){
                     globalEvents.removeAllListeners();
@@ -34,7 +34,7 @@ module.exports = function (RED: Red) {
                     try {
                         event = JSON.parse(data.toString());
                     } catch (e) {
-                        node.error('Error parsing JSON', e);
+                        node.error('Error parsing JSON', msg);
                         return
                     }
 

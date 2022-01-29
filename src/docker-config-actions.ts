@@ -35,13 +35,13 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 400) {
-                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.error(`Bad parameter:  ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -55,13 +55,13 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 409) {
-                                node.error(`Name conflicts with an existing objectd: [${configId}]`);
+                                node.error(`Name conflicts with an existing objectd: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -75,16 +75,16 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 503) {
-                                node.error(`Node is not part of a swarm: [${configId}]`);
+                                node.error(`Node is not part of a swarm: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 404) {
-                                node.error(`Config not found: [${configId}]`);
+                                node.error(`Config not found: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -98,16 +98,16 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 503) {
-                                node.error(`Node is not part of a swarm: [${configId}]`);
+                                node.error(`Node is not part of a swarm: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 404) {
-                                node.error(`Config not found: [${configId}]`);
+                                node.error(`Config not found: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if(err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -121,26 +121,26 @@ module.exports = function (RED: Red) {
                             node.send(Object.assign(msg,{ payload: res }));
                         }).catch(err => {
                             if (err.statusCode === 503) {
-                                node.error(`Node is not part of a swarm: [${configId}]`);
+                                node.error(`Node is not part of a swarm: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 400) {
-                                node.error(`Bad parameter: [${configId}]`);
+                                node.error(`Bad parameter: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 404) {
-                                node.error(`Config not found: [${configId}]`);
+                                node.error(`Config not found: [${configId}]`, msg);
                                 node.send({ payload: err });
                             } else if(err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
                     break;
 
                 default:
-                    node.error(`Called with an unknown action: ${action}`);
+                    node.error(`Called with an unknown action: ${action}`, msg);
                     return;
             }
         }

@@ -54,14 +54,14 @@ module.exports = function (RED: Red) {
                                 //@ts-ignore
                                 client.run(image, [config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
                                     if (err) {
-                                        node.error(err);
+                                        node.error(err, msg);
                                         node.send(Object.assign(msg, { payload: {}, err: err }))
                                     }
                                 }).on('stream', (stream) => {
                                     stream.on('data', data => node.send({ payload: data.toString() }));
                                 }).on('error', (err) => {
                                     debug(err)
-                                    node.error(err);
+                                    node.error(err, msg);
                                 });
                             });
                         });
@@ -69,14 +69,14 @@ module.exports = function (RED: Red) {
                         //@ts-ignore
                         client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
                             if (err) {
-                                node.error(err);
+                                node.error(err, msg);
                                 node.send(Object.assign(msg, { payload: {}, err: err }))
                             }
                         }).on('stream', (stream) => {
                             stream.on('data', data => node.send({ payload: data.toString() }));
                         }).on('error', (err) => {
                             debug(err)
-                            node.error(err);
+                            node.error(err, msg);
                         });
                     }
                     break;
@@ -113,7 +113,7 @@ module.exports = function (RED: Red) {
                                     input_stream.on('end', () => {
                                         node.send(Object.assign(msg, { payload: buffer_stdout }));
                                         if (buffer_stderr.trim().length > 0) {
-                                            node.error(`Error exec container: ${buffer_stderr}`);
+                                            node.error(`Error exec container: ${buffer_stderr}`, msg);
                                         }
                                     });
                                 });
@@ -122,13 +122,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -144,13 +144,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 400) {
-                                node.error(`Bad parameter:  ${err.reason}`);
+                                node.error(`Bad parameter:  ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -166,13 +166,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err}]`);
+                                node.error(`System Error:  [${err}]`, msg);
                                 return;
                             }
                         });
@@ -187,13 +187,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -215,13 +215,13 @@ module.exports = function (RED: Red) {
                     }).catch(err => {
                         debug(err)
                         if (err.statusCode === 404) {
-                            node.error(`No such container: [${containerId}]`);
+                            node.error(`No such container: [${containerId}]`, msg);
                             node.send({ payload: err });
                         } else if (err.statusCode === 500) {
-                            node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                            node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                             node.send({ payload: err });
                         } else {
-                            node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                            node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                             return;
                         }
                     });
@@ -236,13 +236,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -257,13 +257,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -281,7 +281,7 @@ module.exports = function (RED: Red) {
                             try {
                                 event = JSON.parse(data.toString());
                             } catch (e) {
-                                node.error('Error parsing JSON', e);
+                                node.error('Error parsing JSON', e, msg);
                                 return
                             }
 
@@ -301,7 +301,7 @@ module.exports = function (RED: Red) {
                         });
                         events.on('error', (err) => {
                             node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                            node.error('Error:', err);
+                            node.error('Error:', err, msg);
                         });
                         events.on('end', () => {
                             node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
@@ -320,13 +320,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -341,13 +341,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -362,13 +362,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -383,13 +383,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -404,13 +404,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -425,13 +425,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -446,16 +446,16 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 409) {
-                                node.error(`Name already in use: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Name already in use: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -470,13 +470,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -491,13 +491,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -512,13 +512,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -533,13 +533,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -554,13 +554,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`Container or path does not exist: [${containerId}]`);
+                                node.error(`Container or path does not exist: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 console.log(err);
                                 return;
                             }
@@ -576,13 +576,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`Container or path does not exist: [${containerId}]`);
+                                node.error(`Container or path does not exist: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -597,13 +597,13 @@ module.exports = function (RED: Red) {
                         }).catch(err => {
                             debug(err)
                             if (err.statusCode === 404) {
-                                node.error(`No such container: [${containerId}]`);
+                                node.error(`No such container: [${containerId}]`, msg);
                                 node.send({ payload: err });
                             } else if (err.statusCode === 500) {
-                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                 node.send({ payload: err });
                             } else {
-                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`);
+                                node.error(`System Error:  [${err.statusCode}] ${err.reason}`, msg);
                                 return;
                             }
                         });
@@ -626,13 +626,13 @@ module.exports = function (RED: Red) {
                             }).catch(err => {
                                 debug(err)
                                 if (err.statusCode === 400) {
-                                    node.error(`Bad parmeter: [${err.reason}]`);
+                                    node.error(`Bad parmeter: [${err.reason}]`, msg);
                                     node.send({ payload: err });
                                 } else if (err.statusCode === 500) {
-                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`);
+                                    node.error(`Server Error: [${err.statusCode}] ${err.reason}`, msg);
                                     node.send({ payload: err });
                                 } else {
-                                    node.error(`System Error:  [${err.statusCode}] ${err}`);
+                                    node.error(`System Error:  [${err.statusCode}] ${err}`, msg);
                                     return;
                                 }
                             });
@@ -641,7 +641,7 @@ module.exports = function (RED: Red) {
                     }
                     break;
                 default:
-                    node.error(`Called with an unknown action: ${action}`);
+                    node.error(`Called with an unknown action: ${action}`, msg);
                     return;
             }
         }
