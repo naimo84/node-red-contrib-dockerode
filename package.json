@@ -31,8 +31,7 @@
       "url": "https://github.com/naimo84/node-red-contrib-dockerode/blob/master/LICENSE"
     }
   ],
-  "scripts": {
-    "prepack": "gulp",
+  "scripts": {   
     "build": "gulp",
     "release": "release-it",
     "dev": "gulp develop"
