@@ -28,6 +28,7 @@ module.exports = function (RED: Red) {
             executeAction(containerId, options, cmd, client, action, this, msg, image, {
                 cmd: cmd,
                 pullimage: n.pullimage,
+                stream: n.stream,
                 createOptions: RED.util.evaluateNodeProperty(n.createOptions !== '' ? n.createOptions : '{}', n.createOptionsType, n, msg) || {},
                 startOptions: RED.util.evaluateNodeProperty(n.startOptions !== '' ? n.startOptions : '{}', n.startOptionsType, n, msg)
             });
@@ -90,7 +91,7 @@ module.exports = function (RED: Red) {
                     container.exec(execOptions)
                         .then(res => {
                             if (res) {
-                                res.start({},(err, input_stream) => {
+                                res.start({}, (err, input_stream) => {
                                     if (err) {
                                         //console.log("error : " + err);
                                         return;
@@ -270,45 +271,55 @@ module.exports = function (RED: Red) {
                     break;
                 // TODO: make this it own objects
                 case 'stats':
-                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats
-
-                    container.stats().then((events: any) => {
-
-                        node.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
-
-                        events.on('data', (data) => {
-                            let event: any = {};
-                            try {
-                                event = JSON.parse(data.toString());
-                            } catch (e) {
-                                node.error('Error parsing JSON', e, msg);
-                                return
+                    // https://docs.docker.com/engine/api/v1.40/#operation/ContainerStats    
+                    if (!config.stream) {
+                        container.stats({ stream: config.stream }, (err, data) => {
+                            if (err) {
+                                node.error('Error:', err)
                             }
 
                             node.send({
-                                _msgid: RED.util.generateId(),
-                                type: event.Type,
-                                action: event.Action,
-                                time: event.time,
-                                timeNano: event.timeNano,
-                                payload: event
+                                payload: data
+                            })
+                        });
+                    } else {
+                        container.stats().then((events: any) => {
+
+                            node.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
+
+                            events.on('data', (data) => {
+                                let event: any = {};
+                                try {
+                                    event = JSON.parse(data.toString());
+                                } catch (e) {
+                                    node.error('Error parsing JSON', msg);
+                                    return
+                                }
+
+                                node.send({
+                                    _msgid: RED.util.generateId(),
+                                    type: event.Type,
+                                    action: event.Action,
+                                    time: event.time,
+                                    timeNano: event.timeNano,
+                                    payload: event
+                                });
+                            });
+
+                            events.on('close', () => {
+                                node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                                node.warn('Docker event stream closed.');
+                            });
+                            events.on('error', (err) => {
+                                node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
+                                node.error('Error:'+err, msg);
+                            });
+                            events.on('end', () => {
+                                node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
+                                node.warn('Docker event stream ended.');
                             });
                         });
-
-                        events.on('close', () => {
-                            node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                            node.warn('Docker event stream closed.');
-                        });
-                        events.on('error', (err) => {
-                            node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                            node.error('Error:', err, msg);
-                        });
-                        events.on('end', () => {
-                            node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });
-                            node.warn('Docker event stream ended.');
-                        });
-                    });
-
+                    }
                     break;
 
                 case 'resize':

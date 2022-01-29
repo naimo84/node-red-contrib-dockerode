@@ -14,6 +14,7 @@
             image: { value: "" },
             imagetype: { value: "" },
             pullimage: { value: false },
+            stream: { value: false },
             createOptions: {},
             startOptions: {},
             createOptionsType: {},
@@ -74,15 +75,12 @@
                 });
             });
 
-            
-            
+
+
             $("#node-input-container").typedInput({
                 types: ["str", "msg"],
                 typeField: "#node-input-containertype",
                 autoComplete: function (val) {
-
-console.log(val)
-console.log(dataArray)
                     var matches = [];
                     dataArray.forEach(v => {
                         var i = v.toLowerCase().indexOf(val.toLowerCase());
@@ -144,7 +142,11 @@ console.log(dataArray)
                 } else {
                     $('#pull-options').hide();
                 }
-
+                if (action === 'stats') {
+                    $('#node-input-stream').parent().show();
+                } else {
+                    $('#node-input-stream').parent().hide();
+                }
 
             });
 
@@ -153,7 +155,7 @@ console.log(dataArray)
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-container-actions">
+<script type="text/html" data-template-name="docker-container-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -213,7 +215,10 @@ console.log(dataArray)
         <input type="hidden" id="node-input-optionstype">
 
     </div>
-
+    <div class="form-row" >
+        <label for="node-input-stream"><i class="icon-tag"></i> Stream</label>
+        <input type="checkbox" id="node-input-stream" style="width:auto">
+    </div>
     <div id="pull-options">
         <div class="form-row" id="options">
             <label for="node-input-createOptions"><i class="icon-tag"></i> createOptions</label>
@@ -235,6 +240,7 @@ console.log(dataArray)
                     <b>ATTENTION:</b> If Image is not present and Checkbox is false, it will fail.         
             </div>
         </div>
+       
     </div>
     <hr>
     <div class="form-row">
