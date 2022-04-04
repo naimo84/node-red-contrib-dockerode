@@ -13,7 +13,7 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         debug(`config ${config.host}`)
         this.on('input', (msg) => {
-            let cmd = n.options || msg.cmd || msg.comand || msg.payload?.comand || undefined;
+            let cmd = RED.util.getMessageProperty(msg, n.options);
             let image = RED.util.evaluateNodeProperty(n.image, n.imagetype, n, msg);
             let action = n.action || msg.action || msg.payload?.action || undefined;
             let options = RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg) || msg.options || msg.options || msg.payload?.options || undefined;
