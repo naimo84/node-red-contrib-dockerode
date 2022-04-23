@@ -25,7 +25,7 @@ module.exports = function (RED: Red) {
             }
             this.status({});
 
-            executeAction(containerId, options, cmd, client, action, this, msg, image, {
+            executeAction(containerId, options, client, action, this, msg, image, {
                 cmd: cmd,
                 pullimage: n.pullimage,
                 stream: n.stream,
@@ -35,7 +35,7 @@ module.exports = function (RED: Red) {
         });
 
 
-        async function executeAction(containerId: string, options: any, cmd: string, client: Dockerode, action: string, node: Node, msg, image, config) {
+        async function executeAction(containerId: string, options: any, client: Dockerode, action: string, node: Node, msg, image, config) {
             let container = client.getContainer(containerId);
             debug(`action: ${action}`)
             debug(`containerId: ${containerId}`)
@@ -84,7 +84,7 @@ module.exports = function (RED: Red) {
 
                 case 'exec':
                     let execOptions = {
-                        Cmd: ['sh', '-c', cmd],
+                        Cmd: ['sh', '-c', options],
                         AttachStdout: true,
                         AttachStderr: true
                     };
@@ -558,7 +558,7 @@ module.exports = function (RED: Red) {
 
                 case 'archive-info':
                     // https://docs.docker.com/engine/api/v1.40/#operation/ContainerArchiveInfo
-                    container.infoArchive({ 'path': cmd })
+                    container.infoArchive({ 'path': config.cmd })
                         .then(res => {
                             node.status({ fill: 'green', shape: 'dot', text: containerId + ' killed' });
                             node.send(Object.assign(msg, { payload: res }));
