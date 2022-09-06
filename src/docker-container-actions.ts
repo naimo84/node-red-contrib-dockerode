@@ -30,6 +30,7 @@ module.exports = function (RED: Red) {
                 pullimage: n.pullimage,
                 stream: n.stream,
                 createOptions: RED.util.evaluateNodeProperty(n.createOptions !== '' ? n.createOptions : '{}', n.createOptionsType, n, msg) || {},
+                deletecontainer: n.deletecontainer,
                 startOptions: RED.util.evaluateNodeProperty(n.startOptions !== '' ? n.startOptions : '{}', n.startOptionsType, n, msg)
             });
         });
@@ -53,12 +54,25 @@ module.exports = function (RED: Red) {
                         client.pull(image, { "disable-content-trust": "false" }, function (_err, pull) {
                             client.modem.followProgress(pull, (_err, _output) => {
                                 //@ts-ignore
-                                client.run(image, [config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
-                                    if (err) {
-                                        node.error(err, msg);
-                                        node.send(Object.assign(msg, { payload: {}, err: err }))
-                                    }
-                                }).on('stream', (stream) => {
+                                let eventEmmiter = null
+
+                                if (config.deletecontainer) {//@ts-ignore
+                                    eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
+                                        if (err) {
+                                            node.error(err, msg);
+                                            node.send(Object.assign(msg, { payload: {}, err: err }))
+                                        }
+                                    })
+                                } else {//@ts-ignore
+                                    eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
+                                        if (err) {
+                                            node.error(err, msg);
+                                            node.send(Object.assign(msg, { payload: {}, err: err }))
+                                        }
+                                    })
+                                }
+
+                                eventEmmiter.on('stream', (stream) => {
                                     stream.on('data', data => node.send({ payload: data.toString() }));
                                 }).on('error', (err) => {
                                     debug(err)
@@ -67,13 +81,26 @@ module.exports = function (RED: Red) {
                             });
                         });
                     } else {
-                        //@ts-ignore
-                        client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err, data, container) => {
-                            if (err) {
-                                node.error(err, msg);
-                                node.send(Object.assign(msg, { payload: {}, err: err }))
-                            }
-                        }).on('stream', (stream) => {
+
+                        let eventEmmiter = null
+
+                        if (config.deletecontainer) {//@ts-ignore
+                            eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
+                                if (err) {
+                                    node.error(err, msg);
+                                    node.send(Object.assign(msg, { payload: {}, err: err }))
+                                }
+                            })
+                        } else {//@ts-ignore
+                            eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
+                                if (err) {
+                                    node.error(err, msg);
+                                    node.send(Object.assign(msg, { payload: {}, err: err }))
+                                }
+                            })
+                        }
+
+                        eventEmmiter.on('stream', (stream) => {
                             stream.on('data', data => node.send({ payload: data.toString() }));
                         }).on('error', (err) => {
                             debug(err)
@@ -312,7 +339,7 @@ module.exports = function (RED: Red) {
                             });
                             events.on('error', (err) => {
                                 node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.disconnected' });
-                                node.error('Error:'+err, msg);
+                                node.error('Error:' + err, msg);
                             });
                             events.on('end', () => {
                                 node.status({ fill: 'yellow', shape: 'ring', text: 'stream ended' });

@@ -14,6 +14,7 @@
             image: { value: "" },
             imagetype: { value: "" },
             pullimage: { value: false },
+            deletecontainer: { value: false },
             stream: { value: false },
             createOptions: {},
             startOptions: {},
@@ -142,6 +143,7 @@
                 } else {
                     $('#pull-options').hide();
                 }
+
                 if (action === 'stats') {
                     $('#node-input-stream').parent().show();
                 } else {
@@ -226,12 +228,16 @@
             <input type="hidden" id="node-input-createOptionsType">
     
         </div>
-        <!-- <div class="form-row" id="options">
+        <div class="form-row" id="options">
             <label for="node-input-startOptions"><i class="icon-tag"></i> startOptions</label>
             <input type="text" id="node-input-startOptions">
             <input type="hidden" id="node-input-startOptionsType">
     
-        </div> -->
+        </div>
+        <div class="form-row" >
+            <label for="node-input-deletecontainer"><i class="icon-tag"></i> Delete Container after run</label>
+            <input type="checkbox" id="node-input-deletecontainer" style="width:auto">
+        </div>
         <div class="form-row" >
             <label for="node-input-pullimage"><i class="icon-tag"></i> Pull Image Always</label>
             <input type="checkbox" id="node-input-pullimage" style="width:auto">

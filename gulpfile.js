@@ -29,7 +29,7 @@ gulp.task('develop', function (done) {
         ignore: ["*.map"],
         done: done,
         verbose: true,
-        delay: 1000,
+        delay: 10000,
         env: { "NO_UPDATE_NOTIFIER": "1" }
     });
 
@@ -43,7 +43,7 @@ gulp.task('develop', function (done) {
 
     watch(paths.pages).on('change', () => {
         copyHtml();
-        stream.emit('restart', 10)
+        stream.emit('restart', 10000)
     });
 
     watch('src/*.ts').on('change', () => {
@@ -54,7 +54,7 @@ gulp.task('develop', function (done) {
             .pipe(sourcemaps.write('.'))
             .pipe(gulp.dest(paths.dist));
 
-        stream.emit('restart', 10)
+        stream.emit('restart', 10000)
     });
 
     stream
@@ -63,7 +63,7 @@ gulp.task('develop', function (done) {
         })
         .on('crash', function () {
             console.error('Application has crashed!\n')
-            stream.emit('restart', 10)  // restart the server in 10 seconds
+            stream.emit('restart', 10000)  // restart the server in 10 seconds
         })
 })
 
