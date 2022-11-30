@@ -57,14 +57,14 @@ module.exports = function (RED: Red) {
                                 let eventEmmiter = null
 
                                 if (config.deletecontainer) {//@ts-ignore
-                                    eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
+                                    eventEmmiter = client.run(image, config.cmd, false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
                                         if (err) {
                                             node.error(err, msg);
                                             node.send(Object.assign(msg, { payload: {}, err: err }))
                                         }
                                     })
                                 } else {//@ts-ignore
-                                    eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
+                                    eventEmmiter = client.run(image, config.cmd, false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
                                         if (err) {
                                             node.error(err, msg);
                                             node.send(Object.assign(msg, { payload: {}, err: err }))
@@ -85,14 +85,14 @@ module.exports = function (RED: Red) {
                         let eventEmmiter = null
 
                         if (config.deletecontainer) {//@ts-ignore
-                            eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
+                            eventEmmiter = client.run(image, config.cmd, false, Object.assign(config.startOptions, { "HostConfig": { "AutoRemove": true } }), (err, _data, _container) => {
                                 if (err) {
                                     node.error(err, msg);
                                     node.send(Object.assign(msg, { payload: {}, err: err }))
                                 }
                             })
                         } else {//@ts-ignore
-                            eventEmmiter = client.run(image, ['sh', '-c', config.cmd], false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
+                            eventEmmiter = client.run(image, config.cmd, false, config.createOptions, config.startOptions, (err: any, _data: any, _container: any) => {
                                 if (err) {
                                     node.error(err, msg);
                                     node.send(Object.assign(msg, { payload: {}, err: err }))
@@ -111,7 +111,7 @@ module.exports = function (RED: Red) {
 
                 case 'exec':
                     let execOptions = {
-                        Cmd: ['sh', '-c', options],
+                        Cmd: options,
                         AttachStdout: true,
                         AttachStderr: true
                     };
