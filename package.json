@@ -71,7 +71,7 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-watch": "^5.0.1",
     "husky": "^3.0.5",
-    "mocha": "6.2.0",
+    "mocha": "10.2.0",
     "node-red": "0.20.8",
     "node-red-contrib-mock-node": "^0.4.0",
     "node-red-node-test-helper": "^0.2.3",
