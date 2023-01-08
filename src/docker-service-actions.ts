@@ -10,17 +10,16 @@ module.exports = function (RED: Red) {
         let client = config.getClient();
         this.on('input', (msg) => {
 
-            let serviceId: string = n.service || msg.payload.serviceId || msg.serviceId || undefined;
+            let serviceId: string = n.service || msg.payload?.serviceId || msg.serviceId || undefined;
             if(serviceId === undefined){
-                serviceId = n.serviceName || msg.payload.serviceName || msg.serviceName || undefined;
+                serviceId = n.serviceName || msg.payload?.serviceName || msg.serviceName || undefined;
             } 
-            let action = n.action || msg.action || msg.payload.action || undefined;
+            let action = n.action || msg.action || msg.payload?.action || undefined;
             if (serviceId === undefined && !['list', 'prune', 'create'].includes(action)) {
                 this.error("Service id/name must be provided via configuration or via `msg.service`");
                 return;
             }
-
-            let options = n.options || msg.options || msg.payload.options || undefined;
+            let options = RED.util.evaluateNodeProperty(n.options, n.optionstype, n, msg) || msg.options || msg.options || msg.payload?.options || undefined;
 
             this.status({});
             executeAction(serviceId, options, client, action, this,msg);

@@ -7,7 +7,9 @@
             name: { value: "" },
             config: { value: "", type: "docker-configuration", required: true },
             service: { value: "" },
-            action: { value: "inspect" }
+            action: { value: "inspect" },
+            options: { value: "" },
+            optionstype: { value: "" },
         },
         inputs: 1,
         outputs: 1,
@@ -37,6 +39,10 @@
             $('#node-input-action').change(function () {
                 var value = $('#node-input-action').val()
             })
+            $("#node-input-options").typedInput({
+                types: ["str", "json", "msg"],
+                typeField: "#node-input-optionstype"
+            });
 
 
             $("#node-input-service").click(function () {
@@ -60,7 +66,7 @@
     })
 </script>
 
-<script type="text/x-red" data-template-name="docker-service-actions">
+<script type="text/html" data-template-name="docker-service-actions">
     <div class="form-row">
         <label for="node-input-config"><i class="icon-server"></i> Config</label>
         <input type="text" id="node-input-config">
@@ -75,6 +81,12 @@
         <a id="node-config-lookup-uuid" class="btn">
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
+    </div>
+    <div class="form-row" id="options">
+        <label for="node-input-options"><i class="icon-tag"></i> Options</label>
+        <input type="text" id="node-input-options">
+        <input type="hidden" id="node-input-optionstype">
+
     </div>
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-wrench"></i> Action</label>      
