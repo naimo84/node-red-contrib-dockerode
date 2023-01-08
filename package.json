@@ -72,9 +72,9 @@
     "gulp-watch": "^5.0.1",
     "husky": "^3.0.5",
     "mocha": "6.2.0",
-    "node-red": "0.20.8",
+    "node-red": "3.0.2",
     "node-red-contrib-mock-node": "^0.4.0",
-    "node-red-node-test-helper": "^0.2.3",
+    "node-red-node-test-helper": "^0.3.0",
     "should": "13.2.3",
     "release-it": "^14.11.8",
     "typescript": "^3.5.3"
