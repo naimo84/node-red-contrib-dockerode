@@ -1,12 +1,17 @@
 import { Red } from 'node-red';
+import { readFileSync } from 'fs';
 import * as Dockerode from 'dockerode';
 
 
 export interface DockerConfiguration {
-    host: string,
-    port: number, action: string,
+    host: string
+    ca: string
+    cert: string
+    key: string
+    port: number
+    action: string
     container: string
-    options: any,
+    options: any
     getClient(): Dockerode
 }
 
@@ -20,6 +25,9 @@ module.exports = function (RED: Red) {
         node.host = n.host;
         node.port = n.port;
         node.options = n.options;
+        node.ca = n.ca;
+        node.key = n.key;
+        node.cert = n.cert;
 
         node.getClient = (): Dockerode => {
             let dockeropt = {};
@@ -33,6 +41,22 @@ module.exports = function (RED: Red) {
                     host: node.host,
                     port: node.port
                 }
+            }
+
+            if (node.ca) {
+                dockeropt = Object.assign(dockeropt, {
+                    ca: readFileSync(node.ca)
+                })
+            }
+            if (node.key) {
+                dockeropt = Object.assign(dockeropt, {
+                    key: readFileSync(node.key)
+                })
+            }
+            if (node.cert) {
+                dockeropt = Object.assign(dockeropt, {
+                    cert: readFileSync(node.cert)
+                })
             }
             return new Dockerode(dockeropt);
         };

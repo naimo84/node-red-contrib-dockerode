@@ -6,6 +6,9 @@
             name: { value: "" },
             host: { value: "", required: true },
             port: { value: "" },
+            ca: { value: "" },
+            cert: { value: "" },
+            key:{ value: "" },
         },
         label: function () {
             let host = `${this.host}:${this.port}`;
@@ -28,7 +31,19 @@
     </div>
     <div class="form-row">
         <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
-        <input type="text" id="node-config-input-port"mplaceholder="2375">
+        <input type="text" id="node-config-input-port" placeholder="2375">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-ca"><i class="icon-bookmark"></i> Path to CA Certificate (TLS)</label>
+        <input type="text" id="node-config-input-ca" placeholder="optional">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-cert"><i class="icon-bookmark"></i> Path to Certificate (TLS)</label>
+        <input type="text" id="node-config-input-cert" placeholder="optional">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-key"><i class="icon-bookmark"></i> Path to Key (TLS)</label>
+        <input type="text" id="node-config-input-key" placeholder="optional">
     </div>
     <div class="form-row">
     <a href="https://naimo84.github.io/node-red-contrib-dockerode">
