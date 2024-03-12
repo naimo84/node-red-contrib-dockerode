@@ -74,28 +74,35 @@
                     let name = element.Names[0].replace('/', '');
                     dataArray.push(name);
                 });
+                console.log("dataArray", dataArray);
             });
 
-
-
             $("#node-input-container").typedInput({
-                types: ["str", "msg"],
-                typeField: "#node-input-containertype",
-                autoComplete: function (val) {
-                    var matches = [];
-                    dataArray.forEach(v => {
-                        var i = v.toLowerCase().indexOf(val.toLowerCase());
-                        if (i > -1) {
-                            matches.push({
-                                value: v,
-                                label: v,
-                                i: i
-                            })
+                type: "node-input-container",
+                types: [
+                    {
+                        value: "str",
+                        label: "string",
+                        icon: "red/images/typedInput/az.svg",
+                        autoComplete: function (val) {
+                            console.log("autocomplete", val);
+                            var matches = [];
+                            dataArray.forEach(v => {
+                                var i = v.toLowerCase().indexOf(val.toLowerCase());
+                                if (i > -1) {
+                                    matches.push({
+                                        value: v,
+                                        label: v,
+                                        i: i
+                                    })
+                                }
+                            });
+                            matches.sort(function (A, B) { return A.i - B.i })
+                            return matches
                         }
-                    });
-                    matches.sort(function (A, B) { return A.i - B.i })
-                    return matches
-                }
+                    },
+                    "msg"
+                ],
             });
 
             $("#node-input-image").typedInput({
