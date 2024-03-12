@@ -15,6 +15,7 @@
             imagetype: { value: "" },
             pullimage: { value: false },
             deletecontainer: { value: false },
+            outputFinished: { value: false },
             stream: { value: false },
             createOptions: { value: "{}" },
             startOptions: { value: "{}" },
@@ -212,13 +213,13 @@
             <i id="node-config-lookup-uuid-icon" class="fa fa-plus-square"></i>
         </a>
     </div>
-    <div class="form-row" id="options">
+    <div class="form-row">
         <label for="node-input-image"><i class="icon-tag"></i> Image</label>
         <input type="text" id="node-input-image">
         <input type="hidden" id="node-input-imagetype">
 
     </div>
-    <div class="form-row" id="options">
+    <div class="form-row">
         <label for="node-input-options"><i class="icon-tag"></i> Options/Command</label>
         <input type="text" id="node-input-options">
         <input type="hidden" id="node-input-optionstype">
@@ -229,23 +230,26 @@
         <input type="checkbox" id="node-input-stream" style="width:auto">
     </div>
     <div id="pull-options">
-        <div class="form-row" id="options">
+        <div class="form-row">
             <label for="node-input-createOptions"><i class="icon-tag"></i> createOptions</label>
             <input type="text" id="node-input-createOptions">
             <input type="hidden" id="node-input-createOptionsType">
     
         </div>
-        <div class="form-row" id="options">
+        <div class="form-row">
             <label for="node-input-startOptions"><i class="icon-tag"></i> startOptions</label>
             <input type="text" id="node-input-startOptions">
             <input type="hidden" id="node-input-startOptionsType">
-    
         </div>
-        <div class="form-row" >
+        <div class="form-row">
             <label for="node-input-deletecontainer"><i class="icon-tag"></i> Delete Container after run</label>
             <input type="checkbox" id="node-input-deletecontainer" style="width:auto">
         </div>
-        <div class="form-row" >
+        <div class="form-row">
+            <label for="node-input-outputFinished"><i class="icon-tag"></i> Output full stdout on finish</label>
+            <input type="checkbox" id="node-input-outputFinished" style="width:auto">
+        </div>
+        <div class="form-row">
             <label for="node-input-pullimage"><i class="icon-tag"></i> Pull Image Always</label>
             <input type="checkbox" id="node-input-pullimage" style="width:auto">
             <div class="form-tips" id="hint_v1">     
