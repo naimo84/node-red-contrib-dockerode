@@ -106,7 +106,7 @@ module.exports = function (RED: Red) {
     }
 
 
-    RED.httpAdmin.post("/nodeSearch", function (req, res) {
+    RED.httpAdmin.post("/nodeSearch", RED.auth.needsPermission('flows.write'), function (req, res) {
         RED.log.debug("POST /nodeSearch");
 
         const nodeId = req.body.id;

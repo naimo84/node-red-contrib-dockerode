@@ -157,7 +157,7 @@ module.exports = function (RED: Red) {
         }
     }
 
-    RED.httpAdmin.post("/imageSearch", function (req, res) {
+    RED.httpAdmin.post("/imageSearch", RED.auth.needsPermission('flows.write'), function (req, res) {
         RED.log.debug("POST /imageSearch");
 
         const nodeId = req.body.id;
