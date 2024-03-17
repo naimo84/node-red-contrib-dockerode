@@ -23,7 +23,7 @@ module.exports = function (RED: Red) {
 
         let node: DockerConfiguration = this;
         node.host = n.host;
-        node.port = n.port;
+        node.port = n.port || "2375";
         node.options = n.options;
         node.ca = n.ca;
         node.key = n.key;

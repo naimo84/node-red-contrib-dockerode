@@ -91,7 +91,7 @@ module.exports = function (RED: Red) {
         }
     }
 
-    RED.httpAdmin.post("/taskSearch", function (req, res) {
+    RED.httpAdmin.post("/taskSearch", RED.auth.needsPermission('flows.write'), function (req, res) {
         RED.log.debug("POST /taskSearch");
 
         const nodeId = req.body.id;

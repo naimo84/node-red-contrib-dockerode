@@ -129,7 +129,7 @@ module.exports = function (RED: Red) {
         }
     }
 
-    RED.httpAdmin.post("/volumeSearch", function (req, res) {
+    RED.httpAdmin.post("/volumeSearch", RED.auth.needsPermission('flows.write'), function (req, res) {
         RED.log.debug("POST /volumeSearch");
 
         const nodeId = req.body.id;

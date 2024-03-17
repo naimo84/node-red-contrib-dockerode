@@ -122,7 +122,7 @@ module.exports = function (RED: Red) {
         }
     }
 
-    RED.httpAdmin.post("/secretSearch", function (req, res) {
+    RED.httpAdmin.post("/secretSearch", RED.auth.needsPermission('flows.write'), function (req, res) {
         RED.log.debug("POST /secretSearch");
 
         const nodeId = req.body.id;
