@@ -17,10 +17,23 @@
             deletecontainer: { value: false },
             outputFinished: { value: false },
             stream: { value: false },
-            createOptions: { value: "{}" },
-            startOptions: { value: "{}" },
-            createOptionsType: {},
-            startOptionsType: {}
+            createOptions: { value: "{}", required: false, validate:function(v) {
+                var action=$("#node-input-action").length ? $("#node-input-action").val() : "inspect";
+               
+                if(action==="run" && !($("#node-input-createOptions").val() instanceof object) ){
+                    return false;
+                }
+                return true;
+             } },
+            startOptions: { value: "{}", required: false, validate:function(v) {
+                var action=$("#node-input-action").length ? $("#node-input-action").val() : "inspect";
+                if(action==="run" && !($("#node-input-createOptions").val() instanceof object) ){
+                    return false;
+                }
+                return true;
+             }   },
+            createOptionsType: { required: false},
+            startOptionsType: { required: false}
         },
         inputs: 1,
         outputs: 1,
